@@ -391,18 +391,21 @@ def count(trials,code_distance,p_div,pm,result_list):
                 num_p += 1
             num_d += 1
 
-    result_list.append(count)
-
-
+    result_list.append(count/trials)
 
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 2000
-    d_start = 3
-    d_end = 9
-    code_distance = np.arange(d_start,d_end + 1,2)
-    p_div = np.arange(1,6,1)
+    trials = 10
+    p_s = 5
+    p_e = 10
+    p_d = 1
+    d_s = 5
+    d_e = 9
+    d_d = 2
+    pro = 500
+    code_distance = np.arange(d_s,d_e+1,d_d)
+    p_div = np.arange(p_s,p_e,p_d)
     pm = 0
 
     # プロセスを管理する人。デラックスな共有メモリ
@@ -411,8 +414,8 @@ if __name__ == "__main__":
     result_list = manager.list()
     # あとでまとめてjoin()するためのプロセスのリスト
     processes = []
-    # プロセスを10個生成
-    for _ in range(24):
+    # プロセスを生成
+    for _ in range(pro):
         # マネージャーから取得したオブジェクトを引数に渡す
         process = multiprocessing.Process(target=count, args=(trials, code_distance, p_div,pm,result_list))
         # プロセス開始
@@ -425,12 +428,15 @@ if __name__ == "__main__":
         # プロセスの終了待ち
         p.join()
 
-    for i in range(24):
+    for i in range(pro):
         if i == 0:
             c = result_list[0]
         else:
             c += result_list[i]
-    c /= 24
+    c /= pro
+
+    df = pd.DataFrame(data=c, columns=p_div,index=code_distance)
+    df.to_csv('pm='+str(pm)+'_p=('+str(p_s)+','+str(p_e)+','+str(p_d)+')_d=('+str(d_s)+','+str(d_e)+','+str(d_d)+')_trials='+str(trials*pro)+'.csv')
 
     plt.rcParams["xtick.direction"] = "in"     
     plt.rcParams["ytick.direction"] = "in" 
@@ -448,6 +454,6 @@ if __name__ == "__main__":
     ax.spines["bottom"].set_linewidth(2)
     ax.spines["right"].set_linewidth(2)
     ax.tick_params(direction="in", width=2, length=4, labelsize=12)
-    ax.set_title("pm=" + str(pm) + "%, # of trials=" +str(trials*24), fontsize=14)
+    ax.set_title("pm=" + str(pm) + "%, # of trials=" +str(trials*pro), fontsize=14)
     plt.legend()
-    plt.savefig("pm=" + str(pm) + "%_trials=" + str(trials) + ".pdf")
+    plt.savefig("pm=" + str(pm) + "%_trials=" + str(trials*pro) + ".pdf")
