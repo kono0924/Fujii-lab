@@ -396,10 +396,10 @@ def count(trials,code_distance,p_div,pm,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 10
-    p_s = 5
-    p_e = 10
-    p_d = 1
+    trials = 20
+    p_s = 3
+    p_e = 7
+    p_d = 0.5
     d_s = 5
     d_e = 9
     d_d = 2
@@ -456,4 +456,4 @@ if __name__ == "__main__":
     ax.tick_params(direction="in", width=2, length=4, labelsize=12)
     ax.set_title("pm=" + str(pm) + "%, # of trials=" +str(trials*pro), fontsize=14)
     plt.legend()
-    plt.savefig("pm=" + str(pm) + "%_trials=" + str(trials*pro) + ".pdf")
+    plt.savefig('pm='+str(pm)+'_p=('+str(p_s)+','+str(p_e)+','+str(p_d)+')_d=('+str(d_s)+','+str(d_e)+','+str(d_d)+')_trials='+str(trials*pro)+ ".pdf")
