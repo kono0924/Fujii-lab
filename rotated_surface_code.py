@@ -383,8 +383,8 @@ def sampling(code_distance,p):
     return result_data, Z_data, judge
 
 def count(trials,code_distance,p_div,result_list):
+    count = np.zeros((int((code_distance-1)/2),len(p_div)))
     for cd in np.arange(3,code_distance +1,2):
-        count = np.zeros((int((code_distance-1)/2),len(p_div)))
         num =0
         for p in p_div:
             trial = int(trials/p)
@@ -400,7 +400,7 @@ def count(trials,code_distance,p_div,result_list):
             trial = int(trials/p)
             count[int((cd-3)/2),num] /= trial
             num += 1
-
+    
     result_list.append(count)
 
 
@@ -408,7 +408,7 @@ def count(trials,code_distance,p_div,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 1000
+    trials = 25000
     code_distance = 9
     p_div = np.arange(7,14,1)
 
@@ -439,7 +439,6 @@ if __name__ == "__main__":
         else:
             c += result_list[i]
     c /= 24
-
     plt.rcParams["xtick.direction"] = "in"     
     plt.rcParams["ytick.direction"] = "in" 
     fig, ax = plt.subplots()
