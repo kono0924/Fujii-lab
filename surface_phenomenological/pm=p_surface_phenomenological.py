@@ -1,6 +1,8 @@
 import random 
+import seaborn as sns
 import pandas as pd
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import networkx as nx
 import math
@@ -8,12 +10,12 @@ import multiprocessing
 
 #エラーの定義 qubitは三次元配列で1つ目のインデックスでXかZか、2,3個目のインデックスで位置を指定
 def x_error(qubit,i,j):
-    qubit[0][i][j] = (qubit[0][i][j]+1) % 2
+    qubit[0][i][j] = (qubit[0][i][j]+1)%2
 def y_error(qubit,i,j):
-    qubit[0][i][j] = (qubit[0][i][j]+1) % 2    
-    qubit[1][i][j] = (qubit[1][i][j]+1) % 2
+    qubit[0][i][j] = (qubit[0][i][j]+1)%2    
+    qubit[1][i][j] = (qubit[1][i][j]+1)%2
 def z_error(qubit,i,j):
-    qubit[1][i][j] =  (qubit[1][i][j]+1) % 2 
+    qubit[1][i][j] =  (qubit[0][i][j]+1)%2 
 
 def single_biased(qubit,i,j,p): # etaはバイアス
     p_x = p 
@@ -39,6 +41,7 @@ def reversed_single_biased(qubit,i,j,p): # 表面符号と反復符号で逆に�
 
 def bitflip_error(qubit,i,j,p): # etaはバイアス
     p_x = p 
+    p_z = p 
     prob = random.random() 
     if prob < 2*p_x: #Z error
         x_error(qubit,i,j)
@@ -62,17 +65,19 @@ def H(qubit,i,j):
 
 #i番目がcontrolビット j 番目がtargetビットのCNOTgate
 def CNOT(qubit_c,i,j,qubit_t,k,l):     #c, tには二次元[][]を代入する
-    qubit_t[0][k][l] = (qubit_t[0][k][l] + qubit_c[0][i][j]) % 2 #コントロール側のXエラーはターゲットに
-    qubit_c[1][i][j] = (qubit_c[1][i][j] + qubit_t[1][k][l]) % 2 #ターゲット側のZエラーはコントロールに
+    qubit_t[0][k][l] = (qubit_t[0][k][l] + qubit_c[0][i][j])%2 #コントロール側のXエラーはターゲットに
+    qubit_c[1][i][j] = (qubit_c[1][i][j] + qubit_t[1][k][l])%2 #ターゲット側のZエラーはコントロールに
 
-def rotated_surface_code(code_distance,p,pm):
+def rotated_surface_code(code_distance,p,p_m):
 
     qubits_d = np.zeros((2,code_distance,code_distance)) #データ量子ビットの格納
     qubits_m_in = np.zeros((2,code_distance-1,code_distance-1)) #測定量子ビット(中)の数
     qubits_m_out_X = np.zeros((2,2,int((code_distance-1)/2))) #測定量子ビット(外)の数
+    qubits_m_out_Z = np.zeros((2,2,int((code_distance-1)/2))) #測定量子ビット(外)の数
 
     syndrome_in = np.zeros((code_distance+2, code_distance-1, code_distance-1)) #シンドローム測定の回数+最初の状態のシンドローム+最後の測定から計算したシンドローム
-    syndrome_out_X = np.zeros((code_distance+2,2,int((code_distance-1)/2))) #外側のZエラーを格納する
+    syndrome_out_X = np.zeros((code_distance+2,2,int((code_distance-1)/2)))
+    syndrome_out_Z = np.zeros((code_distance+2,2,int((code_distance-1)/2)))
 
     #############  ループ部分  ##################
 
@@ -83,6 +88,42 @@ def rotated_surface_code(code_distance,p,pm):
             for j in range(code_distance):
                 p_z_error(qubits_d,i,j,p)
         
+        ### 中側のシンドローム測定(ノイズあり)
+        """
+        for i in range(code_distance-1):
+            for j in range(code_distance-1):
+                if (i+j)%2 == 0: ### Xシンドローム(めんどいゲート)
+                    CNOT(qubits_m_in,i,j,qubits_d,i,j)
+                    p_x_error(qubits_d,i,j,p)
+                    p_z_error(qubits_d,i,j,p)
+                    p_z_error(qubits_m_in,i,j,p)
+                    CNOT(qubits_m_in,i,j,qubits_d,i,j+1)
+                    p_x_error(qubits_d,i,j+1,p)
+                    p_z_error(qubits_d,i,j+1,p)
+                    p_z_error(qubits_m_in,i,j,p)
+                    CNOT(qubits_m_in,i,j,qubits_d,i+1,j)
+                    p_x_error(qubits_d,i+1,j,p)
+                    p_z_error(qubits_d,i+1,j,p)
+                    p_z_error(qubits_m_in,i,j,p)
+                    CNOT(qubits_m_in,i,j,qubits_d,i+1,j+1)
+                    p_x_error(qubits_d,i+1,j+1,p)
+                    p_z_error(qubits_d,i+1,j+1,p)
+                    p_z_error(qubits_m_in,i,j,p)
+                if (i+j)%2 == 1: ### Zシンドローム 
+                    CNOT(qubits_d,i,j,qubits_m_in,i,j)
+                    reversed_single_biased(qubits_m_in,i,j,p)
+                    reversed_single_biased(qubits_d,i,j,p)
+                    CNOT(qubits_d,i,j+1,qubits_m_in,i,j)
+                    reversed_single_biased(qubits_m_in,i,j,p)
+                    reversed_single_biased(qubits_d,i,j+1,p)
+                    CNOT(qubits_d,i+1,j,qubits_m_in,i,j)
+                    reversed_single_biased(qubits_m_in,i,j,p)
+                    reversed_single_biased(qubits_d,i+1,j,p)
+                    CNOT(qubits_d,i+1,j+1,qubits_m_in,i,j)
+                    reversed_single_biased(qubits_m_in,i,j,p)
+                    reversed_single_biased(qubits_d,i+1,j+1,p)
+        
+        """
         for i in range(code_distance-1):
             for j in range(code_distance-1):
                 ### Xシンドローム
@@ -100,17 +141,67 @@ def rotated_surface_code(code_distance,p,pm):
                 if j == code_distance-2:
                     if i % 2 == 0:
                         CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i,code_distance-1)
-                        CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i+1,code_distance-1)    
+                        CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i+1,code_distance-1)
+
+                ### Zシンドローム 
+                if (i+j) % 2 == 1: 
+                    CNOT(qubits_d,i,j,qubits_m_in,i,j)
+                    CNOT(qubits_d,i,j+1,qubits_m_in,i,j)
+                    CNOT(qubits_d,i+1,j,qubits_m_in,i,j)
+                    CNOT(qubits_d,i+1,j+1,qubits_m_in,i,j)
+        """
+
+        ### 外側のシンドローム測定(ノイズあり)
+        for i in range(int((code_distance-1)/2)):
+            ### 上(Z)
+            CNOT(qubits_d,0,2*i,qubits_m_out,0,i)
+            reversed_single_biased(qubits_d,0,2*i,p)
+            reversed_single_biased(qubits_m_out,0,i,p)
+            CNOT(qubits_d,0,2*i+1,qubits_m_out,0,i)
+            reversed_single_biased(qubits_d,0,2*i+1,p)
+            reversed_single_biased(qubits_m_out,0,i,p)
+            ### 右(X)
+            CNOT(qubits_m_out,1,i,qubits_d,2*i,code_distance-1)
+            p_x_error(qubits_d,2*i,code_distance-1,p)
+            p_z_error(qubits_d,2*i,code_distance-1,p)
+            p_z_error(qubits_m_out,1,i,p)
+            CNOT(qubits_m_out,1,i,qubits_d,2*i+1,code_distance-1)
+            p_x_error(qubits_d,2*i+1,code_distance-1,p)
+            p_z_error(qubits_d,2*i+1,code_distance-1,p)
+            p_z_error(qubits_m_out,1,i,p)
+            ### 左(X)
+            CNOT(qubits_m_out,2,i,qubits_d,2*i+1,0)
+            p_x_error(qubits_d,2*i+1,0,p)
+            p_z_error(qubits_d,2*i+1,0,p)
+            p_z_error(qubits_m_out,2,i,p)
+            CNOT(qubits_m_out,2,i,qubits_d,2*i+2,0)
+            p_x_error(qubits_d,2*i+2,0,p)
+            p_z_error(qubits_d,2*i+2,0,p)
+            p_z_error(qubits_m_out,2,i,p)
+            ### 下(Z)
+            CNOT(qubits_d,code_distance-1,2*i+1,qubits_m_out,3,i)
+            reversed_single_biased(qubits_d,code_distance-1,2*i+1,p)
+            reversed_single_biased(qubits_m_out,3,i,p)
+            CNOT(qubits_d,code_distance-1,2*i+2,qubits_m_out,3,i)
+            reversed_single_biased(qubits_d,code_distance-1,2*i+2,p)
+            reversed_single_biased(qubits_m_out,3,i,p)
+        
+        """
+        
 
         ### 測定結果の格納
         # 内側
         for i in range(code_distance-1):
             for j in range(code_distance-1):
-                if (i+j) % 2 == 0: ### Xシンドローム
+                if (i+j)%2 == 0: ### Xシンドローム
+                    p_z_error(qubits_m_in,i,j,p_m)
                     syndrome_in[num+1][i][j] =  qubits_m_in[1][i][j] # Zを格納
+ 
         # 外側
         for i in range(int((code_distance-1)/2)):
+            p_z_error(qubits_m_out_X,0,i,p_m)
             syndrome_out_X[num+1][0][i] =  qubits_m_out_X[1][0][i] # 左
+            p_z_error(qubits_m_out_X,1,i,p_m)
             syndrome_out_X[num+1][1][i] =  qubits_m_out_X[1][1][i] # 右
 
         #print("qubits_d= \n", qubits_d[1])
@@ -145,7 +236,7 @@ def rotated_surface_code(code_distance,p,pm):
     for i in range(code_distance):
         for j in range(code_distance):
             result_data_Z[i][j] = qubits_d[1][i][j]
-            #result_data_X[i][j] = qubits_d[0][i][j]
+            result_data_X[i][j] = qubits_d[0][i][j]
 
     #print("result_data_X= \n", result_data_X)
     #print()
@@ -157,12 +248,14 @@ def rotated_surface_code(code_distance,p,pm):
         for j in range(code_distance-1):
             if (i+j)%2 == 0: ### Xシンドローム
                 syndrome_in[code_distance+1][i][j] =  (qubits_d[1][i][j]+qubits_d[1][i][j+1]+qubits_d[1][i+1][j]+qubits_d[1][i+1][j+1])%2
+            #if (i+j)%2 == 1: ### Zシンドローム
+                #syndrome_in[code_distance+1][i][j] =  (qubits_d[0][i][j]+qubits_d[0][i][j+1]+qubits_d[0][i+1][j]+qubits_d[0][i+1][j+1])%2
     # 外側
     for i in range(int((code_distance-1)/2)):
         # 右
-        syndrome_out_X[code_distance+1][1][i] = (qubits_d[1][2*i][code_distance-1] + qubits_d[1][2*i+1][code_distance-1]) % 2
+        syndrome_out_X[code_distance+1][1][i] = (qubits_d[1][2*i][code_distance-1]+qubits_d[1][2*i+1][code_distance-1]) % 2
         # 左
-        syndrome_out_X[code_distance+1][0][i] = (qubits_d[1][2*i+1][0] + qubits_d[1][2*i+2][0]) % 2
+        syndrome_out_X[code_distance+1][0][i] = (qubits_d[1][2*i+1][0]+qubits_d[1][2*i+2][0]) % 2
 
     #print("syndrome_in= \n", syndrome_in[code_distance+1])
     #print("syndrome_out= \n", syndrome_in[code_distance+1])
@@ -184,8 +277,10 @@ def rotated_surface_code(code_distance,p,pm):
                 detection_event_in[num,i,j] = (syndrome_in[num][i][j] + syndrome_in[num+1][i][j]) % 2
         ### 外側
         for i in range(int((code_distance-1)/2)):
+            #detection_event_out[num,0,i] = (syndrome_out[num,0,i] + syndrome_out[num+1,0,i]) % 2
             detection_event_out_X[num,0,i] = (syndrome_out_X[num,0,i] + syndrome_out_X[num+1,0,i]) % 2
             detection_event_out_X[num,1,i] = (syndrome_out_X[num,1,i] + syndrome_out_X[num+1,1,i]) % 2
+            #detection_event_out[num,3,i] = (syndrome_out[num,3,i] + syndrome_out[num+1,3,i]) % 2
 
     #print("detection=\n", detection_event_in)
 
@@ -193,15 +288,49 @@ def rotated_surface_code(code_distance,p,pm):
 
     return detection_event_in, detection_event_out_X, result_data_Z
         
-def sampling(code_distance,p,pm):
+def sampling(code_distance,p,p_m):
 
     ############# 読み込み ################
 
-    detection_event_in, detection_event_out, result_data = rotated_surface_code(code_distance,p,pm)
+    detection_event_in, detection_event_out, result_data = rotated_surface_code(code_distance,p,p_m)
 
     #print("input= \n", result_data)
     #print("detection_event_in= \n", detection_event_in)
     #print("detection_event_out= \n", detection_event_out)
+
+    ############# detection_evemtを再構成 ################
+
+    re_detection_event = np.zeros((code_distance+1,code_distance-1,code_distance+1))
+    for num in range(code_distance+1):
+        for i in range(code_distance-1):
+            for j in range(code_distance+1):
+                if j == 0: #左端
+                    if i % 2 == 1:
+                        if detection_event_out[num][0][int((i-1)/2)] == 1:
+                            re_detection_event[num][i][j] = 1
+                elif j == code_distance: #右端
+                    if i % 2 == 0:
+                        if detection_event_out[num][1][int((i)/2)] == 1:
+                            re_detection_event[num][i][j] = 1
+                else:
+                    if detection_event_in[num][i][j-1] == 1:
+                        re_detection_event[num][i][j] = 1
+
+    print("detection_event= \n",re_detection_event)
+
+    """
+    re_detection_event_in = detection_event_in.copy()
+    re_detection_event_out = detection_event_out.copy()
+    for num in range(code_distance+1):
+        for i in range(code_distance-1):
+            if i % 2 == 0:
+                re_detection_event_out[num][0] = np.insert(re_detection_event_out[num][0],i,0,axis=0)
+            if i % 2 == 1:
+                re_detection_event_out[num][1] = np.insert(re_detection_event_out[num][1],i,0,axis=0)
+        re_detection_event_in[num][0] = np.insert(re_detection_event_in[num][0],re_detection_event_out[num][0],0,axis=1)
+        re_detection_event_in[num][0] = np.insert(re_detection_event_in[num][0],re_detection_event_out[num][1],code_distance-1,axis=1)
+    print(re_detection_event_in)
+    """
 
     ############# MWPM ################
 
@@ -229,13 +358,12 @@ def sampling(code_distance,p,pm):
     ############# 辺の追加 ###############
 
     ### 縦
-    if pm != 0:
+    if p_m != 0:
         for num in range(code_distance):
             for i in range(code_distance-1):
                 for j in range(-1,code_distance):
                     if (i+j) % 2 == 0:
-                        gp.add_edge((num,i,j),(num+1,i,j),weight=-math.log(pm))
-
+                        gp.add_edge((num,i,j),(num+1,i,j),weight=-math.log(p_m))
     ### 横
     for num in range(code_distance+1):
         for i in range(code_distance-2):
@@ -294,7 +422,7 @@ def sampling(code_distance,p,pm):
     for match_pair in mwpm_res:
         match_path.append(nx.dijkstra_path(gp,edge_of_decoder_graph[match_pair[0]],edge_of_decoder_graph[match_pair[1]]))
     for path in match_path:
-            #print(path)
+            print(path)
             for i in range(len(path)): 
                 if i !=0: #i=0は飛ばす
                     ### 外点がある場合
@@ -377,14 +505,14 @@ def sampling(code_distance,p,pm):
 
     return result_data, Z_data, judge
 
-def count(trials,code_distance,p_div,pm,result_list):
+def count(trials,code_distance,p_div,result_list):
     count = np.zeros((len(code_distance),len(p_div)))
     for _ in range(trials):
         num_d = 0
         for cd in code_distance:
             num_p =0
             for p in p_div:
-                result_data, result, judge = sampling(cd,p/100,pm/100)
+                result_data, result, judge = sampling(cd,p/100,p/100)
                 #print("before= \n",result_data,"\nafter= \n",result, "\n", judge)
                 if judge == 1:
                     count[num_d,num_p] += 1
@@ -394,7 +522,6 @@ def count(trials,code_distance,p_div,pm,result_list):
     result_list.append(count/trials)
 
 if __name__ == "__main__":
-
     ### パラメータ
     trials = 100
     p_s = 2
@@ -417,7 +544,7 @@ if __name__ == "__main__":
     # プロセスを生成
     for _ in range(pro):
         # マネージャーから取得したオブジェクトを引数に渡す
-        process = multiprocessing.Process(target=count, args=(trials, code_distance, p_div,pm,result_list))
+        process = multiprocessing.Process(target=count, args=(trials, code_distance, p_div,result_list))
         # プロセス開始
         process.start()
         # プロセスのリストに追加
@@ -454,6 +581,7 @@ if __name__ == "__main__":
     ax.spines["bottom"].set_linewidth(2)
     ax.spines["right"].set_linewidth(2)
     ax.tick_params(direction="in", width=2, length=4, labelsize=12)
-    ax.set_title("pm=" + str(pm) + "%, # of trials=" +str(trials*pro), fontsize=14)
+    ax.set_title("pm=" + str(p) + ", # of trials=" +str(trials*pro), fontsize=14)
     plt.legend()
     plt.savefig('pm='+str(pm)+'_p=('+str(p_s)+','+str(p_e)+','+str(p_d)+')_d=('+str(d_s)+','+str(d_e)+','+str(d_d)+')_trials='+str(trials*pro)+ ".pdf")
+
