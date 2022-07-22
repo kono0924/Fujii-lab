@@ -316,7 +316,7 @@ def sampling(code_distance,p,p_m):
                     if detection_event_in[num][i][j-1] == 1:
                         re_detection_event[num][i][j] = 1
 
-    print("detection_event= \n",re_detection_event)
+    #print("detection_event= \n",re_detection_event)
 
     """
     re_detection_event_in = detection_event_in.copy()
@@ -422,7 +422,7 @@ def sampling(code_distance,p,p_m):
     for match_pair in mwpm_res:
         match_path.append(nx.dijkstra_path(gp,edge_of_decoder_graph[match_pair[0]],edge_of_decoder_graph[match_pair[1]]))
     for path in match_path:
-            print(path)
+            #print(path)
             for i in range(len(path)): 
                 if i !=0: #i=0は飛ばす
                     ### 外点がある場合
@@ -563,7 +563,7 @@ if __name__ == "__main__":
     c /= pro
 
     df = pd.DataFrame(data=c, columns=p_div,index=code_distance)
-    df.to_csv('pm='+str(pm)+'_p=('+str(p_s)+','+str(p_e)+','+str(p_d)+')_d=('+str(d_s)+','+str(d_e)+','+str(d_d)+')_trials='+str(trials*pro)+'.csv')
+    df.to_csv('pm=p_p=('+str(p_s)+','+str(p_e)+','+str(p_d)+')_d=('+str(d_s)+','+str(d_e)+','+str(d_d)+')_trials='+str(trials*pro)+'.csv')
 
     plt.rcParams["xtick.direction"] = "in"     
     plt.rcParams["ytick.direction"] = "in" 
@@ -583,5 +583,5 @@ if __name__ == "__main__":
     ax.tick_params(direction="in", width=2, length=4, labelsize=12)
     ax.set_title("pm=" + str(p) + ", # of trials=" +str(trials*pro), fontsize=14)
     plt.legend()
-    plt.savefig('pm='+str(pm)+'_p=('+str(p_s)+','+str(p_e)+','+str(p_d)+')_d=('+str(d_s)+','+str(d_e)+','+str(d_d)+')_trials='+str(trials*pro)+ ".pdf")
+    plt.savefig('pm=p_p=('+str(p_s)+','+str(p_e)+','+str(p_d)+')_d=('+str(d_s)+','+str(d_e)+','+str(d_d)+')_trials='+str(trials*pro)+ ".pdf")
 
