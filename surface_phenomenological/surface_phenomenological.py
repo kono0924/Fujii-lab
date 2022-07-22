@@ -399,7 +399,7 @@ if __name__ == "__main__":
     trials = 100
     p_s = 3
     p_e = 7
-    p_d = 0.5
+    p_d = 0.25
     d_s = 5
     d_e = 9
     d_d = 2
