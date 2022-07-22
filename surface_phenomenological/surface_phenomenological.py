@@ -524,16 +524,16 @@ if __name__ == "__main__":
 
     ### パラメータ
     trials = 100
-    p_s = 0.5
-    p_e = 2
-    p_d = 0.25
+    p_s = 2
+    p_e = 5
+    p_d = 0.5
     d_s = 5
     d_e = 9
     d_d = 2
     pro = 100
     code_distance = np.arange(d_s,d_e+1,d_d)
     p_div = np.arange(p_s,p_e+p_d,p_d)
-    pm = 5
+    pm = 2.5
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
