@@ -269,10 +269,10 @@ if __name__ == "__main__":
 
     ### パラメータ
     code_distance=11
-    rep=50
+    rep=30
     p=0.005
     eta=1000
-    trials=10
+    trials=100
     pro = 100
 
     # プロセスを管理する人。デラックスな共有メモリ
@@ -291,9 +291,9 @@ if __name__ == "__main__":
         processes.append(process)
 
     # プロセスのリストでループ
-    for p in processes:
+    for p_ in processes:
         # プロセスの終了待ち
-        p.join()
+        p_.join()
 
     for i in range(pro):
         if i == 0:
