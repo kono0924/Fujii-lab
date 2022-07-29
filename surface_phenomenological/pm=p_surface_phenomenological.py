@@ -270,19 +270,14 @@ def rotated_surface_code(code_distance,p,p_m):
     detection_event_out_X = np.zeros((code_distance+1, 2, int((code_distance-1)/2)))
 
     for num in range(code_distance+1):
-
         ### 内側
         for i in range(code_distance-1):
             for j in range(code_distance-1):
                 detection_event_in[num,i,j] = (syndrome_in[num][i][j] + syndrome_in[num+1][i][j]) % 2
         ### 外側
         for i in range(int((code_distance-1)/2)):
-            #detection_event_out[num,0,i] = (syndrome_out[num,0,i] + syndrome_out[num+1,0,i]) % 2
             detection_event_out_X[num,0,i] = (syndrome_out_X[num,0,i] + syndrome_out_X[num+1,0,i]) % 2
             detection_event_out_X[num,1,i] = (syndrome_out_X[num,1,i] + syndrome_out_X[num+1,1,i]) % 2
-            #detection_event_out[num,3,i] = (syndrome_out[num,3,i] + syndrome_out[num+1,3,i]) % 2
-
-    #print("detection=\n", detection_event_in)
 
     ############# detection eventの計算終了 ############
 
@@ -295,8 +290,6 @@ def sampling(code_distance,p,p_m):
     detection_event_in, detection_event_out, result_data = rotated_surface_code(code_distance,p,p_m)
 
     #print("input= \n", result_data)
-    #print("detection_event_in= \n", detection_event_in)
-    #print("detection_event_out= \n", detection_event_out)
 
     ############# detection_evemtを再構成 ################
 
@@ -317,20 +310,6 @@ def sampling(code_distance,p,p_m):
                         re_detection_event[num][i][j] = 1
 
     #print("detection_event= \n",re_detection_event)
-
-    """
-    re_detection_event_in = detection_event_in.copy()
-    re_detection_event_out = detection_event_out.copy()
-    for num in range(code_distance+1):
-        for i in range(code_distance-1):
-            if i % 2 == 0:
-                re_detection_event_out[num][0] = np.insert(re_detection_event_out[num][0],i,0,axis=0)
-            if i % 2 == 1:
-                re_detection_event_out[num][1] = np.insert(re_detection_event_out[num][1],i,0,axis=0)
-        re_detection_event_in[num][0] = np.insert(re_detection_event_in[num][0],re_detection_event_out[num][0],0,axis=1)
-        re_detection_event_in[num][0] = np.insert(re_detection_event_in[num][0],re_detection_event_out[num][1],code_distance-1,axis=1)
-    print(re_detection_event_in)
-    """
 
     ############# MWPM ################
 
@@ -433,7 +412,6 @@ def sampling(code_distance,p,p_m):
                         else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
                             result_data[code_distance-1,path[i][2]+1] = (result_data[code_distance-1,path[i][2]+1] + 1) % 2
                             #print("2(",code_distance-1,path[i][2]+1,")")
-
                     elif path[i] == 'external': # pathの右='external'
                         if path[i-1][1] == 0: # 2番目の要素はy座標でここが外点とつながっているとき
                             result_data[0,path[i-1][2]] = (result_data[0,path[i-1][2]] + 1) % 2
@@ -441,12 +419,10 @@ def sampling(code_distance,p,p_m):
                         else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
                             result_data[code_distance-1,path[i-1][2]+1] = (result_data[code_distance-1,path[i-1][2]+1] + 1) % 2
                             #print("4(",code_distance-1,path[i-1][2]+1,")")
-
                     ### numが同じ場合
                     elif path[i-1][0] == path[i][0]: 
                         result_data[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
                         #print("5(",min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1,")")
-
                     ### numが違う場合
                     #座標が同じ場合
                     elif path[i-1][1] == path[i][1] and path[i-1][2] == path[i][2]: 
@@ -533,7 +509,6 @@ if __name__ == "__main__":
     pro = 50
     code_distance = np.arange(d_s,d_e+1,d_d)
     p_div = np.arange(p_s,p_e+p_d,p_d)
-    pm = 0
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
@@ -563,7 +538,7 @@ if __name__ == "__main__":
     c /= pro
 
     df = pd.DataFrame(data=c, columns=p_div,index=code_distance)
-    df.to_csv('pm=p_p=('+str(p_s)+','+str(p_e)+','+str(p_d)+')_d=('+str(d_s)+','+str(d_e)+','+str(d_d)+')_trials='+str(trials*pro)+'.csv')
+    df.to_csv('pm=p,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials='+str(trials*pro)+'.csv')
 
     plt.rcParams["xtick.direction"] = "in"     
     plt.rcParams["ytick.direction"] = "in" 
@@ -583,5 +558,5 @@ if __name__ == "__main__":
     ax.tick_params(direction="in", width=2, length=4, labelsize=12)
     ax.set_title("pm=" + str(p) + ", # of trials=" +str(trials*pro), fontsize=14)
     plt.legend()
-    plt.savefig('pm=p_p=('+str(p_s)+','+str(p_e)+','+str(p_d)+')_d=('+str(d_s)+','+str(d_e)+','+str(d_d)+')_trials='+str(trials*pro)+ ".pdf")
+    plt.savefig('pm=p,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials='+str(trials*pro)+ ".pdf")
 
