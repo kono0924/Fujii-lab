@@ -523,7 +523,7 @@ def count(trials,code_distance,p_div,pm,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 1000
+    trials = 3000
     p_s = 0.5
     p_e = 2
     p_d = 0.25

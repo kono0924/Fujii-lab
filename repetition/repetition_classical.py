@@ -269,10 +269,10 @@ if __name__ == "__main__":
 
     ### パラメータ
     code_distance=11
-    rep=30
+    rep= 40
     p=0.005
     eta=1000
-    trials=100
+    trials=1000
     pro = 100
 
     # プロセスを管理する人。デラックスな共有メモリ
@@ -303,14 +303,14 @@ if __name__ == "__main__":
     c /= pro
 
     df = pd.DataFrame(data=c, columns=np.arange(3,code_distance+1,2),index=["LX","LZ"])
-    df.to_csv('p='+str(p)+',eta='+str(eta)+',d='+str(code_distance)+',rep='+str(rep)+',trials='+str(trials*pro)+'.csv')
+    df.to_csv('p='+str(p*100)+'% ,eta='+str(eta)+', d='+str(code_distance)+', rep='+str(rep)+', # of trials='+str(trials*pro)+'.csv')
 
     plt.rcParams["xtick.direction"] = "in"     
     plt.rcParams["ytick.direction"] = "in" 
     fig, ax = plt.subplots()
     d = np.arange(3,code_distance+1,2)
-    ax.plot(d,c[0]*100,marker='v',label="logical X error")
-    ax.plot(d,c[1]*100,marker='v',label="logical Z error")
+    ax.plot(d,c[1]*100,marker='v',label="logical X error")
+    ax.plot(d,c[0]*100,marker='v',label="logical Z error")
     ax.set_xlabel("physical error rate (%)", fontsize=13)
     ax.set_ylabel("logical error rate (%)", fontsize=13)
     ax.set_ylim(0,)
