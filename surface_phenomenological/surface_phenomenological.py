@@ -263,9 +263,9 @@ def sampling(code_distance,p,p_m):
             elif j == code_distance-1:
                 gp.add_edge('external',(num,0,j),weight=-math.log(p))
             elif j % 2 == 0:
-                gp.add_edge('external',(num,0,j),weight=-math.log(2*p*(1-p)))
+                gp.add_edge('external',(num,0,j),weight=-math.log(p))
             elif j % 2 == 1:
-                gp.add_edge('external',(num,code_distance-2,j),weight=-math.log(2*p*(1-p)))
+                gp.add_edge('external',(num,code_distance-2,j),weight=-math.log(p))
 
     #nx.draw_networkx(gp)
     #plt.show()
