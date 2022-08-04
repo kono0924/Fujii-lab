@@ -490,7 +490,7 @@ if __name__ == "__main__":
     d_s = 3
     d_e = 7
     d_d = 2
-    pro = 100
+    pro = 1000
     code_distance = np.arange(d_s,d_e+1,d_d)
     p_div = np.arange(p_s,p_e+p_d,p_d)
     pm = 0
