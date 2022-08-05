@@ -41,12 +41,12 @@ def CNOT(qubit_c,i,j,qubit_t,k,l):     #c, tには二次元[][]を代入する
 def rotated_surface_code(code_distance,p,p_m):
 
     qubits_d = np.zeros((2,code_distance,code_distance)) #データ量子ビットの格納
-    qubits_d_Z = np.zeros((code_distance+1,code_distance,code_distance)) #全体でのZエラーの履歴
+    qubits_d_Z = np.zeros((2,code_distance,code_distance)) #全体でのZエラーの履歴
     qubits_m_in = np.zeros((2,code_distance-1,code_distance-1)) #測定量子ビット(中)の数
     qubits_m_out_X = np.zeros((2,2,int((code_distance-1)/2))) #測定量子ビット(外)の数
 
-    syndrome_in = np.zeros((code_distance+2, code_distance-1, code_distance-1)) #シンドローム測定の回数+最初の状態のシンドローム+最後の測定から計算したシンドローム
-    syndrome_out_X = np.zeros((code_distance+2,2,int((code_distance-1)/2)))
+    syndrome_in = np.zeros((3, code_distance-1, code_distance-1)) #シンドローム測定の回数+最初の状態のシンドローム+最後の測定から計算したシンドローム
+    syndrome_out_X = np.zeros((3,2,int((code_distance-1)/2)))
 
     #############  ループ部分  ##################
 
@@ -150,10 +150,10 @@ def rotated_surface_code(code_distance,p,p_m):
 
     ############# detection eventの計算 ###############
 
-    detection_event_in = np.zeros((code_distance+1, code_distance-1, code_distance-1))
-    detection_event_out_X = np.zeros((code_distance+1, 2, int((code_distance-1)/2)))
+    detection_event_in = np.zeros((2, code_distance-1, code_distance-1))
+    detection_event_out_X = np.zeros((2, 2, int((code_distance-1)/2)))
 
-    for num in range(code_distance+1):
+    for num in range(2):
 
         ### 内側
         for i in range(code_distance-1):
@@ -165,8 +165,8 @@ def rotated_surface_code(code_distance,p,p_m):
             detection_event_out_X[num,1,i] = (syndrome_out_X[num,1,i] + syndrome_out_X[num+1,1,i]) % 2
 
     ############# detection eventの計算終了 ############
-    dif_qubits_d_Z = np.zeros((code_distance,code_distance,code_distance))
-    for num in range(code_distance):
+    dif_qubits_d_Z = np.zeros((1,code_distance,code_distance))
+    for num in range(1):
         for i in range(code_distance):
             for j in range(code_distance):
                 dif_qubits_d_Z[num][i][j] = (qubits_d_Z[num][i][j] + qubits_d_Z[num+1][i][j]) % 2
@@ -212,14 +212,14 @@ def sampling(code_distance,p,p_m):
     ############# 頂点の追加 ###############
 
     ### 内側
-    for num in range(code_distance+1):
+    for num in range(2):
         for i in range(code_distance-1):
             for j in range(code_distance-1):
                 if (i+j) % 2 == 0:
                     gp.add_node((num,i,j))
 
     ### 外側(Xシンドロームの追加)
-    for num in range(code_distance+1):
+    for num in range(2):
         for i in range(code_distance-1):
             if i % 2 == 1:
                 gp.add_node((num,i,-1))
@@ -233,13 +233,13 @@ def sampling(code_distance,p,p_m):
 
     ### 縦
     if p_m != 0:
-        for num in range(code_distance):
+        for num in range(1):
             for i in range(code_distance-1):
                 for j in range(-1,code_distance):
                     if (i+j) % 2 == 0:
                         gp.add_edge((num,i,j),(num+1,i,j),weight=-math.log(p_m))
     ### 横
-    for num in range(code_distance+1):
+    for num in range(2):
         for i in range(code_distance-2):
             for j in range(-1,code_distance-1):
                 if (i+j) % 2 == 0:
@@ -248,7 +248,7 @@ def sampling(code_distance,p,p_m):
                     gp.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p))
 
     ### 外点
-    for num in range(code_distance+1):
+    for num in range(2):
         for j in range(-1,code_distance):
             if j == -1:
                 gp.add_edge('external',(num,code_distance-2,j),weight=-math.log(p))
@@ -267,13 +267,13 @@ def sampling(code_distance,p,p_m):
     edge_of_decoder_graph = []
 
     ### 内側
-    for num in range(code_distance+1):
+    for num in range(2):
         for i in range(code_distance-1):
             for j in range(code_distance-1):
                 if detection_event_in[num,i,j] == 1:
                     edge_of_decoder_graph.append((num,i,j))
     ### 外側
-    for num in range(code_distance+1):
+    for num in range(2):
         for i in range(int((code_distance-1)/2)):
             if detection_event_out[num,1,i] == 1: #右
                 edge_of_decoder_graph.append((num,2*i,code_distance-1))
