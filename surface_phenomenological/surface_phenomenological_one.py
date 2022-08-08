@@ -504,12 +504,12 @@ def count(trials,code_distance,p_div,pm,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 100
-    p_s = 4
+    trials = 10000
+    p_s = 7
     p_e = 12
-    p_d = 1
+    p_d = 0.5
     d_s = 3
-    d_e = 7
+    d_e = 9
     d_d = 2
     pro = 100
     code_distance = np.arange(d_s,d_e+1,d_d)
