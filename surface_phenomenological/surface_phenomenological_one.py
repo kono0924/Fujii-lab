@@ -505,11 +505,11 @@ if __name__ == "__main__":
 
     ### パラメータ
     trials = 10000
-    p_s = 7
-    p_e = 12
-    p_d = 0.5
+    p_s = 8.5
+    p_e = 9.5
+    p_d = 0.05
     d_s = 3
-    d_e = 9
+    d_e = 7
     d_d = 2
     pro = 100
     code_distance = np.arange(d_s,d_e+1,d_d)
