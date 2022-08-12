@@ -137,11 +137,11 @@ def rotated_surface_code(code_distance,p,p_m):
     for i in range(code_distance-1):
         for j in range(code_distance-1):
             if (i+j)%2 == 0: ### Xシンドローム
-                syndrome_in[code_distance+1][i][j] =  (qubits_d[1][i][j]+qubits_d[1][i][j+1]+qubits_d[1][i+1][j]+qubits_d[1][i+1][j+1]) % 2
+                syndrome_in[2][i][j] =  (qubits_d[1][i][j]+qubits_d[1][i][j+1]+qubits_d[1][i+1][j]+qubits_d[1][i+1][j+1]) % 2
     # 外側
     for i in range(int((code_distance-1)/2)):
-        syndrome_out_X[code_distance+1][0][i] = (qubits_d[1][2*i+1][0]+qubits_d[1][2*i+2][0]) % 2 # 左
-        syndrome_out_X[code_distance+1][1][i] = (qubits_d[1][2*i][code_distance-1]+qubits_d[1][2*i+1][code_distance-1]) % 2 # 右
+        syndrome_out_X[2][0][i] = (qubits_d[1][2*i+1][0]+qubits_d[1][2*i+2][0]) % 2 # 左
+        syndrome_out_X[2][1][i] = (qubits_d[1][2*i][code_distance-1]+qubits_d[1][2*i+1][code_distance-1]) % 2 # 右
 
     #print("syndrome_in= \n", syndrome_in[code_distance+1])
     #print("syndrome_out= \n", syndrome_out_X[code_distance+1])
@@ -188,7 +188,7 @@ def sampling(code_distance,p,p_m):
     ############# detection_evemtを再構成 ################
 
     re_detection_event = np.zeros((code_distance+1,code_distance-1,code_distance+1))
-    for num in range(code_distance+1):
+    for num in range(2):
         for i in range(code_distance-1):
             for j in range(code_distance+1):
                 if j == 0: #左端
@@ -504,14 +504,14 @@ def count(trials,code_distance,p_div,pm,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 100
-    p_s = 1
-    p_e = 7
-    p_d = 0.5
+    trials = 10000
+    p_s = 8.5
+    p_e = 9.5
+    p_d = 0.05
     d_s = 3
     d_e = 7
     d_d = 2
-    pro = 1000
+    pro = 100
     code_distance = np.arange(d_s,d_e+1,d_d)
     p_div = np.arange(p_s,p_e+p_d,p_d)
     pm = 0
@@ -544,7 +544,7 @@ if __name__ == "__main__":
     c /= pro
 
     df = pd.DataFrame(data=c, columns=p_div,index=code_distance)
-    df.to_csv('pm='+str(pm)+',p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials='+str(trials*pro)+'.csv')
+    df.to_csv('pm='+str(pm)+',p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials='+str(trials*pro)+',rep=1.csv')
 
     plt.rcParams["xtick.direction"] = "in"     
     plt.rcParams["ytick.direction"] = "in" 
@@ -564,4 +564,4 @@ if __name__ == "__main__":
     ax.tick_params(direction="in", width=2, length=4, labelsize=12)
     ax.set_title("pm=" + str(pm) + "%, # of trials=" +str(trials*pro), fontsize=14)
     plt.legend()
-    plt.savefig('pm='+str(pm)+',p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials='+str(trials*pro)+ ".pdf")
+    plt.savefig('pm='+str(pm)+',p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials='+str(trials*pro)+ ",rep=1.pdf")
