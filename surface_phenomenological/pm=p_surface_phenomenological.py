@@ -556,7 +556,7 @@ if __name__ == "__main__":
     ax.spines["bottom"].set_linewidth(2)
     ax.spines["right"].set_linewidth(2)
     ax.tick_params(direction="in", width=2, length=4, labelsize=12)
-    ax.set_title("pm=" + str(p) + ", # of trials=" +str(trials*pro), fontsize=14)
+    ax.set_title("pm=p" + ", # of trials=" +str(trials*pro), fontsize=14)
     plt.legend()
     plt.savefig('pm=p,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials='+str(trials*pro)+ ".pdf")
 
