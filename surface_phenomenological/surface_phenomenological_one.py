@@ -510,7 +510,7 @@ if __name__ == "__main__":
     p_e = 12
     p_d = 0.25
     d_s = 3
-    d_e = 7
+    d_e = 11
     d_d = 2
     pro = 100
     code_distance = np.arange(d_s,d_e+1,d_d)
