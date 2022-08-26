@@ -38,19 +38,19 @@ def CNOT(qubit_c,i,j,qubit_t,k,l):     #c, tには二次元[][]を代入する
     qubit_t[0][k][l] = (qubit_t[0][k][l] + qubit_c[0][i][j])%2 #コントロール側のXエラーはターゲットに
     qubit_c[1][i][j] = (qubit_c[1][i][j] + qubit_t[1][k][l])%2 #ターゲット側のZエラーはコントロールに
 
-def rotated_surface_code(code_distance,p,p_m):
+def rotated_surface_code(code_distance,p,p_m,rep):
 
     qubits_d = np.zeros((2,code_distance,code_distance)) #データ量子ビットの格納
-    qubits_d_Z = np.zeros((code_distance+1,code_distance,code_distance))
+    qubits_d_Z = np.zeros((rep+1,code_distance,code_distance)) #全体でのZエラーの履歴
     qubits_m_in = np.zeros((2,code_distance-1,code_distance-1)) #測定量子ビット(中)の数
     qubits_m_out_X = np.zeros((2,2,int((code_distance-1)/2))) #測定量子ビット(外)の数
 
-    syndrome_in = np.zeros((code_distance+2, code_distance-1, code_distance-1)) #シンドローム測定の回数+最初の状態のシンドローム+最後の測定から計算したシンドローム
-    syndrome_out_X = np.zeros((code_distance+2,2,int((code_distance-1)/2)))
+    syndrome_in = np.zeros((rep+2, code_distance-1, code_distance-1)) #シンドローム測定の回数+最初の状態のシンドローム+最後の測定から計算したシンドローム
+    syndrome_out_X = np.zeros((rep+2,2,int((code_distance-1)/2)))
 
     #############  ループ部分  ##################
 
-    for num in range(code_distance):
+    for num in range(rep):
 
         ### 動的デカップリング (アイドリング中のエラー)
         for i in range(code_distance):
@@ -76,14 +76,6 @@ def rotated_surface_code(code_distance,p,p_m):
                     if i % 2 == 0:
                         CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i,code_distance-1)
                         CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i+1,code_distance-1)
-                """
-                ### Zシンドローム 
-                if (i+j) % 2 == 1: 
-                    CNOT(qubits_d,i,j,qubits_m_in,i,j)
-                    CNOT(qubits_d,i,j+1,qubits_m_in,i,j)
-                    CNOT(qubits_d,i+1,j,qubits_m_in,i,j)
-                    CNOT(qubits_d,i+1,j+1,qubits_m_in,i,j)
-                """
 
         ### 測定結果の格納
         # 内側
@@ -135,7 +127,7 @@ def rotated_surface_code(code_distance,p,p_m):
     for i in range(code_distance):
         for j in range(code_distance):
             result_data_Z[i][j] = qubits_d[1][i][j]
-            result_data_X[i][j] = qubits_d[0][i][j]
+            #result_data_X[i][j] = qubits_d[0][i][j]
 
     #print("result_data_X= \n", result_data_X)
     #print("result_data_Z= \n", result_data_Z)
@@ -145,11 +137,11 @@ def rotated_surface_code(code_distance,p,p_m):
     for i in range(code_distance-1):
         for j in range(code_distance-1):
             if (i+j)%2 == 0: ### Xシンドローム
-                syndrome_in[code_distance+1][i][j] =  (qubits_d[1][i][j]+qubits_d[1][i][j+1]+qubits_d[1][i+1][j]+qubits_d[1][i+1][j+1]) % 2
+                syndrome_in[rep+1][i][j] =  (qubits_d[1][i][j]+qubits_d[1][i][j+1]+qubits_d[1][i+1][j]+qubits_d[1][i+1][j+1]) % 2
     # 外側
     for i in range(int((code_distance-1)/2)):
-        syndrome_out_X[code_distance+1][0][i] = (qubits_d[1][2*i+1][0]+qubits_d[1][2*i+2][0]) % 2 # 左
-        syndrome_out_X[code_distance+1][1][i] = (qubits_d[1][2*i][code_distance-1]+qubits_d[1][2*i+1][code_distance-1]) % 2 # 右
+        syndrome_out_X[rep+1][0][i] = (qubits_d[1][2*i+1][0]+qubits_d[1][2*i+2][0]) % 2 # 左
+        syndrome_out_X[rep+1][1][i] = (qubits_d[1][2*i][code_distance-1]+qubits_d[1][2*i+1][code_distance-1]) % 2 # 右
 
     #print("syndrome_in= \n", syndrome_in[code_distance+1])
     #print("syndrome_out= \n", syndrome_out_X[code_distance+1])
@@ -158,10 +150,10 @@ def rotated_surface_code(code_distance,p,p_m):
 
     ############# detection eventの計算 ###############
 
-    detection_event_in = np.zeros((code_distance+1, code_distance-1, code_distance-1))
-    detection_event_out_X = np.zeros((code_distance+1, 2, int((code_distance-1)/2)))
+    detection_event_in = np.zeros((rep+1, code_distance-1, code_distance-1))
+    detection_event_out_X = np.zeros((rep+1, 2, int((code_distance-1)/2)))
 
-    for num in range(code_distance+1):
+    for num in range(rep+1):
 
         ### 内側
         for i in range(code_distance-1):
@@ -173,8 +165,11 @@ def rotated_surface_code(code_distance,p,p_m):
             detection_event_out_X[num,1,i] = (syndrome_out_X[num,1,i] + syndrome_out_X[num+1,1,i]) % 2
 
     ############# detection eventの計算終了 ############
-    dif_qubits_d_Z = np.zeros((code_distance,code_distance,code_distance))
-    for num in range(code_distance):
+
+    ############# data qubitでエラーが起こった場所の確認 ##
+
+    dif_qubits_d_Z = np.zeros((rep,code_distance,code_distance))
+    for num in range(rep):
         for i in range(code_distance):
             for j in range(code_distance):
                 dif_qubits_d_Z[num][i][j] = (qubits_d_Z[num][i][j] + qubits_d_Z[num+1][i][j]) % 2
@@ -183,11 +178,11 @@ def rotated_surface_code(code_distance,p,p_m):
 
     return detection_event_in, detection_event_out_X, result_data_Z, dif_qubits_d_Z
         
-def sampling(code_distance,p,p_m):
+def sampling(code_distance,p,p_m,rep):
 
     ############# 読み込み ################
 
-    detection_event_in, detection_event_out, result_data, dif_qubits_d_Z = rotated_surface_code(code_distance,p,p_m)
+    detection_event_in, detection_event_out, result_data, dif_qubits_d_Z = rotated_surface_code(code_distance,p,p_m,rep)
 
     #print("input= \n", result_data)
     #print("detection_event_in= \n", detection_event_in)
@@ -195,8 +190,8 @@ def sampling(code_distance,p,p_m):
 
     ############# detection_evemtを再構成 ################
 
-    re_detection_event = np.zeros((code_distance+1,code_distance-1,code_distance+1))
-    for num in range(code_distance+1):
+    re_detection_event = np.zeros((rep+1,code_distance-1,code_distance+1))
+    for num in range(rep+1):
         for i in range(code_distance-1):
             for j in range(code_distance+1):
                 if j == 0: #左端
@@ -220,14 +215,14 @@ def sampling(code_distance,p,p_m):
     ############# 頂点の追加 ###############
 
     ### 内側
-    for num in range(code_distance+1):
+    for num in range(rep+1):
         for i in range(code_distance-1):
             for j in range(code_distance-1):
                 if (i+j) % 2 == 0:
                     gp.add_node((num,i,j))
 
     ### 外側(Xシンドロームの追加)
-    for num in range(code_distance+1):
+    for num in range(rep+1):
         for i in range(code_distance-1):
             if i % 2 == 1:
                 gp.add_node((num,i,-1))
@@ -241,13 +236,13 @@ def sampling(code_distance,p,p_m):
 
     ### 縦
     if p_m != 0:
-        for num in range(code_distance):
+        for num in range(rep):
             for i in range(code_distance-1):
                 for j in range(-1,code_distance):
                     if (i+j) % 2 == 0:
                         gp.add_edge((num,i,j),(num+1,i,j),weight=-math.log(p_m))
     ### 横
-    for num in range(code_distance+1):
+    for num in range(rep+1):
         for i in range(code_distance-2):
             for j in range(-1,code_distance-1):
                 if (i+j) % 2 == 0:
@@ -256,16 +251,16 @@ def sampling(code_distance,p,p_m):
                     gp.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p))
 
     ### 外点
-    for num in range(code_distance+1):
+    for num in range(rep+1):
         for j in range(-1,code_distance):
             if j == -1:
-                gp.add_edge('external',(num,code_distance-2,j),weight=-math.log(p))
+                gp.add_edge('external',(num,code_distance-2,j),weight=-math.log(2*p*(1-p)))
             elif j == code_distance-1:
-                gp.add_edge('external',(num,0,j),weight=-math.log(p))
+                gp.add_edge('external',(num,0,j),weight=-math.log(2*p*(1-p)))
             elif j % 2 == 0:
-                gp.add_edge('external',(num,0,j),weight=-math.log(p))
+                gp.add_edge('external',(num,0,j),weight=-math.log(2*p*(1-p)))
             elif j % 2 == 1:
-                gp.add_edge('external',(num,code_distance-2,j),weight=-math.log(p))
+                gp.add_edge('external',(num,code_distance-2,j),weight=-math.log(2*p*(1-p)))
 
     #nx.draw_networkx(gp)
     #plt.show()
@@ -275,13 +270,13 @@ def sampling(code_distance,p,p_m):
     edge_of_decoder_graph = []
 
     ### 内側
-    for num in range(code_distance+1):
+    for num in range(rep+1):
         for i in range(code_distance-1):
             for j in range(code_distance-1):
                 if detection_event_in[num,i,j] == 1:
                     edge_of_decoder_graph.append((num,i,j))
     ### 外側
-    for num in range(code_distance+1):
+    for num in range(rep+1):
         for i in range(int((code_distance-1)/2)):
             if detection_event_out[num,1,i] == 1: #右
                 edge_of_decoder_graph.append((num,2*i,code_distance-1))
@@ -302,43 +297,47 @@ def sampling(code_distance,p,p_m):
     for i in range(len(edge_of_decoder_graph)):
         for j in range(i):
             shortest_path_weight = nx.dijkstra_path_length(gp, edge_of_decoder_graph[i],edge_of_decoder_graph[j])
-            mwpm_gp.add_edge(i,j,weight = 10000000 - shortest_path_weight)
+            mwpm_gp.add_edge(i,j,weight = 100000000 - shortest_path_weight)
+            #print(edge_of_decoder_graph[i],edge_of_decoder_graph[j],shortest_path_weight)
+
+    #print()
+    #nx.draw_networkx(mwpm_gp)
+    #plt.show()
 
     ########## マッチング実行 ############
     mwpm_res = nx.max_weight_matching(mwpm_gp)
     match_path = []
     for match_pair in mwpm_res:
         match_path.append(nx.dijkstra_path(gp,edge_of_decoder_graph[match_pair[0]],edge_of_decoder_graph[match_pair[1]]))
+        nx.dijkstra_path_length(gp,edge_of_decoder_graph[match_pair[0]],edge_of_decoder_graph[match_pair[1]])
+        #print(nx.dijkstra_path(gp,edge_of_decoder_graph[match_pair[0]],edge_of_decoder_graph[match_pair[1]]),nx.dijkstra_path_length(gp, edge_of_decoder_graph[match_pair[0]],edge_of_decoder_graph[match_pair[1]]))
     for path in match_path:
-            #print(path)
-            for i in range(len(path)): 
-                if i !=0: #i=0は飛ばす
-                    ### 外点がある場合
-                    if path[i-1] == 'external': # pathの左='external'
-                        if path[i][1] == 0: # 2番目の要素はy座標=0でここが外点とつながっているとき
-                            result_data[0,path[i][2]] = (result_data[0,path[i][2]] + 1) % 2
-                            #print("1(",0,path[i][2],")")
-                        else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
-                            result_data[code_distance-1,path[i][2]+1] = (result_data[code_distance-1,path[i][2]+1] + 1) % 2
-                            #print("2(",code_distance-1,path[i][2]+1,")")
-
-                    elif path[i] == 'external': # pathの右='external'
-                        if path[i-1][1] == 0: # 2番目の要素はy座標でここが外点とつながっているとき
-                            result_data[0,path[i-1][2]] = (result_data[0,path[i-1][2]] + 1) % 2
-                            #print("3(",0,path[i-1][2],")")
-                        else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
-                            result_data[code_distance-1,path[i-1][2]+1] = (result_data[code_distance-1,path[i-1][2]+1] + 1) % 2
-                            #print("4(",code_distance-1,path[i-1][2]+1,")")
-
-                    ### numが同じ場合
-                    elif path[i-1][0] == path[i][0]: 
-                        result_data[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
-                        #print("5(",min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1,")")
-
-                    ### numが違う場合
-                    #座標が同じ場合
-                    elif path[i-1][1] == path[i][1] and path[i-1][2] == path[i][2]: 
-                        continue
+        #print(path)
+        for i in range(len(path)): 
+            if i !=0: #i=0は飛ばす
+                ### 外点がある場合
+                if path[i-1] == 'external': # pathの左='external'
+                    if path[i][1] == 0: # 2番目の要素はy座標=0でここが外点とつながっているとき
+                        result_data[0,path[i][2]] = (result_data[0,path[i][2]] + 1) % 2
+                        #print("1(",0,path[i][2],")")
+                    else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
+                        result_data[code_distance-1,path[i][2]+1] = (result_data[code_distance-1,path[i][2]+1] + 1) % 2
+                        #print("2(",code_distance-1,path[i][2]+1,")")
+                elif path[i] == 'external': # pathの右='external'
+                    if path[i-1][1] == 0: # 2番目の要素はy座標でここが外点とつながっているとき
+                        result_data[0,path[i-1][2]] = (result_data[0,path[i-1][2]] + 1) % 2
+                        #print("3(",0,path[i-1][2],")")
+                    else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
+                        result_data[code_distance-1,path[i-1][2]+1] = (result_data[code_distance-1,path[i-1][2]+1] + 1) % 2
+                        #print("4(",code_distance-1,path[i-1][2]+1,")")
+                ### numが同じ場合
+                elif path[i-1][0] == path[i][0]: 
+                    result_data[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
+                    #print("5(",min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1,")")
+                ### numが違う場合
+                #座標が同じ場合
+                elif path[i-1][1] == path[i][1] and path[i-1][2] == path[i][2]: 
+                    continue
 
     ### Zシンドロームを繰り返すことによってエラーを左に集める
     Z_data = result_data.copy()
@@ -391,77 +390,6 @@ def sampling(code_distance,p,p_m):
     if count == [1] * code_distance:
         judge = 1
 
-    """
-    ### dtection eventの図示
-    for num in range(code_distance):
-        fig, ax = plt.subplots()
-        ax.imshow(re_detection_event[num],cmap="copper")
-        for i in range(code_distance):
-            for j in range(code_distance):
-                if (i+j)%2 == 0 and dif_qubits_d_Z[num][i][j] == 1:
-                    X = []
-                    Y = []
-                    X.append(j+1)
-                    X.append(j)
-                    Y.append(i)
-                    Y.append(i-1)
-                    ax.plot(X,Y,color="b",lw=7)
-                if (i+j)%2 == 1 and dif_qubits_d_Z[num][i][j] == 1:
-                    X = []
-                    Y = []
-                    X.append(j+1)
-                    X.append(j)
-                    Y.append(i-1)
-                    Y.append(i)
-                    ax.plot(X,Y,color="b",lw=7)
-        for path in match_path:
-            for i in range(len(path)): 
-                if i !=0: #i=0は飛ばす
-                    ### 外点がある場合
-                    if path[i-1] == 'external' and path[i][0] == num and path[i][1] == 0: # pathの左='external'
-                        X = []
-                        Y = []
-                        X.append(path[i][2]+1)
-                        Y.append(path[i][1])
-                        X.append(path[i][2])
-                        Y.append(path[i][1]-1)
-                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=10)
-                    elif path[i-1] == 'external' and path[i][0] == num and path[i][1] == code_distance-2: # pathの左='external'
-                        X = []
-                        Y = []
-                        X.append(path[i][2]+1)
-                        Y.append(path[i][1])
-                        X.append(path[i][2]+2)
-                        Y.append(path[i][1]+1)
-                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=10)
-                    elif path[i] == 'external' and path[i-1][0] == num and path[i-1][1] == 0: # pathの右='external'
-                        X = []
-                        Y = []
-                        X.append(path[i-1][2]+1)
-                        Y.append(path[i-1][1])
-                        X.append(path[i-1][2])
-                        Y.append(path[i-1][1]-1)
-                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=10)
-                    elif path[i] == 'external' and path[i-1][0] == num and path[i-1][1] == code_distance-2: # pathの右='external'
-                        X = []
-                        Y = []
-                        X.append(path[i-1][2]+1)
-                        Y.append(path[i-1][1])
-                        X.append(path[i-1][2]+2)
-                        Y.append(path[i-1][1]+1)
-                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=10)
-                    elif path[i-1][0] == path[i][0] and path[i][0] == num: 
-                        X = []
-                        Y = []
-                        X.append(path[i-1][2]+1)
-                        X.append(path[i][2]+1)
-                        Y.append(path[i-1][1])
-                        Y.append(path[i][1])
-                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=10)
-        ax.axis("off")
-        plt.show()
-        """
-
     return result_data, Z_data, judge
 
 def count(trials,code_distance,p_div,pm,result_list):
@@ -471,7 +399,8 @@ def count(trials,code_distance,p_div,pm,result_list):
         for cd in code_distance:
             num_p =0
             for p in p_div:
-                result_data, result, judge = sampling(cd,p/100,pm/100)
+                # 反復回数は符号距離
+                result_data, result, judge = sampling(cd,p/100,pm/100,cd)
                 #print("before= \n",result_data,"\nafter= \n",result, "\n", judge)
                 if judge == 1:
                     count[num_d,num_p] += 1
@@ -484,13 +413,13 @@ if __name__ == "__main__":
 
     ### パラメータ
     trials = 100
-    p_s = 1
-    p_e = 7
+    p_s = 7
+    p_e = 12
     p_d = 0.5
     d_s = 3
-    d_e = 7
+    d_e = 9
     d_d = 2
-    pro = 1000
+    pro = 500
     code_distance = np.arange(d_s,d_e+1,d_d)
     p_div = np.arange(p_s,p_e+p_d,p_d)
     pm = 0
@@ -504,7 +433,7 @@ if __name__ == "__main__":
     # プロセスを生成
     for _ in range(pro):
         # マネージャーから取得したオブジェクトを引数に渡す
-        process = multiprocessing.Process(target=count, args=(trials, code_distance, p_div,pm,result_list))
+        process = multiprocessing.Process(target=count, args=(trials, code_distance, p_div,pm,result_list,))
         # プロセス開始
         process.start()
         # プロセスのリストに追加
