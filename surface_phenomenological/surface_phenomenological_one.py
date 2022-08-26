@@ -504,12 +504,12 @@ def count(trials,code_distance,p_div,pm,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 300
+    trials = 500
 
-    p_s = 5
-    p_e = 15
-    p_d = 1
-    d_s = 11
+    p_s = 9
+    p_e = 11
+    p_d = 0.5
+    d_s = 3
     d_e = 19
     d_d = 2
     pro = 100
