@@ -412,7 +412,7 @@ def count(trials,code_distance,p_div,pm,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 100
+    trials = 20
     p_s = 7
     p_e = 12
     p_d = 0.5
