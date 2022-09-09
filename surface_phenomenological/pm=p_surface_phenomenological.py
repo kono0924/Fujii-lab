@@ -142,13 +142,14 @@ def rotated_surface_code(code_distance,p,p_m):
                     if i % 2 == 0:
                         CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i,code_distance-1)
                         CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i+1,code_distance-1)
-
+                """
                 ### Zシンドローム 
                 if (i+j) % 2 == 1: 
                     CNOT(qubits_d,i,j,qubits_m_in,i,j)
                     CNOT(qubits_d,i,j+1,qubits_m_in,i,j)
                     CNOT(qubits_d,i+1,j,qubits_m_in,i,j)
                     CNOT(qubits_d,i+1,j+1,qubits_m_in,i,j)
+                """
         """
 
         ### 外側のシンドローム測定(ノイズあり)
