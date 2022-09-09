@@ -394,8 +394,8 @@ def count(trials,code_distance,p_div,result_list):
         num_d = 0
         for i in range(len(code_distance)):
             num_p =0
-            for j in range(len(p_div)):
-                result_data, result, judge = sampling(code_distance[i],p_div[0,j],p_div[1,j],p_div[2,j],p_div[3,j])
+            for j in range(len(p_div[0])):
+                result_data, result, judge = sampling(code_distance[i],p_div[0][j],p_div[1][j],p_div[2][j],p_div[3][j])
                 #print("before= \n",result_data,"\nafter= \n",result, "\n", judge)
                 if judge == 1:
                     count[num_d,num_p] += 1
@@ -407,11 +407,11 @@ def count(trials,code_distance,p_div,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 20
+    trials = 1
     d_s = 3
     d_e = 11
     d_d = 2
-    pro = 500
+    pro = 1
     code_distance = np.arange(d_s,d_e+1,d_d)
     p_div = [[],[],[],[]]
     C = 0.0183
@@ -423,7 +423,7 @@ if __name__ == "__main__":
     p_div[0] = [1/2 * (1-(1-2*C*P**((i+1)/2))**rep) for i in range(3,cd_rep+1,2)]
     p_div[1] = [(5*i-1)*p/(eta+1) for i in range(3,cd_rep+1,2)]
     p_div[2] = [(3*i-2)*p/(eta+1) for i in range(3,cd_rep+1,2)]
-    p_div[3] = [0 for i in range(3,16,2)]
+    p_div[3] = [0 for i in range(3,cd_rep+1,2)]
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
@@ -452,7 +452,7 @@ if __name__ == "__main__":
             c += result_list[i]
     c /= pro
 
-    df = pd.DataFrame(data=c, columns=p_div,index=code_distance)
+    df = pd.DataFrame(data=c, columns=code_distance,index=range(3,cd_rep+1,2))
     df.to_csv('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials='+str(trials*pro)+'.csv')
 
     plt.rcParams["xtick.direction"] = "in"     
@@ -460,7 +460,7 @@ if __name__ == "__main__":
     fig, ax = plt.subplots()
     num_d = 0
     for cd in code_distance:
-        ax.plot(p_div,c[num_d]*100,marker='v',label="d ="+str(code_distance[num_d]))
+        ax.plot(range(3,cd_rep+1,2),c.loc[cd]*100,marker='v',label="d ="+str(code_distance[cd]))
         num_d += 1
     ax.set_xlabel("physical error rate (%)", fontsize=13)
     ax.set_ylabel("logical error rate (%)", fontsize=13)
