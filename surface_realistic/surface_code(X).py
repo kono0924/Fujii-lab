@@ -453,7 +453,7 @@ if __name__ == "__main__":
     c /= pro
 
     df = pd.DataFrame(data=c, columns=range(3,cd_rep+1,2),index=code_distance)
-    df.to_csv('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials='+str(trials*pro)+'.csv')
+    df.to_csv('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'), rep='+ str(rep) +',trials='+str(trials*pro)+'.csv')
 
     plt.rcParams["xtick.direction"] = "in"     
     plt.rcParams["ytick.direction"] = "in" 
@@ -471,6 +471,6 @@ if __name__ == "__main__":
     ax.spines["bottom"].set_linewidth(2)
     ax.spines["right"].set_linewidth(2)
     ax.tick_params(direction="in", width=2, length=4, labelsize=12)
-    ax.set_title('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials=' + "%, # of trials=" +str(trials*pro), fontsize=14)
+    ax.set_title('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+')' + ", rep="+ str(rep) +", # of trials=" +str(trials*pro), fontsize=14)
     plt.legend()
-    plt.savefig('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials='+str(trials*pro)+ ".pdf")
+    plt.savefig('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'), rep='+ str(rep) +',trials='+str(trials*pro)+ ".pdf")
