@@ -418,7 +418,7 @@ if __name__ == "__main__":
     P = 0.37331744
     eta = 1000
     p = 0.01
-    rep = 20
+    rep = 40
     cd_rep = 15
     p_div[0] = [1/2 * (1-(1-2*C*P**((i+1)/2))**rep) for i in range(3,cd_rep+1,2)]
     p_div[1] = [(5*i-1)*p/(eta+1) for i in range(3,cd_rep+1,2)]
