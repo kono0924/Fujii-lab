@@ -269,7 +269,7 @@ if __name__ == "__main__":
 
     ### パラメータ
     code_distance=11
-    rep= 30
+    rep= 20
     p=0.005
     eta=1000
     trials=1000
