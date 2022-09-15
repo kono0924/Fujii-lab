@@ -407,18 +407,18 @@ def count(trials,code_distance,p_div,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 1
+    trials = 20
     d_s = 3
     d_e = 11
     d_d = 2
-    pro = 1
+    pro = 500
     code_distance = np.arange(d_s,d_e+1,d_d)
     p_div = [[],[],[],[]]
     C = 0.0183
     P = 0.37331744
     eta = 1000
     p = 0.01
-    rep = 10
+    rep = 40
     cd_rep = 15
     p_div[0] = [1/2 * (1-(1-2*C*P**((i+1)/2))**rep) for i in range(3,cd_rep+1,2)]
     p_div[1] = [(5*i-1)*p/(eta+1) for i in range(3,cd_rep+1,2)]
@@ -453,24 +453,28 @@ if __name__ == "__main__":
     c /= pro
 
     df = pd.DataFrame(data=c, columns=range(3,cd_rep+1,2),index=code_distance)
+<<<<<<< HEAD
     df.to_csv('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials='+str(trials*pro)+'.csv')
+=======
+    df.to_csv('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'), rep='+ str(rep) +',trials='+str(trials*pro)+'.csv')
+>>>>>>> b3981438fcdc4cfc170aadd35f65b9f3073a74df
 
     plt.rcParams["xtick.direction"] = "in"     
     plt.rcParams["ytick.direction"] = "in" 
     fig, ax = plt.subplots()
     num_d = 0
     for cd in code_distance:
-        ax.plot(range(3,cd_rep+1,2),c.loc[cd]*100,marker='v',label="d ="+str(code_distance[cd]))
+        ax.plot(range(3,cd_rep+1,2),c[num_d]*100,marker='v',label="d ="+str(cd))
         num_d += 1
     ax.set_xlabel("code distance (repetition)", fontsize=13)
     ax.set_ylabel("logical error rate (%)", fontsize=13)
     ax.set_ylim(0,)
-    ax.set_xticks(p_div)
+    ax.set_xticks(range(3,cd_rep+1,2))
     ax.spines["top"].set_linewidth(2)
     ax.spines["left"].set_linewidth(2)
     ax.spines["bottom"].set_linewidth(2)
     ax.spines["right"].set_linewidth(2)
     ax.tick_params(direction="in", width=2, length=4, labelsize=12)
-    ax.set_title('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials=' + "%, # of trials=" +str(trials*pro), fontsize=14)
+    ax.set_title('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+')' + ", rep="+ str(rep) +", # of trials=" +str(trials*pro), fontsize=14)
     plt.legend()
-    plt.savefig('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),trials='+str(trials*pro)+ ".pdf")
+    plt.savefig('d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'), rep='+ str(rep) +',trials='+str(trials*pro)+ ".pdf")
