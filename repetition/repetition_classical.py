@@ -52,6 +52,8 @@ def H(qubit,i):
 def CNOT(qubit,c,t):
     qubit[0][t]^=qubit[0][c]
     qubit[1][c]^=qubit[1][t]
+    
+p_z = p * eta/(eta+1)
 
 ##### detection eventを作成する関数の定義 #####
 def reptition(code_distance,rep,p,eta):
@@ -170,15 +172,21 @@ def sampling(E,result,code_distance,rep,p,eta):
         # 横辺の追加(反復方向)
         for i in range(d_s-1):
             for j in range(rep):
-                gp.add_edge((i,j),(i,j+1),weight=-math.log(p*eta/(1+eta)))
+                if i == d_s-2:
+                    gp.add_edge((i,j),(i,j+1),weight=-math.log(3*p_z))
+                else:
+                    gp.add_edge((i,j),(i,j+1),weight=-math.log(2*p_z))
         # 縦辺の追加(データ方向)
         for i in range(d_s-2):
             for j in range(rep+1):
-                gp.add_edge((i,j),(i+1,j),weight=-math.log(p*eta/(1+eta)))
+                if i == d_s-3:
+                    gp.add_edge((i,j),(i+1,j),weight=-math.log(2*p_z))
+                else:
+                    gp.add_edge((i,j),(i+1,j),weight=-math.log(3*p_z))
         # 斜め辺の追加(データ方向)
         for i in range(d_s-2):
             for j in range(rep):
-                gp.add_edge((i,j),(i+1,j+1),weight=-math.log(p*eta/(1+eta)))
+                gp.add_edge((i+1,j),(i,j+1),weight=-math.log(p_z))
         #正方格子に外点を1つ加えておく（単点ではパリティを検出できないため、パリティoddになる頂点数が奇数になりうる）
         gp.add_node('external')
         for i in range(rep+1):
