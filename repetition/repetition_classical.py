@@ -52,8 +52,6 @@ def H(qubit,i):
 def CNOT(qubit,c,t):
     qubit[0][t]^=qubit[0][c]
     qubit[1][c]^=qubit[1][t]
-    
-p_z = p * eta/(eta+1)
 
 ##### detection eventを作成する関数の定義 #####
 def reptition(code_distance,rep,p,eta):
@@ -166,6 +164,7 @@ def sampling(E,result,code_distance,rep,p,eta):
         ### 最小距離のグラフの作成
         gp = nx.Graph()
         # 頂点の追加
+        p_z = p * eta/(eta+1)
         for i in range(d_s-1):
             for j in range(rep+1):
                 gp.add_node((i,j))
@@ -277,11 +276,11 @@ if __name__ == "__main__":
 
     ### パラメータ
     code_distance=11
-    rep= 20
+    rep= 50
     p=0.005
     eta=1000
-    trials=1000
-    pro = 100
+    trials=200
+    pro = 500
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
