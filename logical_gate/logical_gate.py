@@ -299,15 +299,15 @@ def stastics(code_distance,p,eta):
 
 def aaa(code_distance,p,eta,trials,result_list):
     num_array = np.arange(3,code_distance+1,div)
-    result = np.zeros((int((code_distance-3)/div+1),3))
+    result = np.zeros((3,int((code_distance-3)/div+1)))
     for c_d in num_array:
         for _ in range(trials):
             nqubits = 3*c_d-1
             qubits = [[0 for _ in range(nqubits)],[0 for _ in range(nqubits)]]
             a, b, c ,aaa = measurement(qubits,c_d,p,eta)
-            result[int((c_d-3)/div),0] += a
-            result[int((c_d-3)/div),1] += b
-            result[int((c_d-3)/div),2] += c
+            result[0,int((c_d-3)/div)] += a
+            result[1,int((c_d-3)/div)] += b
+            result[2,int((c_d-3)/div)] += c
             #print(aaa, b)
     result /= trials
     result_list.append(result)
@@ -315,9 +315,9 @@ def aaa(code_distance,p,eta,trials,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 20
+    trials = 2000
     code_distance = 31
-    p = 0.004
+    p_ = 0.0005
     eta = 1000
     div = 2
     pro = 500
@@ -331,7 +331,7 @@ if __name__ == "__main__":
     # プロセスを生成
     for _ in range(pro):
         # マネージャーから取得したオブジェクトを引数に渡す
-        process = multiprocessing.Process(target=aaa, args=(code_distance,p,eta,trials,result_list,))
+        process = multiprocessing.Process(target=aaa, args=(code_distance,p_,eta,trials,result_list,))
         # プロセス開始
         process.start()
         # プロセスのリストに追加
@@ -352,4 +352,4 @@ if __name__ == "__main__":
     num_array = np.arange(3,code_distance+1,div)
     ind = ["LX", "LZ", "syn"]
     df = pd.DataFrame(data=c, columns=num_array,index=ind)
-    df.to_csv('p='+str(p*100)+'%,eta='+str(eta)+',d=('+str(3)+','+str(code_distance)+','+str(div)+'),trials='+str(trials*pro)+'.csv')
+    df.to_csv('p='+str(p_*100)+'%,eta='+str(eta)+',d=('+str(3)+','+str(code_distance)+','+str(div)+'),trials='+str(trials*pro)+'.csv')
