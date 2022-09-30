@@ -315,12 +315,12 @@ def aaa(code_distance,p,eta,trials,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 2000
-    code_distance = 31
-    p_ = 0.001
+    trials = 50000
+    code_distance = 11
+    p_ = 0.0001
     eta = 1000
     div = 2
-    pro = 500
+    pro = 200
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
