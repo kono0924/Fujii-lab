@@ -751,15 +751,14 @@ def count(trials,cd_sur_list,p_list,eta,cd_rep,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 1
+    trials = 20
     d_s = 3
-    d_e = 7
+    d_e = 9
     d_d = 2
     p_s = 0.001
     p_e = 0.01
     p_d = 0.001
     eta = 1000
-    p = 0.03
     cd_rep = 7
     p_list = np.arange(p_s,p_e+p_d,p_d)
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
