@@ -755,9 +755,9 @@ if __name__ == "__main__":
     d_s = 3
     d_e = 9
     d_d = 2
-    p_s = 0.001
-    p_e = 0.01
-    p_d = 0.001
+    p_s = 0.0001
+    p_e = 0.0009
+    p_d = 0.0001
     eta = 1000
     cd_rep = 5
     p_list = np.arange(p_s,p_e+p_d,p_d)
