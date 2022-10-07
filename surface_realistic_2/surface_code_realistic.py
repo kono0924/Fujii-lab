@@ -759,7 +759,7 @@ if __name__ == "__main__":
     p_e = 0.0009
     p_d = 0.0001
     eta = 1000
-    cd_rep = 5
+    cd_rep = 7
     p_list = np.arange(p_s,p_e+p_d,p_d)
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
     pro = 500
