@@ -745,8 +745,8 @@ def count(trials,cd_sur_list,p_list,eta,cd_rep,result_list):
                 #print("modefied_result_Z\n", modefied_result_Z)
                 #print("result_X\n", result_data_X)
                 #print("modefied_result_X\n", modefied_result_X)
-    result_list.append(count_X)
-    result_list.append(count_Z)
+    result_list.append(count_X/trials)
+    result_list.append(count_Z/trials)
 
 if __name__ == "__main__":
 
@@ -759,7 +759,7 @@ if __name__ == "__main__":
     p_e = 0.01
     p_d = 0.001
     eta = 1000
-    cd_rep = 7
+    cd_rep = 5
     p_list = np.arange(p_s,p_e+p_d,p_d)
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
     pro = 500
@@ -798,5 +798,5 @@ if __name__ == "__main__":
 
     df_X = pd.DataFrame(data=c_X, columns=p_list,index=cd_sur_list)
     df_Z = pd.DataFrame(data=c_Z, columns=p_list,index=cd_sur_list)
-    df_X.to_csv('X,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
-    df_Z.to_csv('Z,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
+    df_X.to_csv('X,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
+    df_Z.to_csv('Z,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
