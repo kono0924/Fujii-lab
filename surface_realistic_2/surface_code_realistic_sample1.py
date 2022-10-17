@@ -234,7 +234,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
             result_data_X[i][j] = qubits_d[0][i][j]
 
     ### 測定結果からシンドロームを計算する
-    """
+    
     ### Xシンドローム
     # 内側
     for i in range(code_distance-1):
@@ -248,7 +248,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
         # 左
         syndrome_out_X[round_sur+1][0][i] = (qubits_d[1][2*i+1][0]+qubits_d[1][2*i+2][0]) % 2
     ### Zシンドローム
-    """
+    
     # 内側
     for i in range(code_distance-1):
         for j in range(code_distance-1):
