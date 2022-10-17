@@ -103,6 +103,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
         for i in range(code_distance-1):
             for j in range(code_distance-1):
                 ### Xシンドローム
+                """
                 # 内側
                 if (i+j)%2 == 0: 
                     CNOT(qubits_m_in,i,j,qubits_d,i,j)
@@ -191,7 +192,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
                         p_z_error(qubits_d,i+1,code_distance-1,p_list[5])
                         p_x_error(qubits_m_out,3,int((i-1)/2),p_list[6])
                         p_z_error(qubits_m_out,3,int((i-1)/2),p_list[5])
-                """
+                
         ### 測定結果の格納 & 初期化
         ## Xシンドローム
         # 内側
@@ -240,6 +241,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
 
     ### 測定結果からシンドロームを計算する
     ### Xシンドローム
+    """
     # 内側
     for i in range(code_distance-1):
         for j in range(code_distance-1):
@@ -264,7 +266,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
         syndrome_out_Z[round_sur+1][0][i] = (qubits_d[0][0][2*i]+qubits_d[0][0][2*i+1]) % 2
         # 下
         syndrome_out_Z[round_sur+1][1][i] = (qubits_d[0][code_distance-1][2*i+1]+qubits_d[0][code_distance-1][2*i+2]) % 2
-    """
+    
     #############  データビットの測定終了  ###############
 
     ############# detection eventの計算 ###############
@@ -392,7 +394,7 @@ def sampling(code_distance,p_list,round_sur):
                     if (i+j) % 2 == 1:
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]))
         ### Zシンドローム
-        """
+        
         for i in range(-1,code_distance-1):
             for j in range(code_distance-2):
                 if num == 0:
@@ -410,7 +412,7 @@ def sampling(code_distance,p_list,round_sur):
                         gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[0]))
                     if (i+j) % 2 == 0:
                         gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[0]))
-        """
+        
     ### 外点
     for num in range(round_sur+1):
         for j in range(-1,code_distance):
@@ -418,13 +420,12 @@ def sampling(code_distance,p_list,round_sur):
                 gp_X.add_edge('external_X',(num,0,j),weight=-math.log(p_list[1]))
             if j % 2 == 1:
                 gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(p_list[1]))
-        """
+        
         for i in range(-1,code_distance):
             if i % 2 == 0:
                 gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log(p_list[0]))
             if i % 2 == 1:
                 gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log(p_list[0]))
-        """
 
     ########## シンドローム1の点の追加 ############
 
