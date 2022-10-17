@@ -665,7 +665,7 @@ def p_matrix(p,eta,round_rep,cd_rep):
     C = 0.02086
     p_th = 0.0146
     matrix = []
-    matrix.append(0) #pL_x
+    matrix.append(p) #pL_x
     matrix.append(p) #pL_z
     matrix.append(0) # pg_x
     matrix.append(0) # pg_z
