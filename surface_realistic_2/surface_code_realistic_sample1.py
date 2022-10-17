@@ -378,40 +378,17 @@ def sampling(code_distance,p_list,round_sur):
         ### Xシンドローム
         for i in range(code_distance-2):
             for j in range(-1,code_distance-1):
-                if num == 0:
-                    if (i+j) % 2 == 0:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]))
-                    if (i+j) % 2 == 1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]))
-                elif num == code_distance:
-                    if (i+j) % 2 == 0:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]))
-                    if (i+j) % 2 == 1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]))
-                else:
-                    if (i+j) % 2 == 0:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]))
-                    if (i+j) % 2 == 1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]))
+                if (i+j) % 2 == 0:
+                    gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]))
+                if (i+j) % 2 == 1:
+                    gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]))
         ### Zシンドローム
-        
         for i in range(-1,code_distance-1):
             for j in range(code_distance-2):
-                if num == 0:
-                    if (i+j) % 2 == 1:
-                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[0]))
-                    if (i+j) % 2 == 0:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[0]))
-                elif num == code_distance:
-                    if (i+j) % 2 == 1:
-                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[0]))
-                    if (i+j) % 2 == 0:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[0]))
-                else:
-                    if (i+j) % 2 == 1:
-                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[0]))
-                    if (i+j) % 2 == 0:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[0]))
+                if (i+j) % 2 == 1:
+                    gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[0]))
+                if (i+j) % 2 == 0:
+                    gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[0]))
         
     ### 外点
     for num in range(round_sur+1):
