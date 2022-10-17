@@ -390,6 +390,7 @@ def sampling(code_distance,p_list,round_sur):
                     if (i+j) % 2 == 1:
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]))
         ### Zシンドローム
+        """
         for i in range(-1,code_distance-1):
             for j in range(code_distance-2):
                 if num == 0:
@@ -407,7 +408,7 @@ def sampling(code_distance,p_list,round_sur):
                         gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[0]))
                     if (i+j) % 2 == 0:
                         gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[0]))
-
+        """
     ### 外点
     for num in range(round_sur+1):
         for j in range(-1,code_distance):
@@ -415,11 +416,13 @@ def sampling(code_distance,p_list,round_sur):
                 gp_X.add_edge('external_X',(num,0,j),weight=-math.log(p_list[1]))
             if j % 2 == 1:
                 gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(p_list[1]))
+        """
         for i in range(-1,code_distance):
             if i % 2 == 0:
                 gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log(p_list[0]))
             if i % 2 == 1:
                 gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log(p_list[0]))
+        """
 
     ########## シンドローム1の点の追加 ############
 
@@ -662,7 +665,7 @@ def p_matrix(p,eta,round_rep,cd_rep):
     C = 0.02086
     p_th = 0.0146
     matrix = []
-    matrix.append(p) #pL_x
+    matrix.append(0) #pL_x
     matrix.append(p) #pL_z
     matrix.append(0) # pg_x
     matrix.append(0) # pg_z
