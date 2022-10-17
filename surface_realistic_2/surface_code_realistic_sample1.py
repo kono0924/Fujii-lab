@@ -698,7 +698,7 @@ def count(trials,cd_sur_list,p_list,eta,cd_rep,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 20
+    trials = 200
     d_s = 3
     d_e = 9
     d_d = 2
