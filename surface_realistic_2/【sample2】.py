@@ -613,7 +613,7 @@ def sampling(code_distance,p_list,round_sur):
         match_path.append(nx.dijkstra_path(gp_Z,edge_of_decoder_graph_Z[match_pair[0]],edge_of_decoder_graph_Z[match_pair[1]]))
     #print(match_path)
     for path in match_path:
-        print(path)
+        #print(path)
         for i in range(len(path)): 
             if i !=0: #i=0は飛ばす
                 ### 外点がある場合
@@ -728,9 +728,9 @@ if __name__ == "__main__":
     d_s = 3
     d_e = 9
     d_d = 2
-    p_s = 0.05
-    p_e = 0.12
-    p_d = 0.01
+    p_s = 0.01
+    p_e = 0.045
+    p_d = 0.005
     eta = 1000
     cd_rep = 11
     p_list = np.arange(p_s,p_e+p_d,p_d)
