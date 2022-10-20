@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import math
 import os
+import multiprocessing
 
 #エラーの定義 qubitは三次元配列で1つ目のインデックスでXかZか、2,3個目のインデックスで位置を指定
 def x_error(qubit,i,j):
