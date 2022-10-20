@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/kono/Documents/Fujii-lab/surface_realistic_2/【realistic】.py", line 799, in <module>
+    manager = multiprocessing.Manager()
+NameError: name 'multiprocessing' is not defined
+Traceback (most recent call last):
+  File "/home/kono/Documents/Fujii-lab/surface_realistic_2/【realistic】.py", line 799, in <module>
+    manager = multiprocessing.Manager()
+NameError: name 'multiprocessing' is not defined
