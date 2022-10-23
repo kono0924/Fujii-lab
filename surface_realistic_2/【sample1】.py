@@ -15,7 +15,7 @@ def y_error(qubit,i,j):
     qubit[0][i][j] = (qubit[0][i][j]+1)%2    
     qubit[1][i][j] = (qubit[1][i][j]+1)%2
 def z_error(qubit,i,j):
-    qubit[1][i][j] =  (qubit[0][i][j]+1)%2 
+    qubit[1][i][j] =  (qubit[1][i][j]+1)%2 
 
 def single_biased(qubit,i,j,p): # etaはバイアス
     p_x = p 
