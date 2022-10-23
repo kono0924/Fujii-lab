@@ -567,6 +567,109 @@ def sampling(code_distance,p_list,round_sur):
     if count == [1] * code_distance:
         judge_X = 1
 
+    ###################### detection eventの図示 #######################
+    #print(re_detection_event)
+    for num in range(round_sur+1):
+        #色付け
+        for i in range(code_distance-1):
+            for j in range(-1,code_distance):
+                if (i+j) % 2 == 1 and re_detection_event_X[num][i][j] == 0:
+                    re_detection_event_X[num][i][j] = 0.5
+    
+        fig, ax = plt.subplots(figsize=(8,6))
+        ax.imshow(re_detection_event_X[num],cmap="copper")
+        #エラーの描写
+        for i in range(code_distance):
+            for j in range(code_distance):
+                if (i+j)%2 == 0 and dif_qubits_d_Z[num][i][j] == 1:
+                    X = []
+                    Y = []
+                    X.append(j+1)
+                    X.append(j)
+                    Y.append(i)
+                    Y.append(i-1)
+                    ax.plot(X,Y,color="b",lw=5)
+                    ax.plot(j+1/2,i-1/2,marker='o',color="b",markersize=10)
+                elif (i+j)%2 == 1 and dif_qubits_d_Z[num][i][j] == 1:
+                    X = []
+                    Y = []
+                    X.append(j+1)
+                    X.append(j)
+                    Y.append(i-1)
+                    Y.append(i)
+                    ax.plot(X,Y,color="b",lw=5)
+                    ax.plot(j+1/2,i-1/2,marker='o',color="b",markersize=10)
+                else:
+                    X = []
+                    Y = []
+                    X.append(j+1)
+                    X.append(j)
+                    Y.append(i-1)
+                    Y.append(i)
+                    ax.plot(j+1/2,i-1/2,marker='o',color="b",markersize=10,markeredgewidth=2,markerfacecolor='w')
+        #誤り訂正の描写
+        for path in match_path:
+            #print(path)
+            for i in range(len(path)): 
+                if i !=0: #i=0は飛ばす
+                    ### 外点がある場合
+                    if path[i-1] == 'external_X' and path[i][0] == num and path[i][1] == 0: # pathの左='external'
+                        X = []
+                        Y = []
+                        X.append(path[i][2]+1)
+                        Y.append(path[i][1])
+                        X.append(path[i][2])
+                        Y.append(path[i][1]-1)
+                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=0)
+                        ax.plot(path[i][2]+1/2,path[i][1]-1/2,marker='o',color="r",lw=3,markersize=7)
+                    elif path[i-1] == 'external_X' and path[i][0] == num and path[i][1] == code_distance-2: # pathの左='external'
+                        X = []
+                        Y = []
+                        X.append(path[i][2]+1)
+                        Y.append(path[i][1])
+                        X.append(path[i][2]+2)
+                        Y.append(path[i][1]+1)
+                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=0)
+                        ax.plot(path[i][2]+3/2,path[i][1]+1/2,marker='o',color="r",lw=3,markersize=7)
+                    elif path[i] == 'external_X' and path[i-1][0] == num and path[i-1][1] == 0: # pathの右='external'
+                        X = []
+                        Y = []
+                        X.append(path[i-1][2]+1)
+                        Y.append(path[i-1][1])
+                        X.append(path[i-1][2])
+                        Y.append(path[i-1][1]-1)
+                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=0)
+                        ax.plot(path[i-1][2]+1/2,path[i-1][1]-1/2,marker='o',color="r",lw=3,markersize=7)
+                    elif path[i] == 'external_X' and path[i-1][0] == num and path[i-1][1] == code_distance-2: # pathの右='external'
+                        X = []
+                        Y = []
+                        X.append(path[i-1][2]+1)
+                        Y.append(path[i-1][1])
+                        X.append(path[i-1][2]+2)
+                        Y.append(path[i-1][1]+1)
+                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=0)
+                        ax.plot(path[i-1][2]+3/2,path[i-1][1]+1/2,marker='o',color="r",lw=3,markersize=7)
+                    elif path[i-1][0] == path[i][0] and path[i][0] == num: 
+                        X = []
+                        Y = []
+                        X.append(path[i-1][2]+1)
+                        X.append(path[i][2]+1)
+                        Y.append(path[i-1][1])
+                        Y.append(path[i][1])
+                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=0)
+                        ax.plot((path[i-1][2]+path[i][2])/2+1,(path[i-1][1]+path[i][1])/2,marker='o',color="r",lw=3,markersize=7)
+                    elif path[i] != 'external_X' and path[i-1] != 'external_X' and path[i-1][0] < path[i][0] and path[i][0] == num:
+                        ax.plot(path[i][2]+1,path[i][1],marker='v',color="r",lw=3,markersize=10)
+                    elif path[i] != 'external_X' and path[i-1] != 'external_X' and path[i-1][0] > path[i][0] and path[i][0] == num:
+                        ax.plot(path[i][2]+1,path[i][1],marker='^',color="r",lw=3,markersize=10)
+                    elif path[i] != 'external_X' and path[i-1] != 'external_X' and  path[i-1][0] < path[i][0] and path[i-1][0] == num:
+                        ax.plot(path[i-1][2]+1,path[i-1][1],marker='^',color="r",lw=3,markersize=10)
+                    elif path[i] != 'external_X' and path[i-1] != 'external_X' and  path[i-1][0] > path[i][0] and path[i-1][0] == num:
+                        ax.plot(path[i-1][2]+1,path[i-1][1],marker='v',color="r",lw=3,markersize=10)
+        ax.set_xlim(-1/2,code_distance+1/2)
+        ax.set_ylim(-1.2,code_distance-0.8)
+        ax.axis("off")
+        plt.show()
         #####################################################################
 
     #################################################################################################################################################################################################################################
@@ -685,6 +788,112 @@ def sampling(code_distance,p_list,round_sur):
     if count == [1] * code_distance:
         judge_Z = 1
     #############################################
+
+    ###################### detection eventの図示 #######################
+    #print(re_detection_event)
+    for num in range(round_sur+1):
+        #色付け
+        for i in range(-1,code_distance):
+            for j in range(code_distance-1):
+                if (i+j) % 2 == 0 and re_detection_event_Z[num][i][j] == 0:
+                    re_detection_event_Z[num][i][j] = 0.5
+        #print(dif_qubits_d_X)
+        #print(re_detection_event_Z)
+    
+        fig, ax = plt.subplots(figsize=(6,8))
+        ax.imshow(re_detection_event_Z[num],cmap="copper")
+        #エラーの描写
+        for i in range(code_distance):
+            for j in range(code_distance):
+                if (i+j)%2 == 0 and dif_qubits_d_X[num][i][j] == 1:
+                    X = []
+                    Y = []
+                    X.append(j)
+                    X.append(j-1)
+                    Y.append(i)
+                    Y.append(i+1)
+                    ax.plot(X,Y,color="b",lw=5)
+                    ax.plot(j-1/2,i+1/2,marker='o',color="b",markersize=10)
+                elif (i+j)%2 == 1 and dif_qubits_d_X[num][i][j] == 1:
+                    X = []
+                    Y = []
+                    X.append(j)
+                    X.append(j-1)
+                    Y.append(i+1)
+                    Y.append(i)
+                    ax.plot(X,Y,color="b",lw=5)
+                    ax.plot(j-1/2,i+1/2,marker='o',color="b",markersize=10)
+                else:
+                    X = []
+                    Y = []
+                    X.append(j)
+                    X.append(j-1)
+                    Y.append(i+1)
+                    Y.append(i)
+                    ax.plot(j-1/2,i+1/2,marker='o',color="b",markersize=10,markeredgewidth=2,markerfacecolor='w')
+        #誤り訂正の描写
+        for path in match_path:
+            for i in range(len(path)): 
+                if i !=0: #i=0は飛ばす
+                    ### 外点がある場合
+                    if path[i-1] == 'external_Z' and path[i][0] == num and path[i][2] == 0: # pathの左='external'
+                        X = []
+                        Y = []
+                        X.append(path[i][2])
+                        Y.append(path[i][1]+1)
+                        X.append(path[i][2]-1)
+                        Y.append(path[i][1]+2)
+                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=0)
+                        ax.plot(path[i][2]-1/2,path[i][1]+3/2,marker='o',color="r",lw=3,markersize=7)
+                    elif path[i-1] == 'external_Z' and path[i][0] == num and path[i][2] == code_distance-2: # pathの左='external'
+                        X = []
+                        Y = []
+                        X.append(path[i][2])
+                        Y.append(path[i][1]+1)
+                        X.append(path[i][2]+1)
+                        Y.append(path[i][1])
+                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=0)
+                        ax.plot(path[i][2]+1/2,path[i][1]+1/2,marker='o',color="r",lw=3,markersize=7)
+                    elif path[i] == 'external_Z' and path[i-1][0] == num and path[i-1][2] == 0: # pathの右='external'
+                        X = []
+                        Y = []
+                        X.append(path[i-1][2])
+                        Y.append(path[i-1][1]+1)
+                        X.append(path[i-1][2]-1)
+                        Y.append(path[i-1][1]+2)
+                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=0)
+                        ax.plot(path[i-1][2]-1/2,path[i-1][1]+3/2,marker='o',color="r",lw=3,markersize=7)
+                    elif path[i] == 'external_Z' and path[i-1][0] == num and path[i-1][2] == code_distance-2: # pathの右='external'
+                        X = []
+                        Y = []
+                        X.append(path[i-1][2])
+                        Y.append(path[i-1][1]+1)
+                        X.append(path[i-1][2]+1)
+                        Y.append(path[i-1][1])
+                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=0)
+                        ax.plot(path[i-1][2]+1/2,path[i-1][1]+1/2,marker='o',color="r",lw=3,markersize=7)
+                    elif path[i-1][0] == path[i][0] and path[i][0] == num: 
+                        X = []
+                        Y = []
+                        X.append(path[i-1][2])
+                        X.append(path[i][2])
+                        Y.append(path[i-1][1]+1)
+                        Y.append(path[i][1]+1)
+                        ax.plot(X,Y,marker='o',color="r",lw=3,markersize=0)
+                        ax.plot((path[i-1][2]+path[i][2])/2,(path[i-1][1]+path[i][1])/2+1,marker='o',color="r",lw=3,markersize=7)
+                    elif path[i] != 'external_Z' and path[i-1] != 'external_Z' and  path[i-1][0] < path[i][0] and path[i][0] == num:
+                        ax.plot(path[i][2],path[i][1]+1,marker='v',color="r",lw=3,markersize=10)
+                    elif path[i] != 'external_Z' and path[i-1] != 'external_Z' and  path[i-1][0] > path[i][0] and path[i][0] == num:
+                        ax.plot(path[i][2],path[i][1]+1,marker='^',color="r",lw=3,markersize=10)
+                    elif path[i] != 'external_Z' and path[i-1] != 'external_Z' and  path[i-1][0] < path[i][0] and path[i-1][0] == num:
+                        ax.plot(path[i-1][2],path[i-1][1]+1,marker='^',color="r",lw=3,markersize=10)
+                    elif path[i] != 'external_Z' and path[i-1] != 'external_Z' and  path[i-1][0] > path[i][0] and path[i-1][0] == num:
+                        ax.plot(path[i-1][2],path[i-1][1]+1,marker='v',color="r",lw=3,markersize=10)
+        ax.set_xlim(-1.2,code_distance-0.8)
+        ax.set_ylim(-1/2,code_distance+1/2)
+        ax.axis("off")
+        plt.show()
+        #####################################################################
 
     return result_data_Z, Z_data, judge_X, result_data_X, X_data, judge_Z
 
