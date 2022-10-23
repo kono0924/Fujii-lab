@@ -786,9 +786,9 @@ if __name__ == "__main__":
     d_s = 3
     d_e = 7
     d_d = 2
-    p_s = 0.0001 
-    p_e = 0.001
-    p_d = 0.0001
+    p_s = 0.001 
+    p_e = 0.01
+    p_d = 0.001
     eta = 1000
     cd_rep = 11
     round_rep = 10
