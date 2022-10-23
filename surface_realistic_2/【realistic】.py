@@ -544,7 +544,7 @@ def sampling(code_distance,p_list,round_sur):
     for i in range(len(edge_of_decoder_graph_X)):
         for j in range(i):
             shortest_path_weight = nx.dijkstra_path_length(gp_X, edge_of_decoder_graph_X[i],edge_of_decoder_graph_X[j])
-            mwpm_gp.add_edge(i,j,weight = 100000000 - shortest_path_weight)
+            mwpm_gp.add_edge(i,j,weight = 1000000000000000 - shortest_path_weight)
 
     ########## マッチング実行 ############
     mwpm_res = nx.max_weight_matching(mwpm_gp)
@@ -663,7 +663,7 @@ def sampling(code_distance,p_list,round_sur):
     for i in range(len(edge_of_decoder_graph_Z)):
         for j in range(i):
             shortest_path_weight = nx.dijkstra_path_length(gp_Z, edge_of_decoder_graph_Z[i],edge_of_decoder_graph_Z[j])
-            mwpm_gp.add_edge(i,j,weight = 100000000 - shortest_path_weight)
+            mwpm_gp.add_edge(i,j,weight = 100000000000000000 - shortest_path_weight)
 
     ########## マッチング実行 ############
     mwpm_res = nx.max_weight_matching(mwpm_gp)
@@ -786,7 +786,7 @@ if __name__ == "__main__":
     d_s = 3
     d_e = 9
     d_d = 2
-    p_s = 0.00002 
+    p_s = 0.00005 
     p_e = 0.0001
     p_d = 0.00001
     eta = 1000
