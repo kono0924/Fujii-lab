@@ -410,10 +410,10 @@ def sampling(code_distance,p_list,round_sur):
         for i in range(code_distance-1):
             if i % 2 == 0:
                 gp_X.add_edge((num,i,code_distance-1),(num+1,i,code_distance-1),weight=-math.log(2*p_list[4]))
-                gp_Z.add_edge((num,-1,i),(num+1,-1,i),weight=-math.log(3*p_list[6]))
+                gp_Z.add_edge((num,-1,i),(num+1,-1,i),weight=-math.log(2*p_list[6]))
             if i % 2 == 1:
                 gp_X.add_edge((num,i,-1),(num+1,i,-1),weight=-math.log(2*p_list[4]))
-                gp_Z.add_edge((num,code_distance-1,i),(num+1,code_distance-1,i),weight=-math.log(3*p_list[6]))
+                gp_Z.add_edge((num,code_distance-1,i),(num+1,code_distance-1,i),weight=-math.log(2*p_list[6]))
 
     ### 横
     for num in range(round_sur+1):
@@ -427,14 +427,14 @@ def sampling(code_distance,p_list,round_sur):
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]))
                 elif num == code_distance:
                     if (i+j) % 2 == 0:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(2*p_list[5]+p_list[3]))
+                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(2*p_list[5]))
                     if (i+j) % 2 == 1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(2*p_list[5]+p_list[3]))
+                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(2*p_list[5]))
                 else:
                     if (i+j) % 2 == 0:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(2*p_list[5]+p_list[1]+p_list[3]))
+                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(2*p_list[5]+p_list[1]))
                     if (i+j) % 2 == 1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(2*p_list[5]+p_list[1]+p_list[3]))
+                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(2*p_list[5]+p_list[1]))
         ### Zシンドローム
         for i in range(-1,code_distance-1):
             for j in range(code_distance-2):
@@ -445,14 +445,14 @@ def sampling(code_distance,p_list,round_sur):
                         gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[0]))
                 elif num == code_distance:
                     if (i+j) % 2 == 1:
-                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[6]))
+                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(2*p_list[6]))
                     if (i+j) % 2 == 0:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[6]))
+                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(2*p_list[6]))
                 else:
                     if (i+j) % 2 == 1:
-                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[6]+p_list[0]+2*p_list[2]))
+                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(2*p_list[6]+p_list[0]))
                     if (i+j) % 2 == 0:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[6]+p_list[0]+2*p_list[2]))
+                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(2*p_list[6]+p_list[0]))
         
     ### 斜め
     for num in range(code_distance):
@@ -490,10 +490,10 @@ def sampling(code_distance,p_list,round_sur):
         for i in range(code_distance-2):
             if i % 2 == 0:
                 gp_Z.add_edge((num+1,code_distance-2,i),(num,code_distance-1,i+1),weight=-math.log(p_list[6]))
-                gp_Z.add_edge((num+1,-1,i),(num,0,i+1),weight=-math.log(2*p_list[6]))
+                gp_Z.add_edge((num+1,-1,i),(num,0,i+1),weight=-math.log(p_list[6]))
             if i % 2 == 1:
                 gp_Z.add_edge((num,code_distance-1,i),(num+1,code_distance-2,i+1),weight=-math.log(p_list[6]))
-                gp_Z.add_edge((num+1,-1,i+1),(num,0,i),weight=-math.log(2*p_list[6]))
+                gp_Z.add_edge((num+1,-1,i+1),(num,0,i),weight=-math.log(p_list[6]))
         
     ### 外点
     for num in range(round_sur+1):
@@ -782,12 +782,12 @@ def count(trials,cd_sur_list,p_list,eta,cd_rep,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 2
+    trials = 20
     d_s = 3
-    d_e = 7
+    d_e = 9
     d_d = 2
-    p_s = 0.001
-    p_e = 0.01
+    p_s = 0.003
+    p_e = 0.08
     p_d = 0.001
     eta = 1000
     cd_rep = 11
