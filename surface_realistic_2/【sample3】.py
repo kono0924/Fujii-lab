@@ -829,5 +829,5 @@ if __name__ == "__main__":
 
     df_X = pd.DataFrame(data=c_X, columns=p_list,index=cd_sur_list)
     df_Z = pd.DataFrame(data=c_Z, columns=p_list,index=cd_sur_list)
-    df_X.to_csv('X(sample2),p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
-    df_Z.to_csv('Z(sample2),p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
+    df_X.to_csv('X(sample3),p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
+    df_Z.to_csv('Z(sample3),p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
