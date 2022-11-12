@@ -10,6 +10,7 @@ import multiprocessing
 
 ############## 純粋な回路型
 
+#エラーの定義 qubitは三次元配列で1つ目のインデックスでXかZか、2,3個目のインデックスで位置を指定
 def x_error(qubit,i,j):
     qubit[0][i][j] = (qubit[0][i][j]+1)%2
 def y_error(qubit,i,j):
@@ -864,6 +865,7 @@ if __name__ == "__main__":
     d_e = 9
     d_d = 2
     p_s = 0.003 
+    p_s = 0.003
     p_e = 0.006
     p_d = 0.0005
     eta = 1000
@@ -871,7 +873,7 @@ if __name__ == "__main__":
     round_rep = 10
     p_list = np.arange(p_s,p_e+p_d,p_d)
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
-    pro = 500
+    pro = 1
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
