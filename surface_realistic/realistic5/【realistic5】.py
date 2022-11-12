@@ -872,7 +872,7 @@ if __name__ == "__main__":
     round_rep = 10
     p_list = np.arange(p_s,p_e+p_d,p_d)
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
-    pro = 500
+    pro = 1
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
