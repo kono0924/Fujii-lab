@@ -10,6 +10,7 @@ import multiprocessing
 
 ############## 純粋な回路型
 
+#エラーの定義 qubitは三次元配列で1つ目のインデックスでXかZか、2,3個目のインデックスで位置を指定
 def x_error(qubit,i,j):
     qubit[0][i][j] = (qubit[0][i][j]+1)%2
 def y_error(qubit,i,j):
@@ -831,13 +832,13 @@ def p_matrix(p,eta,round_rep,cd_rep):
     C = 0.02086
     p_th = 0.0146
     matrix = []
-    matrix.append(((4*cd_rep-3)*round_rep+cd_rep)*p/(eta+1)) #pL_x
-    matrix.append(1/2 * (1-(1-2*C*(p/p_th)**((cd_rep+1)/2))**round_rep)) #pL_z
-    matrix.append((5*cd_rep-1)*p/(eta+1)) # pg_x
-    matrix.append(p*(4+10**(-5)*p*cd_rep**2)) # pg_z
-    matrix.append((3*cd_rep-2)*p/(eta+1)) # pg_syn
-    matrix.append(1/(2*(eta+1))*p) #p_x
-    matrix.append(eta/(eta+1)*p) #p_z
+    matrix.append(p) #pL_x
+    matrix.append(p) #pL_z
+    matrix.append(p) # pg_x
+    matrix.append(p) # pg_z
+    matrix.append(p) # pg_syn
+    matrix.append(p) #p_x
+    matrix.append(p) #p_z
     return matrix
 
 ##################### ここから上をコピーする ######################
@@ -863,9 +864,9 @@ if __name__ == "__main__":
     d_s = 3
     d_e = 9
     d_d = 2
-    p_s = 0.0001 
-    p_e = 0.001
-    p_d = 0.0001
+    p_s = 0.003
+    p_e = 0.006
+    p_d = 0.0005
     eta = 1000
     cd_rep = 11
     round_rep = 10
