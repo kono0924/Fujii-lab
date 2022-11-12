@@ -842,7 +842,7 @@ def count(trials,cd_sur_list,p_list,eta,cd_rep,round_rep,result_list):
     for _ in range(trials):
         for i in range(len(cd_sur_list)):
             for j in range(len(p_list)):
-                result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[j],eta,round_rep,cd_rep),cd_sur_list[i])
+                result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[j],eta,round_rep,cd_rep),11)
                 if judge_X == 1:
                     count_X[i,j] += 1
                 if judge_Z == 1:
