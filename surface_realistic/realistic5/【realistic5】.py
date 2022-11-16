@@ -216,7 +216,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
                     #p_z_error(qubits_m_in,i,j,p_list[6])
                     syndrome_in_Z[num+1][i][j] =  qubits_m_in[0][i][j] # Xを格納
                     qubits_m_in[0][i][j] = 0
-                    qubits_m_in[1][i][j] = 0
+                    #qubits_m_in[1][i][j] = 0
         # 外側
         for i in range(int((code_distance-1)/2)):
             p_x_error(qubits_m_out_Z,0,i,p_list[5])
@@ -236,7 +236,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
                     #p_x_error(qubits_m_in,i,j,p_list[5]) 
                     p_z_error(qubits_m_in,i,j,p_list[6]) 
                     syndrome_in_X[num+1][i][j] =  qubits_m_in[1][i][j] # Zを格納
-                    qubits_m_in[0][i][j] = 0
+                    #qubits_m_in[0][i][j] = 0
                     qubits_m_in[1][i][j] = 0
         # 外側
         for i in range(int((code_distance-1)/2)):
@@ -308,7 +308,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
     result_data_Z = np.zeros((code_distance, code_distance))
     for i in range(code_distance):
         for j in range(code_distance):
-            result_data_Z[i][j] = qubits_d[0][i][j]
+            result_data_Z[i][j] = qubits_d[1][i][j]
 
     #############  データビットの測定終了  ###############
 
