@@ -275,7 +275,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
     ### Xシンドローム
     for i in range(code_distance):
         for j in range(code_distance):
-            H(qubits_m_in,i,j)
+            H(qubits_d,i,j)
     # 内側
     for i in range(code_distance-1):
         for j in range(code_distance-1):
