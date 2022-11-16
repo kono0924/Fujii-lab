@@ -106,9 +106,9 @@ def rotated_surface_code(code_distance,p_list,round_sur):
             p_x_error(qubits_m_out_Z,1,i,p_list[5])
             p_z_error(qubits_m_out_X,1,i,p_list[6])
         """
+        ### Zシンドローム
         for i in range(code_distance-1):
             for j in range(code_distance-1):
-                ### Zシンドローム
                 # 内側
                 if (i+j)%2 == 1: 
                     CNOT(qubits_d,i,j,qubits_m_in,i,j)
@@ -148,8 +148,9 @@ def rotated_surface_code(code_distance,p_list,round_sur):
                         p_x_error(qubits_d,code_distance-1,code_distance-1,p_list[2])
                         #p_z_error(qubits_d,code_distance-1,code_distance-1,p_list[3])
                         p_x_error(qubits_m_out_Z,1,int((i-1)/2),p_list[4])
-                
-                ### Xシンドローム
+        ### Xシンドローム
+        for i in range(code_distance-1):
+            for j in range(code_distance-1):
                 # 内側
                 if (i+j)%2 == 0: 
                     CNOT(qubits_m_in,i,j,qubits_d,i,j)
@@ -295,7 +296,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
     # 内側
     for i in range(code_distance-1):
         for j in range(code_distance-1):
-            if (i+j)%2 == 0: 
+            if (i+j)%2 == 0:
                 syndrome_in_X[round_sur+1][i][j] =  (qubits_d[0][i][j]+qubits_d[0][i][j+1]+qubits_d[0][i+1][j]+qubits_d[0][i+1][j+1]) % 2
     # 外側
     for i in range(int((code_distance-1)/2)):
@@ -978,11 +979,11 @@ if __name__ == "__main__":
     ### パラメータ
     trials = 10
     d_s = 3
-    d_e = 9
+    d_e = 7
     d_d = 2
     p_s = 0.003
     p_e = 0.006
-    p_d = 0.0001
+    p_d = 0.001
     eta = 1000
     cd_rep = 11
     round_rep = 10
