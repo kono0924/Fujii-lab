@@ -261,8 +261,8 @@ def rotated_surface_code(code_distance,p_list,round_sur):
     # 測定エラーの導入(本番では消す)
     for i in range(code_distance):
         for j in range(code_distance):
-            p_x_error(qubits_m_in,i,j,p_list[5]) 
-            p_z_error(qubits_m_in,i,j,p_list[6]) 
+            p_x_error(qubits_d,i,j,p_list[5]) 
+            p_z_error(qubits_d,i,j,p_list[6]) 
             qubits_d_X[round_sur+1][i][j] =  qubits_d[0][i][j]
             qubits_d_Z[round_sur+1][i][j] =  qubits_d[1][i][j]
     ###########################################
