@@ -288,8 +288,8 @@ def rotated_surface_code(code_distance,p_list,round_sur):
 
     ### Xシンドローム
     ### 測定前のアダマールゲートでエラー
-    for i in range(code_distance):
-        for j in range(code_distance):
+    #for i in range(code_distance):
+        #for j in range(code_distance):
             #H(qubits_d,i,j)
             #p_x_error(qubits_d,i,j,p_list[5])
             #p_z_error(qubits_d,i,j,p_list[6])
