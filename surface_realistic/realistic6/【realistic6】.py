@@ -217,17 +217,17 @@ def rotated_surface_code(code_distance,p_list,round_sur):
         for i in range(code_distance-1):
             for j in range(code_distance-1):
                 if (i+j)%2 == 0: ### Xシンドローム
-                    H(qubits_d,i,j)
+                    H(qubits_m_in,i,j)
                     p_x_error(qubits_m_in,i,j,p_list[1]) #測定結果反転 (本番では消す)
                     syndrome_in_X[num+1][i][j] =  qubits_m_in[0][i][j] # Zを格納
                     qubits_m_in[0][i][j] = 0
         # 外側
         for i in range(int((code_distance-1)/2)):
-            H(qubits_d,i,j)
+            H(qubits_m_out_X,0,i)
             p_x_error(qubits_m_out_X,0,i,p_list[1]) #測定結果反転 (本番では消す)
             syndrome_out_X[num+1][0][i] =  qubits_m_out_X[0][0][i] # 左
             qubits_m_out_X[0][0][i] = 0
-            H(qubits_d,i,j)
+            H(qubits_m_out_X,1,i)
             p_x_error(qubits_m_out_X,1,i,p_list[1]) #測定結果反転 (本番では消す)
             syndrome_out_X[num+1][0][i] =  qubits_m_out_X[0][1][i] # 右
             qubits_m_out_X[0][1][i] = 0
@@ -766,7 +766,6 @@ def p_matrix(p,eta,round_rep,cd_rep):
     matrix.append(p) #p_z
     matrix.append(p) #p_x
     return matrix
-
 ##################### ここから上をコピーする ######################
 
 def count(trials,cd_sur_list,p_list,eta,cd_rep,result_list):
