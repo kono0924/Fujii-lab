@@ -202,16 +202,19 @@ def rotated_surface_code(code_distance,p_list,round_sur):
                     #p_x_error(qubits_m_in,i,j,p_list[0]) #本番では消す
                     syndrome_in_Z[num+1][i][j] =  qubits_m_in[0][i][j] # Xを格納
                     qubits_m_in[0][i][j] = 0
+                    qubits_m_in[1][i][j] = 0
         # 外側
         for i in range(int((code_distance-1)/2)):
             p_x_error(qubits_m_out_Z,0,i,p_list[6])
             #p_x_error(qubits_m_out_Z,0,i,p_list[0]) #測定結果反転 (本番では消す)
             syndrome_out_Z[num+1][0][i] =  qubits_m_out_Z[0][0][i] # 上
             qubits_m_out_Z[0][0][i] = 0
+            qubits_m_out_Z[1][0][i] = 0
             p_x_error(qubits_m_out_Z,1,i,p_list[6])
             #p_x_error(qubits_m_out_Z,1,i,p_list[0]) #測定結果反転 (本番では消す)
             syndrome_out_Z[num+1][1][i] =  qubits_m_out_Z[0][1][i] # 下
             qubits_m_out_Z[0][1][i] = 0
+            qubits_m_out_Z[1][1][i] = 0
 
         ## Xシンドローム
         # 内側
@@ -221,6 +224,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
                     H(qubits_m_in,i,j)
                     p_x_error(qubits_m_in,i,j,p_list[1]) #測定結果反転 (本番では消す)
                     syndrome_in_X[num+1][i][j] =  qubits_m_in[0][i][j] # Zを格納
+                    qubits_m_in[0][i][j] = 0
                     qubits_m_in[1][i][j] = 0
         # 外側
         for i in range(int((code_distance-1)/2)):
@@ -229,7 +233,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
             syndrome_out_X[num+1][0][i] =  qubits_m_out_X[0][0][i] # 左
             qubits_m_out_X[0][0][i] = 0
             qubits_m_out_X[1][0][i] = 0
-            H(qubits_m_out_X,0,i)
+            H(qubits_m_out_X,1,i)
             p_x_error(qubits_m_out_X,1,i,p_list[1]) #測定結果反転 (本番では消す)
             syndrome_out_X[num+1][1][i] =  qubits_m_out_X[0][1][i] # 右
             qubits_m_out_X[0][1][i] = 0
