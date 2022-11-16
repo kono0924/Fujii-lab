@@ -227,10 +227,12 @@ def rotated_surface_code(code_distance,p_list,round_sur):
             p_x_error(qubits_m_out_X,0,i,p_list[1]) #測定結果反転 (本番では消す)
             syndrome_out_X[num+1][0][i] =  qubits_m_out_X[0][0][i] # 左
             qubits_m_out_X[0][0][i] = 0
+            qubits_m_out_X[1][0][i] = 0
             H(qubits_m_out_X,1,i)
             p_x_error(qubits_m_out_X,1,i,p_list[1]) #測定結果反転 (本番では消す)
             syndrome_out_X[num+1][0][i] =  qubits_m_out_X[0][1][i] # 右
             qubits_m_out_X[0][1][i] = 0
+            qubits_m_out_X[1][1][i] = 0
 
     ###################  ループ終了 #################
 
@@ -766,7 +768,6 @@ def p_matrix(p,eta,round_rep,cd_rep):
     matrix.append(p) #p_z
     matrix.append(p) #p_x
     return matrix
-##################### ここから上をコピーする ######################
 
 def count(trials,cd_sur_list,p_list,eta,cd_rep,result_list):
     count_X = np.zeros((len(cd_sur_list),len(p_list)))
