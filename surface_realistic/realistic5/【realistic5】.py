@@ -232,25 +232,25 @@ def rotated_surface_code(code_distance,p_list,round_sur):
         for i in range(code_distance-1):
             for j in range(code_distance-1):
                 if (i+j)%2 == 0: ### Xシンドローム
-                    H(qubits_m_in,i,j)
-                    p_x_error(qubits_m_in,i,j,p_list[5]) 
-                    #p_z_error(qubits_m_in,i,j,p_list[6]) 
-                    syndrome_in_X[num+1][i][j] =  qubits_m_in[0][i][j] # Zを格納
+                    #H(qubits_m_in,i,j)
+                    #p_x_error(qubits_m_in,i,j,p_list[5]) 
+                    p_z_error(qubits_m_in,i,j,p_list[6]) 
+                    syndrome_in_X[num+1][i][j] =  qubits_m_in[1][i][j] # Zを格納
                     qubits_m_in[0][i][j] = 0
                     qubits_m_in[1][i][j] = 0
         # 外側
         for i in range(int((code_distance-1)/2)):
             ### 測定前のアダマール変換でのエラー
-            H(qubits_m_out_X,0,i)
-            p_x_error(qubits_m_out_X,0,i,p_list[5])
-            #p_z_error(qubits_m_out_X,0,i,p_list[6]) 
-            syndrome_out_X[num+1][0][i] =  qubits_m_out_X[0][0][i] # 左
+            #H(qubits_m_out_X,0,i)
+            #p_x_error(qubits_m_out_X,0,i,p_list[5])
+            p_z_error(qubits_m_out_X,0,i,p_list[6]) 
+            syndrome_out_X[num+1][0][i] =  qubits_m_out_X[1][0][i] # 左
             qubits_m_out_X[0][0][i] = 0
             qubits_m_out_X[1][0][i] = 0
-            H(qubits_m_out_X,1,i)
-            p_x_error(qubits_m_out_X,1,i,p_list[5]) 
-            #p_z_error(qubits_m_out_X,1,i,p_list[6]) 
-            syndrome_out_X[num+1][1][i] =  qubits_m_out_X[0][1][i] # 右
+            #H(qubits_m_out_X,1,i)
+            #p_x_error(qubits_m_out_X,1,i,p_list[5]) 
+            p_z_error(qubits_m_out_X,1,i,p_list[6]) 
+            syndrome_out_X[num+1][1][i] =  qubits_m_out_X[1][1][i] # 右
             qubits_m_out_X[0][1][i] = 0
             qubits_m_out_X[1][1][i] = 0
 
@@ -290,20 +290,20 @@ def rotated_surface_code(code_distance,p_list,round_sur):
     ### 測定前のアダマールゲートでエラー
     for i in range(code_distance):
         for j in range(code_distance):
-            H(qubits_d,i,j)
+            #H(qubits_d,i,j)
             #p_x_error(qubits_d,i,j,p_list[5])
             #p_z_error(qubits_d,i,j,p_list[6])
     # 内側
     for i in range(code_distance-1):
         for j in range(code_distance-1):
             if (i+j)%2 == 0:
-                syndrome_in_X[round_sur+1][i][j] =  (qubits_d[0][i][j]+qubits_d[0][i][j+1]+qubits_d[0][i+1][j]+qubits_d[0][i+1][j+1]) % 2
+                syndrome_in_X[round_sur+1][i][j] =  (qubits_d[1][i][j]+qubits_d[1][i][j+1]+qubits_d[1][i+1][j]+qubits_d[1][i+1][j+1]) % 2
     # 外側
     for i in range(int((code_distance-1)/2)):
         # 右
-        syndrome_out_X[round_sur+1][1][i] = (qubits_d[0][2*i][code_distance-1]+qubits_d[0][2*i+1][code_distance-1]) % 2
+        syndrome_out_X[round_sur+1][1][i] = (qubits_d[1][2*i][code_distance-1]+qubits_d[1][2*i+1][code_distance-1]) % 2
         # 左
-        syndrome_out_X[round_sur+1][0][i] = (qubits_d[0][2*i+1][0]+qubits_d[0][2*i+2][0]) % 2
+        syndrome_out_X[round_sur+1][0][i] = (qubits_d[1][2*i+1][0]+qubits_d[1][2*i+2][0]) % 2
     ### データ量子ビットをresult_dataに移す
     result_data_Z = np.zeros((code_distance, code_distance))
     for i in range(code_distance):
