@@ -261,8 +261,8 @@ def rotated_surface_code(code_distance,p_list,round_sur):
     # 測定エラーの導入(本番では消す)
     for i in range(code_distance):
         for j in range(code_distance):
-            p_x_error(qubits_m_in,i,j,p_list[5]) 
-            p_z_error(qubits_m_in,i,j,p_list[6]) 
+            p_x_error(qubits_d,i,j,p_list[5]) 
+            p_z_error(qubits_d,i,j,p_list[6]) 
             qubits_d_X[round_sur+1][i][j] =  qubits_d[0][i][j]
             qubits_d_Z[round_sur+1][i][j] =  qubits_d[1][i][j]
     ###########################################
@@ -860,7 +860,7 @@ def count(trials,cd_sur_list,p_list,eta,cd_rep,round_rep,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 200
+    trials = 40
     d_s = 3
     d_e = 9
     d_d = 2
@@ -873,7 +873,7 @@ if __name__ == "__main__":
     round_rep = 10
     p_list = np.arange(p_s,p_e+p_d,p_d)
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
-    pro = 1
+    pro = 500
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
