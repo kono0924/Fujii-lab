@@ -8,6 +8,8 @@ import math
 import os
 import multiprocessing
 
+############## Zシンドロームの測定が先、Xシンドロームの測定が後(反復符号の論理エラーの関係を調整)
+
 #エラーの定義 qubitは三次元配列で1つ目のインデックスでXかZか、2,3個目のインデックスで位置を指定
 def x_error(qubit,i,j):
     qubit[0][i][j] = (qubit[0][i][j]+1)%2
@@ -103,6 +105,59 @@ def rotated_surface_code(code_distance,p_list,round_sur):
             p_x_error(qubits_m_out_X,1,i,p_list[5])
             p_z_error(qubits_m_out_X,1,i,p_list[6])
 
+        ### Xシンドローム
+        # 内側
+        for i in range(code_distance-1):
+            for j in range(code_distance-1):
+                if (i+j)%2 == 0: 
+                    CNOT(qubits_m_in,i,j,qubits_d,i,j)
+                    p_x_error(qubits_d,i,j,p_list[5])
+                    p_z_error(qubits_d,i,j,p_list[6])
+                    p_x_error(qubits_m_in,i,j,p_list[5])
+                    p_z_error(qubits_m_in,i,j,p_list[6])
+                    CNOT(qubits_m_in,i,j,qubits_d,i,j+1)
+                    p_x_error(qubits_d,i,j+1,p_list[6])
+                    p_z_error(qubits_d,i,j+1,p_list[6])
+                    p_x_error(qubits_m_in,i,j,p_list[5])
+                    p_z_error(qubits_m_in,i,j,p_list[6])
+                    CNOT(qubits_m_in,i,j,qubits_d,i+1,j)
+                    p_x_error(qubits_d,i+1,j,p_list[5])
+                    p_z_error(qubits_d,i+1,j,p_list[6])
+                    p_x_error(qubits_m_in,i,j,p_list[5])
+                    p_z_error(qubits_m_in,i,j,p_list[6])
+                    CNOT(qubits_m_in,i,j,qubits_d,i+1,j+1)
+                    p_x_error(qubits_d,i+1,j+1,p_list[5])
+                    p_z_error(qubits_d,i+1,j+1,p_list[6])
+                    p_x_error(qubits_m_in,i,j,p_list[5])
+                    p_z_error(qubits_m_in,i,j,p_list[6])
+        # 外側
+        for i in range(code_distance-1):
+            for j in range(code_distance-1):
+                if j == 0:
+                    if i % 2 == 1:
+                        CNOT(qubits_m_out_X,0,int((i-1)/2),qubits_d,i,j)
+                        p_x_error(qubits_d,i,j,p_list[2])
+                        p_z_error(qubits_d,i,j,p_list[3])
+                        p_x_error(qubits_m_out_X,0,int((i-1)/2),p_list[4])
+                        p_z_error(qubits_m_out_X,0,int((i-1)/2),p_list[4])
+                        CNOT(qubits_m_out_X,0,int((i-1)/2),qubits_d,i+1,j)
+                        p_x_error(qubits_d,i+1,j,p_list[2])
+                        p_z_error(qubits_d,i+1,j,p_list[3])
+                        p_x_error(qubits_m_out_X,0,int((i-1)/2),p_list[4])
+                        p_z_error(qubits_m_out_X,0,int((i-1)/2),p_list[4])
+                if j == code_distance-2:
+                    if i % 2 == 0:
+                        CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i,code_distance-1)
+                        p_x_error(qubits_d,i,code_distance-1,p_list[2])
+                        p_z_error(qubits_d,i,code_distance-1,p_list[3])
+                        p_x_error(qubits_m_out_X,1,int(i/2),p_list[4])
+                        p_z_error(qubits_m_out_X,1,int(i/2),p_list[4])
+                        CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i+1,code_distance-1)
+                        p_x_error(qubits_d,i+1,code_distance-1,p_list[2])
+                        p_z_error(qubits_d,i+1,code_distance-1,p_list[3])
+                        p_x_error(qubits_m_out_X,1,int(i/2),p_list[4])  
+                        p_z_error(qubits_m_out_X,1,int(i/2),p_list[4])   
+
         #Zシンドローム(最後だけ)
         if num == round_sur - 1:
             # 内側
@@ -155,59 +210,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
                             p_x_error(qubits_d,code_distance-1,code_distance-1,p_list[2])
                             p_z_error(qubits_d,code_distance-1,code_distance-1,p_list[3])
                             p_x_error(qubits_m_out_Z,1,int((i-1)/2),p_list[4])
-                            #p_z_error(qubits_m_out_Z,1,int((i-1)/2),p_list[5])
-        ### Xシンドローム
-        # 内側
-        for i in range(code_distance-1):
-            for j in range(code_distance-1):
-                if (i+j)%2 == 0: 
-                    CNOT(qubits_m_in,i,j,qubits_d,i,j)
-                    p_x_error(qubits_d,i,j,p_list[5])
-                    p_z_error(qubits_d,i,j,p_list[6])
-                    p_x_error(qubits_m_in,i,j,p_list[5])
-                    p_z_error(qubits_m_in,i,j,p_list[6])
-                    CNOT(qubits_m_in,i,j,qubits_d,i,j+1)
-                    p_x_error(qubits_d,i,j+1,p_list[6])
-                    p_z_error(qubits_d,i,j+1,p_list[6])
-                    p_x_error(qubits_m_in,i,j,p_list[5])
-                    p_z_error(qubits_m_in,i,j,p_list[6])
-                    CNOT(qubits_m_in,i,j,qubits_d,i+1,j)
-                    p_x_error(qubits_d,i+1,j,p_list[5])
-                    p_z_error(qubits_d,i+1,j,p_list[6])
-                    p_x_error(qubits_m_in,i,j,p_list[5])
-                    p_z_error(qubits_m_in,i,j,p_list[6])
-                    CNOT(qubits_m_in,i,j,qubits_d,i+1,j+1)
-                    p_x_error(qubits_d,i+1,j+1,p_list[5])
-                    p_z_error(qubits_d,i+1,j+1,p_list[6])
-                    p_x_error(qubits_m_in,i,j,p_list[5])
-                    p_z_error(qubits_m_in,i,j,p_list[6])
-        # 外側
-        for i in range(code_distance-1):
-            for j in range(code_distance-1):
-                if j == 0:
-                    if i % 2 == 1:
-                        CNOT(qubits_m_out_X,0,int((i-1)/2),qubits_d,i,j)
-                        p_x_error(qubits_d,i,j,p_list[2])
-                        p_z_error(qubits_d,i,j,p_list[3])
-                        p_x_error(qubits_m_out_X,0,int((i-1)/2),p_list[4])
-                        p_z_error(qubits_m_out_X,0,int((i-1)/2),p_list[4])
-                        CNOT(qubits_m_out_X,0,int((i-1)/2),qubits_d,i+1,j)
-                        p_x_error(qubits_d,i+1,j,p_list[2])
-                        p_z_error(qubits_d,i+1,j,p_list[3])
-                        p_x_error(qubits_m_out_X,0,int((i-1)/2),p_list[4])
-                        p_z_error(qubits_m_out_X,0,int((i-1)/2),p_list[4])
-                if j == code_distance-2:
-                    if i % 2 == 0:
-                        CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i,code_distance-1)
-                        p_x_error(qubits_d,i,code_distance-1,p_list[2])
-                        p_z_error(qubits_d,i,code_distance-1,p_list[3])
-                        p_x_error(qubits_m_out_X,1,int(i/2),p_list[4])
-                        p_z_error(qubits_m_out_X,1,int(i/2),p_list[4])
-                        CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i+1,code_distance-1)
-                        p_x_error(qubits_d,i+1,code_distance-1,p_list[2])
-                        p_z_error(qubits_d,i+1,code_distance-1,p_list[3])
-                        p_x_error(qubits_m_out_X,1,int(i/2),p_list[4])  
-                        p_z_error(qubits_m_out_X,1,int(i/2),p_list[4])    
+                            #p_z_error(qubits_m_out_Z,1,int((i-1)/2),p_list[5]) 
     
         ########################################
         # エラーの履歴
@@ -444,16 +447,11 @@ def sampling(code_distance,p_list,round_sur):
     for num in range(round_sur+1):
         for i in range(code_distance-2):
             for j in range(-1,code_distance-1):
-                if num == round_sur:
+                if num == round_sur+1:
                     if (i+j) % 2 == 0:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(2*p_list[3]+p_list[1]))
+                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(2*p_list[3]+p_list[5]))
                     if (i+j) % 2 == 1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(2*p_list[3]+p_list[1]))
-                elif num == round_sur+1:
-                    if (i+j) % 2 == 0:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[5]))
-                    if (i+j) % 2 == 1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[5]))
+                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(2*p_list[3]+p_list[5]))
                 else:
                     if (i+j) % 2 == 0:
                         gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]))
@@ -517,103 +515,6 @@ def sampling(code_distance,p_list,round_sur):
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(p_list[1]))
                     else:
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]))
-
-    ### Zシンドローム ###
-    ### 縦
-    for num in range(1):
-        ### 内側
-        for i in range(code_distance-1):
-            for j in range(-1,code_distance):
-                if (i+j) % 2 == 1:
-                    gp_Z.add_edge((num,i,j),(num+1,i,j),weight=-math.log(4*p_list[4]))
-        ### 外側
-        for i in range(code_distance-1):
-            if i % 2 == 0:
-                gp_Z.add_edge((num,-1,i),(num+1,-1,i),weight=-math.log(4*p_list[4]))
-            if i % 2 == 1:
-                gp_Z.add_edge((num,code_distance-1,i),(num+1,code_distance-1,i),weight=-math.log(4*p_list[4]))
-    ### 横
-    for num in range(2):
-        for i in range(-1,code_distance-1):
-            for j in range(code_distance-2):
-                if num == 0:
-                    if (i+j) % 2 == 1 and i == code_distance-2:
-                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log((round_sur-1)*(p_list[0]+2*p_list[5])+p_list[0]))
-                    elif (i+j) % 2 == 1:
-                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log((round_sur-1)*(p_list[0]+3*p_list[5])+p_list[0]))
-                    elif (i+j) % 2 == 0 and i == -1:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log((round_sur-1)*(p_list[0]+4*p_list[5])+p_list[0]))
-                    elif (i+j) % 2 == 0 and i == code_distance-2:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log((round_sur-1)*(p_list[0]+3*p_list[5])+p_list[0]))
-                    elif (i+j) % 2 == 0:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log((round_sur-1)*(p_list[0]+5*p_list[5])+p_list[0]))
-                else:
-                    if (i+j) % 2 == 1 and i == code_distance-2:
-                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[2]+2*p_list[5]))
-                    elif (i+j) % 2 == 1:
-                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[2]+3*p_list[5]))
-                    elif (i+j) % 2 == 0 and i == 0:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[2]+4*p_list[5]))
-                    elif (i+j) % 2 == 0 and i == code_distance-2:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[2]+3*p_list[5]))
-                    elif (i+j) % 2 == 0:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[2]+5*p_list[5]))
-    
-    ### 斜め
-    for num in range(1):
-        ### 内側
-        ### Zシンドローム
-        for i in range(-1,code_distance-1):
-            for j in range(code_distance-2):
-                if num != 0:
-                    if (i+j) % 2 == 1:
-                        gp_Z.add_edge((num+1,i,j),(num,i+1,j+1),weight=-math.log(p_list[2]))
-                    if (i+j) % 2 == 0:
-                        gp_Z.add_edge((num,i+1,j),(num+1,i,j+1),weight=-math.log(p_list[2]))
-        ### 外側
-        for i in range(code_distance-2):
-            if num != 0:
-                if i % 2 == 0:
-                    gp_Z.add_edge((num+1,code_distance-2,i),(num,code_distance-1,i+1),weight=-math.log(p_list[2]))
-                    gp_Z.add_edge((num,-1,i),(num+1,0,i+1),weight=-math.log(p_list[2]))
-                if i % 2 == 1:
-                    gp_Z.add_edge((num,code_distance-1,i),(num+1,code_distance-2,i+1),weight=-math.log(p_list[2]))
-                    gp_Z.add_edge((num,-1,i+1),(num+1,0,i),weight=-math.log(p_list[2]))
-    
-    ### 外点
-    for num in range(2):
-        ### Zシンドローム
-        for i in range(-1,code_distance):
-            if num == 0:
-                if i % 2 == 0:
-                    if i == code_distance-1:
-                        gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log((round_sur-1)*(p_list[0]+2*p_list[5])+p_list[0]))
-                    elif i == 0:
-                        gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log((round_sur-1)*(p_list[0]+3*p_list[5])+p_list[0]))
-                    else:
-                        gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log((round_sur-1)*(p_list[0]+5*p_list[5])+p_list[0]))
-                if i % 2 == 1:
-                    if i == -1:
-                        gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log((round_sur-1)*(p_list[0]+3*p_list[5])+p_list[0]))
-                    if i == code_distance-2:
-                        gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log((round_sur-1)*(p_list[0]+2*p_list[5])+p_list[0]))
-                    else:
-                        gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log((round_sur-1)*(p_list[0]+5*p_list[5])+p_list[0]))
-            else:
-                if i % 2 == 0:
-                    if i == code_distance-1:
-                        gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log(p_list[2]+2*p_list[5]))
-                    if i == 0:
-                        gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log(p_list[2]+3*p_list[5]))
-                    else:
-                        gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log(2*(p_list[2]+5*p_list[5])))
-                if i % 2 == 1:
-                    if i == -1:
-                        gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log(p_list[2]+3*p_list[5]))
-                    if i == code_distance-2:
-                        gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log(p_list[2]+4*p_list[5]))
-                    else:
-                        gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log(2*(p_list[2]+2*p_list[5])))
         
 
     ########## シンドローム1の点の追加 ############
@@ -735,72 +636,6 @@ def sampling(code_distance,p_list,round_sur):
         judge_X = 1
 
     #################################################################################################################################################################################################################################
-    # ここからはZシンドローム
-    ########## シンドローム1の点の追加 ############
-
-    edge_of_decoder_graph_Z = []
-
-    ### 内側
-    for num in range(2):
-        for i in range(code_distance-1):
-            for j in range(code_distance-1):
-                if detection_event_in_Z[num,i,j] == 1 and (i+j)%2 ==1 :
-                    edge_of_decoder_graph_Z.append((num,i,j))
-
-    ### 外側
-    for num in range(2):
-        for i in range(int((code_distance-1)/2)):
-            if detection_event_out_Z[num,1,i] == 1:
-                edge_of_decoder_graph_Z.append((num,code_distance-1,2*i+1))
-            if detection_event_out_Z[num,0,i] == 1:
-                edge_of_decoder_graph_Z.append((num,-1,2*i))
-
-    ### 外点
-    if len(edge_of_decoder_graph_Z)%2==1:
-            edge_of_decoder_graph_Z.append('external_Z')
-    ########## 最短距離の追加 ############
-
-    mwpm_gp = nx.Graph() 
-
-    ### 頂点の追加
-    for v in range(len(edge_of_decoder_graph_Z)):
-        mwpm_gp.add_node(v)
-    ### 辺の追加
-    for i in range(len(edge_of_decoder_graph_Z)):
-        for j in range(i):
-            shortest_path_weight = nx.dijkstra_path_length(gp_Z, edge_of_decoder_graph_Z[i],edge_of_decoder_graph_Z[j])
-            mwpm_gp.add_edge(i,j,weight = 100000000 - shortest_path_weight)
-
-    ########## マッチング実行 ############
-    mwpm_res = nx.max_weight_matching(mwpm_gp)
-    match_path = []
-    for match_pair in mwpm_res:
-        match_path.append(nx.dijkstra_path(gp_Z,edge_of_decoder_graph_Z[match_pair[0]],edge_of_decoder_graph_Z[match_pair[1]]))
-    #print(match_path)
-    for path in match_path:
-        #print(path)
-        for i in range(len(path)): 
-            if i !=0: #i=0は飛ばす
-                ### 外点がある場合
-                if path[i-1] == 'external_Z': # pathの左='external'
-                    if path[i][2] == 0: # 2番目の要素はx座標=0でここが外点とつながっているとき
-                        result_data_X[path[i][1]+1,0] = (result_data_X[path[i][1]+1,0] + 1) % 2
-                    else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
-                        result_data_X[path[i][1],code_distance-1] = (result_data_X[path[i][1],code_distance-1] + 1) % 2
-                elif path[i] == 'external_Z': # pathの右='external'
-                    if path[i-1][2] == 0: # 2番目の要素はx座標でここが外点とつながっているとき
-                        result_data_X[path[i-1][1]+1,0] = (result_data_X[path[i-1][1]+1,0] + 1) % 2
-                    else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
-                        result_data_X[path[i-1][1],code_distance-1] = (result_data_X[path[i-1][1],code_distance-1] + 1) % 2
-                ### numが同じ場合
-                elif path[i-1][0] == path[i][0]: 
-                    result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
-                ### numが違う場合
-                #座標が同じ場合
-                elif path[i-1][1] == path[i][1] and path[i-1][2] == path[i][2]: 
-                    continue
-                else:
-                    result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
 
     ### Zシンドロームを繰り返すことによってエラーを左に集める
     X_data = result_data_X.copy()
@@ -852,6 +687,13 @@ def sampling(code_distance,p_list,round_sur):
 
     return result_data_Z, Z_data, judge_X, result_data_X, X_data, judge_Z
 
+def pg_z(p,eta,cd_rep):
+    if eta/(eta+1)*p >= 0.1:
+        prob = 4*p*eta/(eta+1)+0.0485*(p*eta/(eta+1)-0.1)*cd_rep
+    else:
+        prob = 4*p+8.668750000000001e-05*cd_rep
+    return 4*p
+
 def p_matrix(p,eta,round_rep,cd_rep):
     C = 0.02086
     p_th = 0.0146
@@ -859,7 +701,7 @@ def p_matrix(p,eta,round_rep,cd_rep):
     matrix.append(((4*cd_rep-3)*round_rep+cd_rep)*p/(eta+1)) #pL_x
     matrix.append(1/2 * (1-(1-2*C*(p/p_th)**((cd_rep+1)/2))**round_rep)) #pL_z
     matrix.append((5*cd_rep-1)*p/(eta+1)) # pg_x
-    matrix.append(p*(4+10**(-5)*p*cd_rep**2)) # pg_z
+    matrix.append(pg_z(p,eta,cd_rep)) # pg_z
     matrix.append((3*cd_rep-2)*p/(eta+1)) # pg_syn
     matrix.append(1/(2*(eta+1))*p) #p_x
     matrix.append(eta/(eta+1)*p) #p_z
