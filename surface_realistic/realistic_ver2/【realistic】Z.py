@@ -934,7 +934,7 @@ if __name__ == "__main__":
     d_e = 9
     d_d = 2
     p_s = 0.001
-    p_e = 0.08
+    p_e = 0.008
     p_d = 0.001
     eta = 1000
     cd_rep = 11
@@ -977,4 +977,4 @@ if __name__ == "__main__":
     c_Z /= pro
 
     df_Z = pd.DataFrame(data=c_Z, columns=p_list,index=cd_sur_list)
-    df_Z.to_csv('Z,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+'round_rep='+str(round_rep)+',trials='+str(trials*pro)+'.csv')
+    df_Z.to_csv('Z,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',round_rep='+str(round_rep)+',trials='+str(trials*pro)+'.csv')
