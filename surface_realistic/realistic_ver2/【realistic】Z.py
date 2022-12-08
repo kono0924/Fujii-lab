@@ -929,7 +929,7 @@ def count(trials,cd_sur_list,p_list,eta,cd_rep,round_rep,round_sur,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 20
+    trials = 100
     d_s = 3
     d_e = 9
     d_d = 2
@@ -938,7 +938,7 @@ if __name__ == "__main__":
     p_d = 0.001
     eta = 1000
     cd_rep = 11
-    round_rep = 30
+    round_rep = 10
     round_sur = 11
     p_list = np.arange(p_s,p_e+p_d,p_d)
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
