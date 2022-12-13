@@ -979,4 +979,4 @@ if __name__ == "__main__":
     c_Z /= pro
 
     df_Z = pd.DataFrame(data=c_Z, columns=p_list,index=cd_sur_list)
-    df_Z.to_csv('Z,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',round_rep='+str(round_rep)+',trials='+str(trials*pro)+'.csv')
+    df_Z.to_csv('Z,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',round_rep='+str(round_rep)+',round_sur='+str(round_sur)+',trials='+str(trials*pro)+'.csv')
