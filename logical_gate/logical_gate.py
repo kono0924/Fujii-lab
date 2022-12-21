@@ -80,7 +80,7 @@ def measurement(qubits,code_distance,p,eta):
         if i % 2 == 0:
             ancilla_1[int((code_distance-1)/2)+int(i/2)] = qubits[0][code_distance+i]
             #qubits[0][code_distance+i] = 0
-    # T字の下aass
+    # T字の下
     CNOT(qubits,code_distance-1,2*code_distance-1)
     single_biased(qubits,code_distance-1,p,eta)
     single_biased(qubits,2*code_distance-1,p,eta)
@@ -103,57 +103,48 @@ def measurement(qubits,code_distance,p,eta):
 
     #print(qubits)
     ### 元に戻すパート
+    # T字の下
     for i in reversed(range(code_distance-1)):
-        CNOT(qubits,i,i+1)
-        single_biased(qubits,i,p,eta)
-        single_biased(qubits,i+1,p,eta)
+        if i == code_distance-2:
+            continue
+        CNOT(qubits,2*code_distance-1+i,2*code_distance+i)
+        single_biased(qubits,2*code_distance-1+i,p,eta)
+        single_biased(qubits,2*code_distance+i,p,eta)
+        if i == 0:
+            continue
+        ancilla_2 = qubits[1][2*code_distance-1+i]
+    CNOT(qubits,code_distance-1,2*code_distance-1)
+    single_biased(qubits,code_distance-1,p,eta)
+    single_biased(qubits,2*code_distance-1,p,eta)
+    # T字の右
     for i in range(code_distance-1):
         CNOT(qubits,code_distance+i,code_distance+i-1)
         single_biased(qubits,code_distance+i,p,eta)
         single_biased(qubits,code_distance+i-1,p,eta)
-
-    # アンシラ測定前のアダマール
-    for i in range(2*code_distance-1):
-        if i%2 == 1:
-            H(qubits,i) 
-            #bitflip_error(qubits,i,p,eta)
-
-    """
-    ### アンしらによってデータ反転
+    # T字の左
     for i in reversed(range(code_distance-1)):
-        if i %2 == 1:
-            if qubits[0][i] == 1:
-                qubits[1][i-1] ^= 1
-    for i in range(code_distance-1):
-        if i%2 == 0:
-            if qubits[0][code_distance+i] == 1:
-                qubits[1][code_distance+i+1] ^= 1
-    """
+        CNOT(qubits,i,i+1)
+        single_biased(qubits,i,p,eta)
+        single_biased(qubits,i+1,p,eta)
 
     # アンしらの初期化
     for i in range(2*code_distance-1):
         if i %2 == 1:
-            H(qubits,i) 
+            qubits[0][i] = 0
             qubits[1][i] = 0
 
-    #print("②", data_qubits(qubits,code_distance))
-
-    ###### 誤り訂正パート 一回目
+    ###### 誤り訂正パート
     D = np.zeros((code_distance-1,3))
-    
     for i in range(2*code_distance-2):
         if i % 2 == 0:
             CNOT(qubits,i+1,i)
-            #single_biased(qubits,i,p,eta)
-            #single_biased(qubits,i+1,p,eta)
         if i % 2 == 1:
             CNOT(qubits,i,i+1)
-            #single_biased(qubits,i,p,eta)
-            #single_biased(qubits,i+1,p,eta)
     for i in range(2*code_distance-1):
-        if i%2 == 1:
+        if i % 2 == 1:
             #bitflip_error(qubits,i,p,eta) #シンドローム測定前の反転
             D[int((i-1)/2)][1] = qubits[1][i]
+
     ### 誤り訂正2回目
     #シンドロームから
     for i in range(2*code_distance-1):
@@ -163,28 +154,11 @@ def measurement(qubits,code_distance,p,eta):
     for i in range(2*code_distance-2):
         if i % 2 == 0:
             CNOT(qubits,i+1,i)
-            #single_biased(qubits,i,p,eta)
-            #single_biased(qubits,i+1,p,eta)
         if i % 2 == 1:
             CNOT(qubits,i,i+1)
-            #single_biased(qubits,i,p,eta)
-            #single_biased(qubits,i+1,p,eta)
     for i in range(2*code_distance-1):
         if i%2 == 1:
-            #bitflip_error(qubits,i,p,eta) #シンドローム測定前の反転
             D[int((i-1)/2)][2] = qubits[1][i]
-    
-    """ #データビットから
-    a = data_qubits(qubits,code_distance)[1]
-    b = []
-    for i in range(len(a)-1):
-        c = (a[i]+a[i+1])%2
-        b.append(c)
-    for i in range(2*code_distance-1):
-        if i%2 == 1:
-            #bitflip_error(qubits,i,p,eta) #シンドローム測定前の反転
-            D[int((i-1)/2)][2] = b[int((i-1)/2)]
-    """
 
     # detection eventの行列
     E = np.zeros((code_distance-1,2))
@@ -201,7 +175,7 @@ def measurement(qubits,code_distance,p,eta):
             if E[i,j] == 1:
                 edge_of_decoder_graph.append((i,j))
     if len(edge_of_decoder_graph)%2==1:
-            edge_of_decoder_graph.append('external')
+        edge_of_decoder_graph.append('external')
 
     ### 最小距離のグラフの作成
     gp = nx.Graph()
@@ -263,25 +237,24 @@ def measurement(qubits,code_distance,p,eta):
                 else:
                     result_data[min(path[i-1][0],path[i][0])+1]^= 1
     for i in range(code_distance):
-        qubits[1][2*i] = result_data[i]
+        qubits[1][2*i] = result_data[i] ### 修正後
     #print("③", data_qubits(qubits,code_distance))
     #print(qubits)
 
-    ### 最後にLZがかかっているか
-    result_LZ = 0
-    for i in range(2*code_distance+1):
+    ### 最後にLXがかかっているか
+    result_LX = 0
+    for i in range(2*code_distance-1):
         if i%2 == 1:
             continue
         if qubits[0][i] == 1:
-            result_LZ ^= 1
+            result_LX ^= 1
     ### 最後にLXがかかっているか
-    result_LX = 0
+    result_LZ = 0
     if result_data != [0]*code_distance:
-        result_LX = 1
+        result_LZ = 1
     #print("result_data_ver2=",result_data)
     #print("end")
     #print()
-
     return result_LX, result_LZ, result, aaa
 
 def stastics(code_distance,p,eta):
@@ -315,18 +288,12 @@ def aaa(code_distance,p,eta,trials,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-<<<<<<< HEAD
-    trials = 5000
-    code_distance = 11
-    p_ = 0.005
-=======
-    trials = 50000
+    trials = 2000
     code_distance = 11
     p_ = 0.0001
->>>>>>> dea20a1b994f9594fa4d1204d8eb8a51f2864c7f
     eta = 1000
     div = 2
-    pro = 200
+    pro = 500
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
