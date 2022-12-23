@@ -290,7 +290,7 @@ if __name__ == "__main__":
     ### パラメータ
     trials = 2000
     code_distance = 11
-    p_ = 0.0005
+    p_ = 0.006
     eta = 1000
     div = 2
     pro = 500
