@@ -267,13 +267,13 @@ def repetiton_sampling(code_distance,rep,p,eta):
 
 ###### 実行
 def implement(code_distance,rep,p,eta,ex_num,result_list):
-    count = np.zeros((2,int((code_distance-1)/2)))
-    for _ in range(ex_num):
-        a, b = repetiton_sampling(code_distance,rep,p,eta)
-        count[0] += a
-        count[1] += b
+    count = np.zeros((2*len(rep_list),int((code_distance-1)/2)))
+    for i in range(len(rep_list)):
+        for _ in range(ex_num):
+            a, b = repetiton_sampling(code_distance,rep_list[i],p,eta)
+            count[2*i] += a
+            count[2*i+1] += b
     count /= ex_num
-
     result_list.append(count)
     #return count, code_distance
 
@@ -282,7 +282,10 @@ if __name__ == "__main__":
 
     ### パラメータ
     code_distance=11
-    rep= 30
+    rep_sta = 1
+    rep_fin = 50
+    rep_div = 1
+    rep_list= list(range(rep_sta,rep_fin+1,rep_div))
     p=0.005
     eta=1000
     trials=200
@@ -297,7 +300,7 @@ if __name__ == "__main__":
     # プロセスを生成
     for _ in range(pro):
         # マネージャーから取得したオブジェクトを引数に渡す
-        process = multiprocessing.Process(target=implement, args=(code_distance,rep,p,eta,trials,result_list))
+        process = multiprocessing.Process(target=implement, args=(code_distance,rep_list,p,eta,trials,result_list))
         # プロセス開始
         process.start()
         # プロセスのリストに追加
@@ -316,4 +319,4 @@ if __name__ == "__main__":
     c /= pro
 
     df = pd.DataFrame(data=c, columns=np.arange(3,code_distance+1,2),index=["LX","LZ"])
-    df.to_csv('p='+str(p*100)+'% ,eta='+str(eta)+', d='+str(code_distance)+', rep='+str(rep)+', # of trials='+str(trials*pro)+'.csv')
+    df.to_csv('p='+str(p*100)+'% ,eta='+str(eta)+', d='+str(code_distance)+', round=('+str(rep_sta)+','+str(rep_fin)+','+str(rep_div)+') , # of trials='+str(trials*pro)+'.csv')
