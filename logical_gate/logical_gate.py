@@ -71,7 +71,6 @@ def measurement(qubits,code_distance,p,eta):
         single_biased(qubits,i+1,p,eta)
         if i % 2 == 1:
             ancilla_1[int((i-1)/2)] = qubits[0][i]
-            #qubits[0][i] = 0
     # T字の右
     for i in reversed(range(code_distance-1)):
         CNOT(qubits,code_distance+i,code_distance+i-1)
@@ -79,7 +78,6 @@ def measurement(qubits,code_distance,p,eta):
         single_biased(qubits,code_distance+i-1,p,eta)
         if i % 2 == 0:
             ancilla_1[int((code_distance-1)/2)+int(i/2)] = qubits[0][code_distance+i]
-            #qubits[0][code_distance+i] = 0
     # T字の下
     CNOT(qubits,code_distance-1,2*code_distance-1)
     single_biased(qubits,code_distance-1,p,eta)
@@ -104,9 +102,7 @@ def measurement(qubits,code_distance,p,eta):
     #print(qubits)
     ### 元に戻すパート
     # T字の下
-    for i in reversed(range(code_distance-1)):
-        if i == code_distance-2:
-            continue
+    for i in reversed(range(code_distance-2)):
         CNOT(qubits,2*code_distance-1+i,2*code_distance+i)
         single_biased(qubits,2*code_distance-1+i,p,eta)
         single_biased(qubits,2*code_distance+i,p,eta)
