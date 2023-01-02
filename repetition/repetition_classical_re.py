@@ -288,7 +288,7 @@ if __name__ == "__main__":
     rep_list= list(range(rep_sta,rep_fin+1,rep_div))
     p=0.005
     eta=1000
-    trials=200
+    trials= 200
     pro = 500
 
     # プロセスを管理する人。デラックスな共有メモリ
@@ -318,5 +318,5 @@ if __name__ == "__main__":
             c += result_list[i]
     c /= pro
 
-    df = pd.DataFrame(data=c, columns=np.arange(3,code_distance+1,2),index=["LX","LZ"])
+    df = pd.DataFrame(data=c, columns=np.arange(3,code_distance+1,2))
     df.to_csv('p='+str(p*100)+'% ,eta='+str(eta)+', d='+str(code_distance)+', round=('+str(rep_sta)+','+str(rep_fin)+','+str(rep_div)+') , # of trials='+str(trials*pro)+'.csv')
