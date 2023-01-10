@@ -286,7 +286,7 @@ if __name__ == "__main__":
     rep_fin = 50
     rep_div = 1
     rep_list= list(range(rep_sta,rep_fin+1,rep_div))
-    p=0.003
+    p=0.004
     eta=1000
     trials= 200
     pro = 500
