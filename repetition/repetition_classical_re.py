@@ -265,7 +265,7 @@ if __name__ == "__main__":
     rep_fin = 50
     rep_div = 1
     rep_list= list(range(rep_sta,rep_fin+1,rep_div))
-    p=0.004
+    p=0.001
     eta=1000
     trials= 200
     pro = 500
@@ -298,4 +298,4 @@ if __name__ == "__main__":
     c /= pro
 
     df = pd.DataFrame(data=c, columns=np.arange(3,code_distance+1,2))
-    df.to_csv('p='+str(p*100)+'% ,eta='+str(eta)+', d='+str(code_distance)+', round=('+str(rep_sta)+','+str(rep_fin)+','+str(rep_div)+') , # of trials='+str(trials*pro)+'.csv')
+    df.to_csv('ver2,p='+str(p*100)+'% ,eta='+str(eta)+', d='+str(code_distance)+', round=('+str(rep_sta)+','+str(rep_fin)+','+str(rep_div)+') , # of trials='+str(trials*pro)+'.csv')
