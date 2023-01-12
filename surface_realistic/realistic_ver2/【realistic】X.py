@@ -687,19 +687,27 @@ def sampling(code_distance,p_list,round_sur):
 
     return result_data_Z, Z_data, judge_X, result_data_X, X_data, judge_Z
 
+# 論理CNOTゲート
 def pg_z(p,eta,cd_rep):
-    if eta/(eta+1)*p >= 0.1:
-        prob = 4*p*eta/(eta+1)+0.0485*(p*eta/(eta+1)-0.1)*cd_rep
-    else:
-        prob = 4*p+8.668750000000001e-05*cd_rep
-    return 4*p
+    k = 0.03281607657111597
+    return 1/2 * (1-(1-2*k*p)**cd_rep)
+
+# 論理Zエラー
+def pL_z(p,cd_rep,round_rep):
+    matrix_eta1000 ={
+        "0.5":[0.00174445284677083, 0.0005246252224646754, 0.00022020628078973608, 7.635393302886187e-05, 2.519769256908906e-05],
+        "0.4":[0.0011410234133757842, 0.0003036979977304236, 0.00012115535493900043, 3.6132132058039436e-05, 1.0865748319900874e-05],
+        "0.3":[0.0006572927378995785, 0.00014841342587035088, 5.640787094903298e-05, 1.3665902871521332e-05, 3.33900084574834e-06],
+        "0.2":[0.0003055093520170069, 5.407981073186522e-05, 1.9911523076237106e-05, 3.6743365142721676e-06, 7.914019585422747e-07],
+        "0.1":[6.221135056124972e-05, 9.24222576898638e-06, 4.028094312702551e-06, 2.930722943959408e-07, 1.0157284721615325e-07]
+        }
+    pL = 1/2 * (1-(1-2*matrix_eta1000[str(p*100)][int((cd_rep-3)/2)])**round_rep)
+    return pL
 
 def p_matrix(p,eta,round_rep,cd_rep):
-    C = 0.02086
-    p_th = 0.0146
     matrix = []
     matrix.append(((4*cd_rep-3)*round_rep+cd_rep)*p/(eta+1)) #pL_x
-    matrix.append(1/2 * (1-(1-2*C*(p/p_th)**((cd_rep+1)/2))**round_rep)) #pL_z
+    matrix.append(pL_z(p,cd_rep,round_rep)) #pL_z
     matrix.append((5*cd_rep-1)*p/(eta+1)) # pg_x
     matrix.append(pg_z(p,eta,cd_rep)) # pg_z
     matrix.append((3*cd_rep-2)*p/(eta+1)) # pg_syn
