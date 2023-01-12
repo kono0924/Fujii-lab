@@ -131,123 +131,103 @@ def reptition(code_distance,rep,p,eta):
 
 ##### 符号距離と、それ以下の距離での符号距離でのMWPM実行 #####
 def sampling(E,result,code_distance,rep,p,eta):
-    ### d_sのエラーはリスト中のd_s番目に保存
-    count_z = [0]*(int((code_distance-1)/2))
-    count_x = [0]*(int((code_distance-1)/2))
-    for d_s in range(code_distance+1):
-        if d_s == 1:
-            continue
-        if d_s % 2 == 0:
-            continue
-
-        #print("d_s=",d_s)
-
-        E_re = E[0:d_s-1]
-        result_re = [[],[]]
-        result_re[0] = result[0][0:d_s]  ### 要変更
-        result_re[1] = result[1][0:d_s]
-        #print("E=",E_re.T)
-        #print("result=",result_re)
-
-        # 差分シンドロームが1のところは座標のデータを格納する
-        edge_of_decoder_graph = []
-        for i in range(d_s-1):
-            for j in range(rep+1):
-                if E_re[i,j] == 1:
-                    edge_of_decoder_graph.append((i,j))
-                    
-        ### 最小距離のグラフの作成
-        gp = nx.Graph()
-        # 頂点の追加
-        p_z = p * eta/(eta+1)
-        p_x = p * 1/(2*(eta+1))
-        for i in range(d_s-1):
-            for j in range(rep+1):
-                gp.add_node((i,j))
-        # データ方向
-        for i in range(d_s-2):
-            for j in range(rep+1):
-                if j == 0:
-                    gp.add_edge((i,j),(i+1,j),weight=-math.log(2*p_x+p_z))
-                elif j == rep:
-                    gp.add_edge((i,j),(i+1,j),weight=-math.log(4*p_x+2*p_z))
-                else:
-                    gp.add_edge((i,j),(i+1,j),weight=-math.log(2*p_z))
-        # 反復方向(測定ミス)
-        for i in range(d_s-1):
-            for j in range(rep):
-                if j == 0:
-                    gp.add_edge((i,j),(i,j+1),weight=-math.log(3*p_z+6*p_x))
-                else:
-                    gp.add_edge((i,j),(i,j+1),weight=-math.log(2*p_z+4*p_x))
-        # 斜め辺の追加(データ方向)
-        for i in range(d_s-2):
-            for j in range(rep):
-                gp.add_edge((i,j),(i+1,j+1),weight=-math.log(p_z))
-        #正方格子に外点を1つ加えておく（単点ではパリティを検出できないため、パリティoddになる頂点数が奇数になりうる）
-        gp.add_node('external')
+    count_x = 0
+    count_z = 0
+    # 差分シンドロームが1のところは座標のデータを格納する
+    edge_of_decoder_graph = []
+    for i in range(code_distance-1):
+        for j in range(rep+1):
+            if E[i,j] == 1:
+                edge_of_decoder_graph.append((i,j))
+                
+    ### 最小距離のグラフの作成
+    gp = nx.Graph()
+    # 頂点の追加
+    p_z = p * eta/(eta+1)
+    p_x = p * 1/(2*(eta+1))
+    for i in range(code_distance-1):
+        for j in range(rep+1):
+            gp.add_node((i,j))
+    # データ方向
+    for i in range(code_distance-2):
         for j in range(rep+1):
             if j == 0:
-                gp.add_edge('external',(0,j),weight=-math.log(2*p_x+p_z))
-                gp.add_edge('external',(d_s-2,j),weight=-math.log(2*p_x+p_z))
+                gp.add_edge((i,j),(i+1,j),weight=-math.log(2*p_x+p_z))
             elif j == rep:
-                gp.add_edge('external',(0,j),weight=-math.log(2*p_z+4*p_x))
-                gp.add_edge('external',(d_s-2,j),weight=-math.log(2*p_z+4*p_x))
+                gp.add_edge((i,j),(i+1,j),weight=-math.log(4*p_x+2*p_z))
             else:
-                gp.add_edge('external',(0,j),weight=-math.log(2*p_z))
-                gp.add_edge('external',(d_s-2,j),weight=-math.log(2*p_z))
+                gp.add_edge((i,j),(i+1,j),weight=-math.log(2*p_z))
+    # 反復方向(測定ミス)
+    for i in range(code_distance-1):
+        for j in range(rep):
+            if j == 0:
+                gp.add_edge((i,j),(i,j+1),weight=-math.log(3*p_z+6*p_x))
+            else:
+                gp.add_edge((i,j),(i,j+1),weight=-math.log(2*p_z+4*p_x))
+    # 斜め辺の追加(データ方向)
+    for i in range(code_distance-2):
+        for j in range(rep):
+            gp.add_edge((i,j),(i+1,j+1),weight=-math.log(p_z))
+    #正方格子に外点を1つ加えておく（単点ではパリティを検出できないため、パリティoddになる頂点数が奇数になりうる）
+    gp.add_node('external')
+    for j in range(rep+1):
+        if j == 0:
+            gp.add_edge('external',(0,j),weight=-math.log(2*p_x+p_z))
+            gp.add_edge('external',(code_distance-2,j),weight=-math.log(2*p_x+p_z))
+        elif j == rep:
+            gp.add_edge('external',(0,j),weight=-math.log(2*p_z+4*p_x))
+            gp.add_edge('external',(code_distance-2,j),weight=-math.log(2*p_z+4*p_x))
+        else:
+            gp.add_edge('external',(0,j),weight=-math.log(2*p_z))
+            gp.add_edge('external',(code_distance-2,j),weight=-math.log(2*p_z))
 
-        #パリティoddの頂点数が奇数の場合は外点をdecoer graphに追加して頂点数を偶数に
-        if len(edge_of_decoder_graph)%2==1:
-            edge_of_decoder_graph.append('external')
-        mwpm_gp = nx.Graph() 
-        for i in range(len(edge_of_decoder_graph)):
-                mwpm_gp.add_node(i)
-        for i in range(len(edge_of_decoder_graph)):
-            for j in range(i):
-                shortest_path_weight = nx.dijkstra_path_length(gp, edge_of_decoder_graph[i],edge_of_decoder_graph[j])
-                mwpm_gp.add_edge(i,j,weight = shortest_path_weight)
-        mwpm_res = nx.min_weight_matching(mwpm_gp)
-        match_path = []
-        for match_pair in mwpm_res:
-            match_path.append(nx.dijkstra_path(gp,edge_of_decoder_graph[match_pair[0]],edge_of_decoder_graph[match_pair[1]]))
-        ##print(match_path)
+    #パリティoddの頂点数が奇数の場合は外点をdecoer graphに追加して頂点数を偶数に
+    if len(edge_of_decoder_graph)%2==1:
+        edge_of_decoder_graph.append('external')
+    mwpm_gp = nx.Graph() 
+    for i in range(len(edge_of_decoder_graph)):
+            mwpm_gp.add_node(i)
+    for i in range(len(edge_of_decoder_graph)):
+        for j in range(i):
+            shortest_path_weight = nx.dijkstra_path_length(gp, edge_of_decoder_graph[i],edge_of_decoder_graph[j])
+            mwpm_gp.add_edge(i,j,weight = shortest_path_weight)
+    mwpm_res = nx.min_weight_matching(mwpm_gp)
+    match_path = []
+    for match_pair in mwpm_res:
+        match_path.append(nx.dijkstra_path(gp,edge_of_decoder_graph[match_pair[0]],edge_of_decoder_graph[match_pair[1]]))
+    ##print(match_path)
 
-        for path in match_path:
-            for i in range(len(path)): 
-                if i !=0: #i=0は飛ばす
-                    if path[i-1] == 'external': # 左='external'
-                        if path[i][0] == 0: #上側エラーなら
-                            result_re[0][0] ^= 1 #上端を反転　　#### Zの方を訂正するなら一つ目の[]は[1]
-                        else: #右端エラーなら
-                            result_re[0][d_s-1]^= 1 #右端を反転
-                            
-                    elif path[i] == 'external': # 右='external'
-                        if path[i-1][0] == 0:
-                            result_re[0][0]^= 1 #上端を反転
-                        else:
-                            result_re[0][d_s-1]^= 1 #右端を反転
-                    
-                    elif path[i-1][1] == path[i][1]: #端のエラーではなく、同じサイクルでのエラーなら
-                        result_re[0][min(path[i-1][0],path[i][0])+1] ^= 1
-                    
-                    elif path[i-1][0] == path[i][0]:
-                        continue
-
+    for path in match_path:
+        for i in range(len(path)): 
+            if i !=0: #i=0は飛ばす
+                if path[i-1] == 'external': # 左='external'
+                    if path[i][0] == 0: #上側エラーなら
+                        result[0][0] ^= 1 #上端を反転　　#### Zの方を訂正するなら一つ目の[]は[1]
+                    else: #右端エラーなら
+                        result[0][code_distance-1]^= 1 #右端を反転
+                        
+                elif path[i] == 'external': # 右='external'
+                    if path[i-1][0] == 0:
+                        result[0][0]^= 1 #上端を反転
                     else:
-                        result_re[0][min(path[i-1][0],path[i][0])+1]^= 1
+                        result[0][code_distance-1]^= 1 #右端を反転
+                
+                elif path[i-1][1] == path[i][1]: #端のエラーではなく、同じサイクルでのエラーなら
+                    result[0][min(path[i-1][0],path[i][0])+1] ^= 1
+                
+                elif path[i-1][0] == path[i][0]:
+                    continue
 
-        ### 論理エラーのカウント
-        # Zエラー
-        if result_re[0] != [0]*d_s:
-            count_z[int((d_s-3)/2)] +=1
-        # Xエラー
-        if sum(result_re[1])%2 == 1:
-            count_x[int((d_s-3)/2)] += 1
-        #print("result_re_X=",result_re[0],"result_re_Z=",result_re[1])
-        #print(result_re)
-    count_z = np.array(count_z)
-    count_x = np.array(count_x)
+                else:
+                    result[0][min(path[i-1][0],path[i][0])+1]^= 1
+    ### 論理エラーのカウント
+    # Zエラー
+    if result[0] != [0]*code_distance:
+        count_z = 1
+    # Xエラー
+    if sum(result[1])%2 == 1:
+        count_x = 1
+    #print("result_X=",result[0],"result_Z=",result[1])
     return count_x, count_z
 
 
@@ -261,17 +241,16 @@ def repetiton_sampling(code_distance,rep,p,eta):
     E, result = reptition(code_distance,rep,p,eta)
     return sampling(E,result,code_distance,rep,p,eta)
 
-
-
 #### 実行条件 ####
 
 ###### 実行
 def implement(code_distance,rep,p,eta,ex_num,result_list):
     count = np.zeros((2,int((code_distance-1)/2)))
     for _ in range(ex_num):
-        a, b = repetiton_sampling(code_distance,rep,p,eta)
-        count[0] += a
-        count[1] += b
+        for cd in range(int((code_distance-1)/2)):
+            a, b = repetiton_sampling(2*cd+3,rep,p,eta)
+            count[0,cd] += a
+            count[1,cd] += b
     count /= ex_num
 
     result_list.append(count)
