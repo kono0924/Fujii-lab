@@ -976,13 +976,6 @@ if __name__ == "__main__":
         # プロセスの終了待ち
         process.join()
 
-    for i in range(pro):
-        if i == 0:
-            c_Z = result_list[0]
-        else:
-            c_Z += result_list[i]
-    c_Z /= pro
-
     for i in len(cd_rep_list):
         for j in len(round_rep_list):
             for k in len(round_sur_list):
