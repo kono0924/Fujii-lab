@@ -747,8 +747,8 @@ if __name__ == "__main__":
     p_d = 0.001
     eta = 1000
     ### パラメータ ###
-    cd_rep = 9
-    round_rep = 10
+    cd_rep = 5
+    round_rep = 20
     round_sur = 20
     ################
     p_list = np.arange(p_s,p_e+p_d,p_d)
