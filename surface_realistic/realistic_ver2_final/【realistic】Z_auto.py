@@ -947,9 +947,9 @@ if __name__ == "__main__":
     p_d = 0.001
     eta = 1000
     ### パラメータ ###
-    cd_rep_list = [3,5]
-    round_rep_list = [1,2]
-    round_sur_list = [1,2]
+    cd_rep_list = [5,7,9]
+    round_rep_list = [10,20]
+    round_sur_list = [10,20]
     trials = 1
     pro = 1
     ################
@@ -976,9 +976,9 @@ if __name__ == "__main__":
         # プロセスの終了待ち
         process.join()
 
-    for i in len(cd_rep_list):
-        for j in len(round_rep_list):
-            for k in len(round_sur_list):
+    for i in range(len(cd_rep_list)):
+        for j in range(len(round_rep_list)):
+            for k in range(len(round_sur_list)):
                 for iter in range(pro):
                     if iter == 0:
                         c_Z = result_list[len(round_rep_list)*len(round_sur_list)*i+len(round_sur_list)*j+k]
