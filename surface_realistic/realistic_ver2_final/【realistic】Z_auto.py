@@ -950,8 +950,8 @@ if __name__ == "__main__":
     cd_rep_list = [5,7,9]
     round_rep_list = [10,20]
     round_sur_list = [10,20]
-    trials = 1
-    pro = 1
+    trials = 20
+    pro = 500
     ################
     p_list = np.arange(p_s,p_e+p_d,p_d)
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
