@@ -689,7 +689,7 @@ def sampling(code_distance,p_list,round_sur):
 
 # 論理CNOTゲート
 def pg_z(p,eta,cd_rep):
-    k = 0.03281607657111597
+    k = 3.281607657111597
     return 1/2 * (1-(1-2*k*p)**cd_rep)
 
 # 論理Zエラー
