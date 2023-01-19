@@ -495,23 +495,23 @@ def sampling(code_distance,p_list,round_sur):
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+2*p_list[3]))
             elif num == round_sur+1:
                 if j % 2 == 0:
-                    if j == -1:
+                    if j == code_distance-1:
                         gp_X.add_edge('external_X',(num,0,j),weight=-math.log(p_list[5]))
                     else:
                         gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[5]))
                 if j % 2 == 1:
-                    if i == code_distance-1:
+                    if j == -1:
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(p_list[5]))
                     else:
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[5]))
             else:
                 if j % 2 == 0:
-                    if j == -1:
+                    if j == code_distance-1:
                         gp_X.add_edge('external_X',(num,0,j),weight=-math.log(p_list[1]))
                     else:
                         gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]))
                 if j % 2 == 1:
-                    if i == code_distance-1:
+                    if j == -1:
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(p_list[1]))
                     else:
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]))
