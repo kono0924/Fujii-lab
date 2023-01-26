@@ -718,24 +718,17 @@ def p_matrix(p,eta,round_rep,cd_rep):
 ##################### ここから上をコピーする ######################
 
 def count(trials,cd_sur_list,p_list,eta,cd_rep_list,round_rep_list,round_sur_list,result_list):
-    count_X = np.zeros((len(cd_sur_list),len(p_list)))
-    count_Z = np.zeros((len(cd_sur_list),len(p_list)))
-    for cd_rep in cd_rep_list:
-        for round_rep in round_rep_list:
-            for round_sur in round_sur_list:
+    count_X = np.zeros((len(cd_rep_list)*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list),len(p_list)))
+    for n in len(cd_rep_list):
+        for m in len(round_rep_list):
+            for l in len(round_sur_list):
                 for _ in range(trials):
                     for i in range(len(cd_sur_list)):
                         for j in range(len(p_list)):
-                            result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[j],eta,round_rep,cd_rep),round_sur)
+                            result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[j],eta,round_rep_list[m],cd_rep_list[n]),round_sur_list[l])
                             if judge_X == 1:
-                                count_X[i,j] += 1
-                            if judge_Z == 1:
-                                count_Z[i,j] += 1
-                            #print("result_Z\n", result_data_Z)
-                            #print("modefied_result_Z\n", modefied_result_Z)
-                            #print("result_X\n", result_data_X)
-                            #print("modefied_result_X\n", modefied_result_X)
-                result_list.append(count_X/trials)
+                                count_X[n*len(cd_rep_list)*len(round_rep_list)*len(round_sur_list) + m*len(round_rep_list)*len(round_sur_list) + l*len(round_sur_list) + i,j] += 1
+    result_list.append(count_X/trials)
 
 if __name__ == "__main__":
 
@@ -777,14 +770,15 @@ if __name__ == "__main__":
         # プロセスの終了待ち
         process.join()
 
+    for iter in range(pro):
+        if iter == 0:
+            c_X = result_list[0]
+        else:
+            c_X += result_list[iter]
+    c_X /= pro
+
     for i in range(len(cd_rep_list)):
         for j in range(len(round_rep_list)):
             for k in range(len(round_sur_list)):
-                for iter in range(pro):
-                    if iter == 0:
-                        c_X = result_list[len(round_rep_list)*len(round_sur_list)*i+len(round_sur_list)*j+k]
-                    else:
-                        c_X += result_list[len(round_rep_list)*len(round_sur_list)*i+len(round_sur_list)*j+k + iter*len(cd_rep_list)*len(round_rep_list)*len(round_sur_list)]
-                c_X /= pro
-                df_X = pd.DataFrame(data=c_X, columns=p_list,index=cd_sur_list)
+                df_X = pd.DataFrame(data=c_X[i*len(cd_rep_list)*len(round_rep_list)*len(round_sur_list) + j*len(round_rep_list)*len(round_sur_list) + k*len(round_sur_list):i*len(cd_rep_list)*len(round_rep_list)*len(round_sur_list) + j*len(round_rep_list)*len(round_sur_list) + k*len(round_sur_list)+len(cd_sur_list)], columns=p_list,index=cd_sur_list)
                 df_X.to_csv('X,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep_list[i])+',eta='+str(eta)+',round_rep='+str(round_rep_list[j])+',round_sur='+str(round_sur_list[k])+',trials='+str(trials*pro)+'.csv')
