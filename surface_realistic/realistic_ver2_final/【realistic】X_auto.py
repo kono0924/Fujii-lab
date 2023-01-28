@@ -719,9 +719,9 @@ def p_matrix(p,eta,round_rep,cd_rep):
 
 def count(trials,cd_sur_list,p_list,eta,cd_rep_list,round_rep_list,round_sur_list,result_list):
     count_X = np.zeros((len(cd_rep_list)*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list),len(p_list)))
-    for n in len(cd_rep_list):
-        for m in len(round_rep_list):
-            for l in len(round_sur_list):
+    for n in range(len(cd_rep_list)):
+        for m in range(len(round_rep_list)):
+            for l in range(len(round_sur_list)):
                 for _ in range(trials):
                     for i in range(len(cd_sur_list)):
                         for j in range(len(p_list)):
