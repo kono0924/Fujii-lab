@@ -727,7 +727,7 @@ def count(trials,cd_sur_list,p_list,eta,cd_rep_list,round_rep_list,round_sur_lis
                         for j in range(len(p_list)):
                             result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[j],eta,round_rep_list[m],cd_rep_list[n]),round_sur_list[l])
                             if judge_X == 1:
-                                count_X[n*len(cd_rep_list)*len(round_rep_list)*len(round_sur_list) + m*len(round_rep_list)*len(round_sur_list) + l*len(round_sur_list) + i,j] += 1
+                                count_X[n*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list) + m*len(round_sur_list)*len(cd_sur_list) + l*len(cd_sur_list) + i,j] += 1
     result_list.append(count_X/trials)
 
 if __name__ == "__main__":
@@ -780,5 +780,5 @@ if __name__ == "__main__":
     for i in range(len(cd_rep_list)):
         for j in range(len(round_rep_list)):
             for k in range(len(round_sur_list)):
-                df_X = pd.DataFrame(data=c_X[i*len(cd_rep_list)*len(round_rep_list)*len(round_sur_list) + j*len(round_rep_list)*len(round_sur_list) + k*len(round_sur_list):i*len(cd_rep_list)*len(round_rep_list)*len(round_sur_list) + j*len(round_rep_list)*len(round_sur_list) + k*len(round_sur_list)+len(cd_sur_list)], columns=p_list,index=cd_sur_list)
+                df_X = pd.DataFrame(data=c_X[i*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list)+j*len(round_sur_list)*len(cd_sur_list) + k*len(cd_sur_list):i*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list)+j*len(round_sur_list)*len(cd_sur_list) + k*len(cd_sur_list) + len(cd_sur_list)], columns=p_list,index=cd_sur_list)
                 df_X.to_csv('X,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep_list[i])+',eta='+str(eta)+',round_rep='+str(round_rep_list[j])+',round_sur='+str(round_sur_list[k])+',trials='+str(trials*pro)+'.csv')

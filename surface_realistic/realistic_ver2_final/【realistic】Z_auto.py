@@ -926,7 +926,7 @@ def count(trials,cd_sur_list,p_list,eta,cd_rep_list,round_rep_list,round_sur_lis
                         for j in range(len(p_list)):
                             result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[j],eta,round_rep_list[m],cd_rep_list[n]),round_sur_list[l],rep=cd_sur_list[i])
                             if judge_Z == 1:
-                                count_Z[i,j] += 1
+                                count_Z[n*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list) + m*len(round_sur_list)*len(cd_sur_list) + l*len(cd_sur_list) + i,j] += 1
                             #print("result_Z\n", result_data_Z)
                             #print("modefied_result_Z\n", modefied_result_Z)
                             #print("result_X\n", result_data_X)
@@ -983,5 +983,5 @@ if __name__ == "__main__":
     for i in range(len(cd_rep_list)):
         for j in range(len(round_rep_list)):
             for k in range(len(round_sur_list)):
-                df_Z = pd.DataFrame(data=c_Z[i*len(cd_rep_list)*len(round_rep_list)*len(round_sur_list) + j*len(round_rep_list)*len(round_sur_list) + k*len(round_sur_list):i*len(cd_rep_list)*len(round_rep_list)*len(round_sur_list) + j*len(round_rep_list)*len(round_sur_list) + k*len(round_sur_list)+len(cd_sur_list)], columns=p_list,index=cd_sur_list)
+                df_Z = pd.DataFrame(data=c_Z[i*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list)+j*len(round_sur_list)*len(cd_sur_list) + k*len(cd_sur_list):i*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list)+j*len(round_sur_list)*len(cd_sur_list) + k*len(cd_sur_list) + len(cd_sur_list)], columns=p_list,index=cd_sur_list)
                 df_Z.to_csv('Z,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep_list[i])+',eta='+str(eta)+',round_rep='+str(round_rep_list[j])+',round_sur='+str(round_sur_list[k])+',trials='+str(trials*pro)+'.csv')
