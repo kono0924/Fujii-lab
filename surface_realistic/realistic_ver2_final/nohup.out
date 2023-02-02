@@ -13535,3 +13535,4 @@ Traceback (most recent call last):
   File "/home/kono/yes/lib/python3.9/multiprocessing/managers.py", line 825, in _callmethod
     raise convert_to_error(kind, result)
 IndexError: list index out of range
+python: can't open file '/home/kono/Documents/Fujii-lab/surface_realistic/realistic_ver2_final/【realistic】X_auto.py[': [Errno 2] No such file or directory
