@@ -742,9 +742,15 @@ if __name__ == "__main__":
     eta = 1000
     ### パラメータ ###
     cd_rep_list = [7]
+<<<<<<< HEAD
     round_rep_list = [10]
     round_sur_list = [10]
     trials = 200
+=======
+    round_rep_list = [5]
+    round_sur_list = [20]
+    trials = 20
+>>>>>>> 8cb77e32d79328b32c8619bce255930a4617cb21
     pro = 500
     ################
     p_list = np.arange(p_s,p_e+p_d,p_d)
