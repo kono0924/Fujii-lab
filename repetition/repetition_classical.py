@@ -260,11 +260,11 @@ def implement(code_distance,rep,p,eta,ex_num,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    code_distance=11
+    code_distance= 11
     rep= 30
-    p=0.005
+    p=0.0001
     eta=1000
-    trials=200
+    trials=20000
     pro = 500
 
     # プロセスを管理する人。デラックスな共有メモリ
