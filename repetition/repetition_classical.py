@@ -96,9 +96,9 @@ def reptition(code_distance,rep,p,eta):
             qubit[0][2*j+1] = 0   #######要変更
             qubit[1][2*j+1] = 0    ### X測定ならこっち
             ### 初期化
-            bitflip_error(qubit,2*j+1,p,eta)     
+            bitflip_error(qubit,2*j+1,p,eta)
             H(qubit,2*j+1)
-            single_biased(qubit,2*j+1,p,eta) 
+            single_biased(qubit,2*j+1,p,eta)
     ############################################
     
     ##############  最後のデータビットを測定  ######
@@ -106,8 +106,8 @@ def reptition(code_distance,rep,p,eta):
     for i in range(nqubits):
         if i % 2 == 0:
             H(qubit,i)
-            single_biased(qubit,j,p,eta) #アダマール後 
-            single_biased(qubit,j,p,eta) #測定前
+            single_biased(qubit,i,p,eta) #アダマール後
+            single_biased(qubit,i,p,eta) #測定前
             result[0].append(qubit[0][i])
             result[1].append(qubit[1][i])
     #############################################
