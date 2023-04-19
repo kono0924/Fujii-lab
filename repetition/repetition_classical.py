@@ -263,7 +263,7 @@ if __name__ == "__main__":
     code_distance= 11
     rep= 30
     p=0.0001
-    eta=2000
+    eta=1000
     trials=20000
     pro = 500
 
