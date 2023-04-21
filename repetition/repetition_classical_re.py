@@ -265,9 +265,9 @@ if __name__ == "__main__":
     rep_fin = 50
     rep_div = 1
     rep_list= list(range(rep_sta,rep_fin+1,rep_div))
-    p=0.001
+    p=0.0005
     eta=1000
-    trials= 200
+    trials= 400
     pro = 500
 
     # プロセスを管理する人。デラックスな共有メモリ
