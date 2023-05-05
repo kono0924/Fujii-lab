@@ -231,7 +231,7 @@ def repetition(code_distance,rep,p,eta):
 
 ###### 実行
 ###### 実行
-def implement(code_distance_list,rep_list,p,eta,ex_num):
+def implement(code_distance_list,rep_list,p,eta,ex_num,result_list):
     count = np.zeros((2*len(rep_list),len(code_distance_list)))
     for i in rep_list:
         for _ in range(ex_num):
