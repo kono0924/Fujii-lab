@@ -921,16 +921,16 @@ def p_matrix(p,eta,round_rep,cd_rep):
 ##################### ここから上をコピーする ######################
 
 def count(trials,cd_sur_list,p_list,eta,cd_rep_list,round_rep_list,round_sur_list,result_list):
-    count_Z = np.zeros((len(cd_rep_list)*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list),len(p_list)))
+    count_Z = np.zeros((len(cd_rep_list)*len(round_sur_list)*len(cd_sur_list),len(p_list)))
     for n in range(len(cd_rep_list)):
-        for m in range(len(round_rep_list)):
+        for m in range(len(p_list)):
             for l in range(len(round_sur_list)):
                 for _ in range(trials):
                     for i in range(len(cd_sur_list)):
-                        for j in range(len(p_list)):
-                            result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[j],eta,round_rep_list[m],cd_rep_list[n]),round_sur_list[l],rep=cd_sur_list[i])
+                        for j in range(len(round_rep_list)):
+                            result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[m],eta,round_rep_list[j],cd_rep_list[n]),round_sur_list[l],rep=cd_sur_list[i])
                             if judge_Z == 1:
-                                count_Z[n*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list) + m*len(round_sur_list)*len(cd_sur_list) + l*len(cd_sur_list) + i,j] += 1
+                                count_Z[n*len(round_sur_list)*len(cd_sur_list) + l*len(cd_sur_list) + i, j] += 1
                             #print("result_Z\n", result_data_Z)
                             #print("modefied_result_Z\n", modefied_result_Z)
                             #print("result_X\n", result_data_X)
@@ -943,18 +943,15 @@ if __name__ == "__main__":
     d_s = 3
     d_e = 9
     d_d = 2
-    p_s = 0.001
-    p_e = 0.005
-    p_d = 0.001
     eta = 1000
-    ### パラメータ ###
-    cd_rep_list = [3,5,7]
-    round_rep_list = [100,1000,5000,10000]
-    round_sur_list = [1]
-    trials = 20
-    pro = 500
-    ################
     p_list = [0.0001]
+    round_sur_list = [1]
+    ### パラメータ ###
+    round_rep_list = [100,1000,5000,10000]
+    cd_rep_list = [3,5,7]
+    trials = 1
+    pro = 1
+    ################
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
 
     # プロセスを管理する人。デラックスな共有メモリ
@@ -984,8 +981,8 @@ if __name__ == "__main__":
             c_Z += result_list[iter]
     c_Z /= pro
 
-    for i in range(len(cd_rep_list)):
-        for j in range(len(round_rep_list)):
-            for k in range(len(round_sur_list)):
-                df_Z = pd.DataFrame(data=c_Z[i*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list)+j*len(round_sur_list)*len(cd_sur_list) + k*len(cd_sur_list):i*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list)+j*len(round_sur_list)*len(cd_sur_list) + k*len(cd_sur_list) + len(cd_sur_list)], columns=p_list,index=cd_sur_list)
-                df_Z.to_csv('Z,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep_list[i])+',eta='+str(eta)+',round_rep='+str(round_rep_list[j])+',round_sur='+str(round_sur_list[k])+',trials='+str(trials*pro)+'.csv')
+    for n in range(len(cd_rep_list)):
+        for l in range(len(round_sur_list)):
+            for i in range(len(cd_sur_list)):
+                df_Z = pd.DataFrame(data=c_Z[n*len(round_sur_list)*len(cd_sur_list) + l*len(cd_sur_list):n*len(round_sur_list)*len(cd_sur_list) + l*len(cd_sur_list) + len(cd_sur_list)], columns=round_rep_list,index=cd_sur_list)
+                df_Z.to_csv('Z,p='+str(p_list[0])+',d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep_list[n])+',eta='+str(eta)+',round_sur='+str(round_sur_list[l])+',trials='+str(trials*pro)+'.csv')
