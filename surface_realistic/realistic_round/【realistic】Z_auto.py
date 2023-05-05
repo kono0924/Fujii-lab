@@ -949,8 +949,8 @@ if __name__ == "__main__":
     ### パラメータ ###
     round_rep_list = [100,1000,5000,10000]
     cd_rep_list = [3,5,7]
-    trials = 1
-    pro = 1
+    trials = 20
+    pro = 500
     ################
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
 
