@@ -714,13 +714,13 @@ def p_matrix(p,eta,round_rep,cd_rep):
 ##################### ここから上をコピーする ######################
 
 def count(trials,cd_sur_list,p_list,eta,cd_rep_list,round_rep_list,round_sur_list,result_list):
-    count_X = np.zeros((len(cd_rep_list)*len(round_rep_list)*len(round_sur_list)*len(cd_sur_list),len(p_list)))
+    count_X = np.zeros((len(cd_rep_list)*len(p_list)*len(round_sur_list)*len(cd_sur_list),len(round_rep_list)))
     for n in range(len(cd_rep_list)):
         for m in range(len(p_list)):
             for l in range(len(round_sur_list)):
                 for _ in range(trials):
                     for i in range(len(cd_sur_list)):
-                        for j in range(len(p_list)):
+                        for j in range(len(round_rep_list)):
                             result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[m],eta,round_rep_list[j],cd_rep_list[n]),rep=cd_sur_list[i])
                             if judge_X == 1:
                                 count_X[n*len(round_sur_list)*len(cd_sur_list) + l*len(cd_sur_list) + i, j] += 1
