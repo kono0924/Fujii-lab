@@ -251,11 +251,11 @@ if __name__ == "__main__":
     rep_fin = 50
     rep_div = 1
     rep_list= list(range(rep_sta,rep_fin+1,rep_div))
-    code_distance_list=[11]
+    code_distance_list=[3,5,7,9]
     p=0.0001
     eta=1000
-    trials= 1
-    pro = 1
+    trials= 2000
+    pro = 500
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
