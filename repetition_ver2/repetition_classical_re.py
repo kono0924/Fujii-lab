@@ -285,4 +285,4 @@ if __name__ == "__main__":
     c /= pro
 
     df = pd.DataFrame(data=c, columns=code_distance_list)
-    df.to_csv('ver2,p='+str(p)+' ,eta='+str(eta)+', d=('+str(code_distance_list[0])+str(code_distance_list[-1])+',2), round=('+str(rep_sta)+','+str(rep_fin)+','+str(rep_div)+') , # of trials='+str(trials*pro)+'.csv')
+    df.to_csv('ver2,p='+str(p)+' ,eta='+str(eta)+', d=('+str(code_distance_list[0])+','+str(code_distance_list[-1])+',2), round=('+str(rep_sta)+','+str(rep_fin)+','+str(rep_div)+') , # of trials='+str(trials*pro)+'.csv')
