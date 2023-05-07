@@ -20,26 +20,26 @@ def z_error(qubit,i):
     qubit[1][i] ^=  1 
 
 def single_biased(qubit,i,p,eta): # etaはバイアス
-    p_x = p / (2*(eta+1))
-    p_z = p * eta / (eta+1) 
+    p_x = p / (2*(1+eta))
+    p_z = p * eta / (1 + eta) 
     prob = random.random() 
     if prob < p_z: #Z error
         z_error(qubit,i)
     elif prob < p_z+p_x: # X error
         x_error(qubit,i)
-    elif prob < p_z+2*p_x: # Y error
+    elif prob < p+2*p_x: # Y error
         y_error(qubit,i)
 
 def bitflip_error(qubit,i,p,eta): # etaはバイアス
     prob = random.random() 
-    pp = p / (eta+1)
-    if prob < pp: #Z error
+    p_x = p / (2*(1+eta))
+    if prob < 2*p_x: #Z error
         x_error(qubit,i)
 
 def phaseflip_error(qubit,i,p,eta): # H後の測定でZエラー
     prob = random.random() 
-    pp = p * (2*eta+1) / (2*(eta+1))
-    if prob < pp: #Z error
+    p_x = p / (2*(1+eta))
+    if prob < 2*p_x: #Z error
         z_error(qubit,i)
 
 # i番目にHadamard gateを作用させる
@@ -54,7 +54,7 @@ def CNOT(qubit,c,t):
     qubit[1][c]^=qubit[1][t]
 
 ##### detection eventを作成する関数の定義 #####
-def repetition(code_distance,rep,p,eta):
+def reptition(code_distance,rep,p,eta):
     nqubits = 2*code_distance-1
     qubit = [[0 for _ in range(nqubits)],[0 for _ in range(nqubits)]]
 
@@ -72,33 +72,33 @@ def repetition(code_distance,rep,p,eta):
     #############################################
     #print(qubit)
     #############  ループ部分  ##################
-    for num in range(rep):
-        for i in range(nqubits-1):
-            if i % 2 == 0:
+    for i in range(rep):
+        for j in range(nqubits-1):
+            if j % 2 == 0:
                 #single_biased(qubit,j,p,eta)
-                CNOT(qubit,i+1,i)
-                single_biased(qubit,i,p,eta)
-                single_biased(qubit,i+1,p,eta)
-            if i % 2 == 1:
-                CNOT(qubit,i,i+1)
-                single_biased(qubit,i,p,eta)
-                single_biased(qubit,i+1,p,eta)
-        for i in range(nqubits):
-            if i % 2 == 0:
-                single_biased(qubit,i,p,eta) #動的デカップリング部分
+                CNOT(qubit,j+1,j)
+                single_biased(qubit,j,p,eta)
+                single_biased(qubit,j+1,p,eta)
+            if j % 2 == 1:
+                CNOT(qubit,j,j+1)
+                single_biased(qubit,j,p,eta)
+                single_biased(qubit,j+1,p,eta)
+        for j in range(nqubits):
+            if j % 2 == 0:
+                single_biased(qubit,j,p,eta) #動的デカップリング部分
 
         # シンドローム測定
-        for i in range(code_distance-1):
-            H(qubit,2*i+1) 
-            single_biased(qubit,2*i+1,p,eta) # アダマール 
-            bitflip_error(qubit,i,p,eta) # 測定エラー
-            D[i][num+1] = qubit[0][2*i+1]            #######要変更
-            qubit[0][2*i+1] = 0   #######要変更
-            qubit[1][2*i+1] = 0    ### X測定ならこっち
+        for j in range(code_distance-1):
+            H(qubit,2*j+1) 
+            single_biased(qubit,2*j+1,p,eta) # アダマール 
+            single_biased(qubit,2*j+1,p,eta) # 測定エラー
+            D[j][i+1] = qubit[0][2*j+1]            #######要変更
+            qubit[0][2*j+1] = 0   #######要変更
+            qubit[1][2*j+1] = 0    ### X測定ならこっち
             ### 初期化
-            bitflip_error(qubit,2*i+1,p,eta)     
-            H(qubit,2*i+1)
-            single_biased(qubit,2*i+1,p,eta) 
+            bitflip_error(qubit,2*j+1,p,eta)
+            H(qubit,2*j+1)
+            single_biased(qubit,2*j+1,p,eta)
     ############################################
     
     ##############  最後のデータビットを測定  ######
@@ -106,8 +106,8 @@ def repetition(code_distance,rep,p,eta):
     for i in range(nqubits):
         if i % 2 == 0:
             H(qubit,i)
-            single_biased(qubit,i,p,eta) #アダマール後 
-            bitflip_error(qubit,i,p,eta) #測定前
+            single_biased(qubit,i,p,eta) #アダマール後
+            single_biased(qubit,i,p,eta) #測定前
             result[0].append(qubit[0][i])
             result[1].append(qubit[1][i])
     #############################################
@@ -119,65 +119,67 @@ def repetition(code_distance,rep,p,eta):
     # detection eventの行列
     E = np.zeros((code_distance-1,rep+1))
     for i in range(code_distance-1):
-        for num in range(rep+1):
-            E[i,num] = (D[i,num] + D[i,num+1]) % 2
+        for j in range(rep+1):
+            E[i,j] = (D[i,j] + D[i,j+1]) % 2
 
     #print("D= ", D.T)
     #print(result)
     #print("E= ", E.T)
 
+    return E, result
+
+
+##### 符号距離と、それ以下の距離での符号距離でのMWPM実行 #####
+def sampling(E,result,code_distance,rep,p,eta):
     count_x = 0
     count_z = 0
     # 差分シンドロームが1のところは座標のデータを格納する
     edge_of_decoder_graph = []
     for i in range(code_distance-1):
-        for num in range(rep+1):
-            if E[i,num] == 1:
-                edge_of_decoder_graph.append((i,num))
+        for j in range(rep+1):
+            if E[i,j] == 1:
+                edge_of_decoder_graph.append((i,j))
                 
     ### 最小距離のグラフの作成
     gp = nx.Graph()
     # 頂点の追加
     p_z = p * eta/(eta+1)
     p_x = p * 1/(2*(eta+1))
-    p_dephase = p_z + p_x
-    p_flip = 2*p_x
-
     for i in range(code_distance-1):
-        for num in range(rep+1):
-            gp.add_node((i,num))
-    # データ方向(exも同じ形になる)
+        for j in range(rep+1):
+            gp.add_node((i,j))
+    # データ方向
     for i in range(code_distance-2):
-        for num in range(rep+1):
-            if num == 0:
-                gp.add_edge((i,num),(i+1,num),weight=-math.log(p_flip+p_dephase))
-            elif num == rep:
-                gp.add_edge((i,num),(i+1,num),weight=-math.log(2*p_dephase+2*p_flip))
+        for j in range(rep+1):
+            if j == 0:
+                gp.add_edge((i,j),(i+1,j),weight=-math.log(2*p_x+p_z))
+            elif j == rep:
+                gp.add_edge((i,j),(i+1,j),weight=-math.log(4*p_x+2*p_z))
             else:
-                gp.add_edge((i,num),(i+1,num),weight=-math.log(2*p_dephase))
+                gp.add_edge((i,j),(i+1,j),weight=-math.log(2*p_z))
     # 反復方向(測定ミス)
     for i in range(code_distance-1):
-        for num in range(rep):
-            if num == rep:
-                continue
+        for j in range(rep):
+            if j == 0:
+                gp.add_edge((i,j),(i,j+1),weight=-math.log(3*p_z+6*p_x))
             else:
-                gp.add_edge((i,num),(i,num+1),weight=-math.log(3*p_dephase+3*p_flip))
+                gp.add_edge((i,j),(i,j+1),weight=-math.log(2*p_z+4*p_x))
     # 斜め辺の追加(データ方向)
     for i in range(code_distance-2):
-        for num in range(rep):
-            gp.add_edge((i,num),(i+1,num+1),weight=-math.log(p_dephase))
+        for j in range(rep):
+            gp.add_edge((i,j),(i+1,j+1),weight=-math.log(p_z))
     #正方格子に外点を1つ加えておく（単点ではパリティを検出できないため、パリティoddになる頂点数が奇数になりうる）
     gp.add_node('external')
-    for num in range(rep+1):
-        if num == 0:
-            gp.add_edge('external',(0,num),weight=-math.log(p_flip+p_dephase))
-            gp.add_edge('external',(code_distance-2,num),weight=-math.log(p_flip+p_dephase))
-        elif num == rep:
-            gp.add_edge('external',(0,num),weight=-math.log(2*p_dephase+2*p_flip))
-            gp.add_edge('external',(code_distance-2,num),weight=-math.log(2*p_dephase+2*p_flip))
+    for j in range(rep+1):
+        if j == 0:
+            gp.add_edge('external',(0,j),weight=-math.log(2*p_x+p_z))
+            gp.add_edge('external',(code_distance-2,j),weight=-math.log(2*p_x+p_z))
+        elif j == rep:
+            gp.add_edge('external',(0,j),weight=-math.log(2*p_z+4*p_x))
+            gp.add_edge('external',(code_distance-2,j),weight=-math.log(2*p_z+4*p_x))
         else:
-            gp.add_edge('external',(0,num),weight=-math.log(2*p_dephase))
-            gp.add_edge('external',(code_distance-2,num),weight=-math.log(2*p_dephase))
+            gp.add_edge('external',(0,j),weight=-math.log(2*p_z))
+            gp.add_edge('external',(code_distance-2,j),weight=-math.log(2*p_z))
 
     #パリティoddの頂点数が奇数の場合は外点をdecoer graphに追加して頂点数を偶数に
     if len(edge_of_decoder_graph)%2==1:
@@ -229,21 +231,28 @@ def repetition(code_distance,rep,p,eta):
     return count_x, count_z
 
 
+##### 実行するファイルの作成 #####
+def repetiton_sampling(code_distance,rep,p,eta):
+
+    ##### 距離を表すグラフの作成 #####
+    #made_graph(code_distance,rep,p,eta)
+
+    ##### 行列を導出 #####
+    E, result = reptition(code_distance,rep,p,eta)
+    return sampling(E,result,code_distance,rep,p,eta)
 
 #### 実行条件 ####
 
 ###### 実行
-###### 実行
-def implement(code_distance_list,rep_list,p_list,eta,ex_num,result_list):
-    count = np.zeros((2*len(rep_list)*len(p_list),len(code_distance_list)))
-    for _ in range(ex_num):    
-        for k in range(len(p_list)):
-            for i in rep_list:
-                for cd in code_distance_list:
-                    count_x, count_z = repetition(cd,i,p_list[k],eta)
-                    count[k*2*len(rep_list) + 2*(i-rep_list[0]),int((cd-code_distance_list[0])/2)] += count_x
-                    count[k*2*len(rep_list) + 2*(i-rep_list[0])+1,int((cd-code_distance_list[0])/2)] += count_z
+def implement(code_distance,rep,p,eta,ex_num,result_list):
+    count = np.zeros((2,int((code_distance-1)/2)))
+    for _ in range(ex_num):
+        for cd in range(int((code_distance-1)/2)):
+            a, b = repetiton_sampling(2*cd+3,rep,p,eta)
+            count[0,cd] += a
+            count[1,cd] += b
     count /= ex_num
+
     result_list.append(count)
     #return count, code_distance
 
@@ -251,18 +260,12 @@ def implement(code_distance_list,rep_list,p_list,eta,ex_num,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    rep_sta = 1
-    rep_fin = 50
-    rep_div = 1
-    rep_list= list(range(rep_sta,rep_fin+1,rep_div))
-    code_distance_list=[3,5,7,9]
-    p_sta = 0.0001
-    p_fin = 0.001
-    p_div = 0.0001
-    p_list= np.arange(p_sta,p_fin+p_div,p_div)
+    code_distance= 11
+    rep= 30
+    p=0.0001
     eta=1000
-    trials= 1
-    pro = 1
+    trials=20000
+    pro = 500
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
@@ -273,7 +276,7 @@ if __name__ == "__main__":
     # プロセスを生成
     for _ in range(pro):
         # マネージャーから取得したオブジェクトを引数に渡す
-        process = multiprocessing.Process(target=implement, args=(code_distance_list,rep_list,p_list,eta,trials,result_list))
+        process = multiprocessing.Process(target=implement, args=(code_distance,rep,p,eta,trials,result_list))
         # プロセス開始
         process.start()
         # プロセスのリストに追加
@@ -291,6 +294,5 @@ if __name__ == "__main__":
             c += result_list[i]
     c /= pro
 
-    for k in range(len(p_list)):
-        df = pd.DataFrame(data=c[k*2*len(rep_list):k*2*len(rep_list)+2*len(rep_list)], columns=code_distance_list)
-        df.to_csv('ver2,p='+str(p_list[k])+' ,eta='+str(eta)+', d=('+str(code_distance_list[0])+','+str(code_distance_list[-1])+',2), round=('+str(rep_sta)+','+str(rep_fin)+','+str(rep_div)+') , # of trials='+str(trials*pro)+'.csv')
+    df = pd.DataFrame(data=c, columns=np.arange(3,code_distance+1,2),index=["LX","LZ"])
+    df.to_csv('p='+str(p*100)+'% ,eta='+str(eta)+', d='+str(code_distance)+', rep='+str(rep)+', # of trials='+str(trials*pro)+'.csv')

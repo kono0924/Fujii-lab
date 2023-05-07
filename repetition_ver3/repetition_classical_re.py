@@ -96,7 +96,7 @@ def repetition(code_distance,rep,p,eta):
             qubit[0][2*i+1] = 0   #######要変更
             qubit[1][2*i+1] = 0    ### X測定ならこっち
             ### 初期化
-            bitflip_error(qubit,2*i+1,p,eta)     
+            bitflip_error(qubit,2*i+1,p,eta)
             H(qubit,2*i+1)
             single_biased(qubit,2*i+1,p,eta) 
     ############################################
@@ -226,40 +226,34 @@ def repetition(code_distance,rep,p,eta):
     if sum(result[1])%2 == 1:
         count_x = 1
     #print("result_X=",result[0],"result_Z=",result[1])
+
     return count_x, count_z
-
-
 
 #### 実行条件 ####
 
 ###### 実行
-###### 実行
-def implement(code_distance_list,rep_list,p_list,eta,ex_num,result_list):
-    count = np.zeros((2*len(rep_list)*len(p_list),len(code_distance_list)))
-    for _ in range(ex_num):    
-        for k in range(len(p_list)):
-            for i in rep_list:
-                for cd in code_distance_list:
-                    count_x, count_z = repetition(cd,i,p_list[k],eta)
-                    count[k*2*len(rep_list) + 2*(i-rep_list[0]),int((cd-code_distance_list[0])/2)] += count_x
-                    count[k*2*len(rep_list) + 2*(i-rep_list[0])+1,int((cd-code_distance_list[0])/2)] += count_z
+def implement(code_distance_list,rep,p_list,eta,ex_num,result_list):
+    count = np.zeros((2*len(code_distance_list),len(p_list)))
+    for _ in range(ex_num):
+        for cd in code_distance_list:
+            for i in range(len(p_list)):
+                count_x, count_z = repetition(cd,rep,p_list[i],eta)
+                count[int((cd-code_distance_list[0])/2),i] += count_x
+                count[int((cd-code_distance_list[0])/2),i] += count_z
     count /= ex_num
     result_list.append(count)
-    #return count, code_distance
+    #return count
 
 
 if __name__ == "__main__":
 
     ### パラメータ
-    rep_sta = 1
-    rep_fin = 50
-    rep_div = 1
-    rep_list= list(range(rep_sta,rep_fin+1,rep_div))
-    code_distance_list=[3,5,7,9]
     p_sta = 0.0001
     p_fin = 0.001
     p_div = 0.0001
     p_list= np.arange(p_sta,p_fin+p_div,p_div)
+    rep = 20
+    code_distance_list=[3,5,7,9]
     eta=1000
     trials= 1
     pro = 1
@@ -273,7 +267,7 @@ if __name__ == "__main__":
     # プロセスを生成
     for _ in range(pro):
         # マネージャーから取得したオブジェクトを引数に渡す
-        process = multiprocessing.Process(target=implement, args=(code_distance_list,rep_list,p_list,eta,trials,result_list))
+        process = multiprocessing.Process(target=implement, args=(code_distance_list,rep,p_list,eta,trials,result_list))
         # プロセス開始
         process.start()
         # プロセスのリストに追加
@@ -291,6 +285,5 @@ if __name__ == "__main__":
             c += result_list[i]
     c /= pro
 
-    for k in range(len(p_list)):
-        df = pd.DataFrame(data=c[k*2*len(rep_list):k*2*len(rep_list)+2*len(rep_list)], columns=code_distance_list)
-        df.to_csv('ver2,p='+str(p_list[k])+' ,eta='+str(eta)+', d=('+str(code_distance_list[0])+','+str(code_distance_list[-1])+',2), round=('+str(rep_sta)+','+str(rep_fin)+','+str(rep_div)+') , # of trials='+str(trials*pro)+'.csv')
+    df = pd.DataFrame(data=c, columns=code_distance_list)
+    df.to_csv('ver2,p=('+str(p_sta)+','+str(p_fin)+','+str(p_div)+' ,eta='+str(eta)+', d=('+str(code_distance_list[0])+','+str(code_distance_list[-1])+',2), round='+str(rep)) , # of trials='+str(trials*pro)+'.csv')
