@@ -117,7 +117,7 @@ def repetition(code_distance,rep,p,eta):
     for i in range(nqubits):
         if i % 2 == 0:
             H(qubit,i) 
-            single_biased(qubit,2*i+1,p,eta) # アダマール
+            single_biased(qubit,i,p,eta) # アダマール
             bitflip_error(qubit,i,p,eta) #測定前
             result[0].append(qubit[0][i])
             result[1].append(qubit[1][i])
@@ -246,13 +246,11 @@ def repetition(code_distance,rep,p,eta):
         for i in range(code_distance):
             dif_qubits_his[i,num] = (qubits_his[i,num] + qubits_his[i,num+1])%2
             
-
     return count_x, count_z
 
 
 #### 実行条件 ####
 
-###### 実行
 ###### 実行
 def implement(code_distance_list,rep_list,p_list,eta,ex_num,result_list):
     count = np.zeros((2*len(rep_list)*len(p_list),len(code_distance_list)))
