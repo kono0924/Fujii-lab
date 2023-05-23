@@ -69,9 +69,9 @@ def repetition(code_distance,rep,p,eta):
         D[i][0] = qubit[1][2*i+1]   ### Zエラーがあるかは[1]
     for i in range(nqubits):
         if i % 2 == 0:
-            #bitflip_error(qubit,i,p,eta) #状態準備のエラー
+            bitflip_error(qubit,i,p,eta) #状態準備のエラー
             H(qubit,i) 
-            #single_biased(qubit,i,p,eta) # Hゲート後のエラー
+            single_biased(qubit,i,p,eta) # Hゲート後のエラー
     #############################################
     #print(qubit)
     #############  ループ部分  ##################
@@ -86,6 +86,7 @@ def repetition(code_distance,rep,p,eta):
             ### 初期化
             bitflip_error(qubit,2*i+1,p,eta)
             H(qubit,2*i+1)
+            single_biased(qubit,i,p,eta)
 
         for i in range(nqubits-1):
             if i % 2 == 0:
