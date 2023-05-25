@@ -166,18 +166,15 @@ def repetition(code_distance,rep,p,eta):
             if num == 0:
                 gp.add_edge((i,num),(i+1,num),weight=-math.log(p_flip+p_dephase))
             elif num == rep:
-                gp.add_edge((i,num),(i+1,num),weight=-math.log(p_dephase+2*p_flip))
+                gp.add_edge((i,num),(i+1,num),weight=-math.log(2*p_dephase+2*p_flip))
             else:
                 gp.add_edge((i,num),(i+1,num),weight=-math.log(2*p_dephase))
     # 反復方向(測定ミス)
     for i in range(code_distance-1):
         for num in range(rep):
-            if num == rep:
-                continue
-            else:
-                gp.add_edge((i,num),(i,num+1),weight=-math.log(3*p_dephase+3*p_flip))
+            gp.add_edge((i,num),(i,num+1),weight=-math.log(3*p_dephase+3*p_flip))
     # 斜め辺の追加(データ方向)
-    for i in range(code_distance-2):
+    for i in range(code_distance-1):
         for num in range(rep):
             gp.add_edge((i,num),(i+1,num+1),weight=-math.log(p_dephase))
     #正方格子に外点を1つ加えておく（単点ではパリティを検出できないため、パリティoddになる頂点数が奇数になりうる）
