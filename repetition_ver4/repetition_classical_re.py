@@ -278,7 +278,7 @@ if __name__ == "__main__":
     p_div = 0.0001
     p_list= np.arange(p_sta,p_fin+p_div,p_div)
     eta=1000
-    trials= 1000
+    trials= 200
     pro = 500
 
     # プロセスを管理する人。デラックスな共有メモリ
