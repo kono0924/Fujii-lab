@@ -275,8 +275,8 @@ if __name__ == "__main__":
     p_div = 0.0001
     p_list= np.arange(p_sta,p_fin+p_div,p_div)
     eta=1000
-    trials= 400
-    pro = 500
+    trials= 1
+    pro = 10
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
@@ -302,17 +302,17 @@ if __name__ == "__main__":
         if os.path.exists('p='+str(p_list[k])+' ,eta='+str(eta)+', d=('+str(code_distance_list[0])+','+str(code_distance_list[-1])+',2), round=('+str(rep_sta)+','+str(rep_fin)+','+str(rep_div)+') , # of trials='+str(trials*pro))==False:
             os.mkdir('p='+str(p_list[k])+' ,eta='+str(eta)+', d=('+str(code_distance_list[0])+','+str(code_distance_list[-1])+',2), round=('+str(rep_sta)+','+str(rep_fin)+','+str(rep_div)+') , # of trials='+str(trials*pro))
 
-    div = 10
+    div = 5
 
     for i in range(div): #分割数
-        for j in range(pro/div):
+        for j in range(int(pro/div)):
             if j == 0:
-                c = result_list[j + i * pro/div]
+                c = result_list[j + i * int(pro/div)]
             else:
-                c += result_list[j + i * pro/div]
+                c += result_list[j + i * int(pro/div)]
         c /= (pro/div)
         for k in range(len(p_list)):
-            os.chdir('/p='+str(p_list[k])+' ,eta='+str(eta)+', d=('+str(code_distance_list[0])+','+str(code_distance_list[-1])+',2), round=('+str(rep_sta)+','+str(rep_fin)+','+str(rep_div)+') , # of trials='+str(trials*pro)) # ディレクトリ移動
+            os.chdir('p='+str(p_list[k])+' ,eta='+str(eta)+', d=('+str(code_distance_list[0])+','+str(code_distance_list[-1])+',2), round=('+str(rep_sta)+','+str(rep_fin)+','+str(rep_div)+') , # of trials='+str(trials*pro)) # ディレクトリ移動
             df = pd.DataFrame(data=c[k*2*len(rep_list):k*2*len(rep_list)+2*len(rep_list)], columns=code_distance_list)
             df.to_csv('sample'+str(i)+'.csv')
             os.chdir('../') # ディレクトリ戻る
