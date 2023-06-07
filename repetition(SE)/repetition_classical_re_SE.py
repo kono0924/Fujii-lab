@@ -273,10 +273,10 @@ if __name__ == "__main__":
     p_sta = 0.0005
     p_fin = 0.001
     p_div = 0.0001
-    p_list= np.arange(p_sta,p_fin+p_div,p_div)
+    p_list= np.array([0.0005, 0.0006, 0.0007, 0.0008, 0.0009, 0.001])
     eta=1000
-    trials= 1
-    pro = 10
+    trials= 400
+    pro = 500
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
