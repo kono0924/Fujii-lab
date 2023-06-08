@@ -942,21 +942,17 @@ if __name__ == "__main__":
     ### パラメータ
     p = 0.0001
     eta = 1000
+    rep = 1
     ### パラメータ ###
     cd_rep_list = [3,5,7,9]
     round_rep_list = [0,100,1000,1000]
-    round_sur_list = [10]
-    trials = 20
+    trials = 80
     pro = 500
     ################
     d_s = 3
     d_e = 9
     d_d = 2
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
-
-    ### 試行回数
-    trials = 1
-    pro = 1
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
@@ -967,7 +963,7 @@ if __name__ == "__main__":
     # プロセスを生成
     for _ in range(pro):
         # マネージャーから取得したオブジェクトを引数に渡す
-        process = multiprocessing.Process(target=count, args=(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,round_sur_list,result_list,))
+        process = multiprocessing.Process(target=count, args=(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,rep,result_list,))
         # プロセス開始
         process.start()
         # プロセスのリストに追加
