@@ -987,8 +987,8 @@ if __name__ == "__main__":
     c_Z /= pro
 
     for i in range(len(cd_rep_list)):
-        if os.path.exists('d1='+str(cd_rep_list[i])+' ,p='+str(p)+' ,eta='+str(eta))==False:
-            os.mkdir('d1='+str(cd_rep_list[i])+' ,p='+str(p)+' ,eta='+str(eta))
+        if os.path.exists('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))==False:
+            os.mkdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
 
     for i in range(len(cd_rep_list)):
         os.chdir('d1='+str(cd_rep_list[i])+' ,p='+str(p)+' ,eta='+str(eta))
