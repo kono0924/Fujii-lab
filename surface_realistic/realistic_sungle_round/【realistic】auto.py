@@ -115,8 +115,8 @@ def rotated_surface_code(code_distance,p_list,rep):
             p_z_error(qubits_m_out_X,1,j,p_list[7])
         # Zシンドローム
         for i in range(int((code_distance-1)/2)):
-            p_x_error(qubits_m_out_X,i,0,p_list[6])
-            p_x_error(qubits_m_out_X,i,1,p_list[6])
+            p_x_error(qubits_m_out_X,0,i,p_list[6])
+            p_x_error(qubits_m_out_X,0,i,p_list[6])
         ######################### 準備終わり ###########################
         
         ######################### シンドローム測定 ###########################  
@@ -926,14 +926,14 @@ def count(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,rep,result_list):
     count_X = np.zeros((len(cd_rep_list)*len(round_rep_list),len(cd_sur_list)))
     count_Z = np.zeros((len(cd_rep_list)*len(round_rep_list),len(cd_sur_list)))
     for _ in range(trials):
-        for i in range(len(cd_sur_list)):
-            for j in range(len(cd_rep_list)):
+        for i in range(len(cd_rep_list)):
+            for j in range(len(cd_sur_list)):
                 for k in range(len(round_rep_list)):
-                    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p,eta,round_rep_list[k],cd_rep_list[j]),rep=cd_sur_list[i])
+                    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,round_rep_list[k],cd_rep_list[i]),rep=cd_sur_list[j])
                     if judge_X == 1:
-                        count_X[j*len(cd_rep_list)+k,i] += 1
+                        count_X[i*len(cd_sur_list)+j,k] += 1
                     if judge_Z == 1:
-                        count_Z[j*len(cd_rep_list)+k,i] += 1
+                        count_Z[i*len(cd_sur_list)+j,k] += 1
     result_list.append(count_X/trials)
     result_list.append(count_Z/trials)
 
@@ -986,7 +986,14 @@ if __name__ == "__main__":
     c_X /= pro
     c_Z /= pro
 
-    df_X = pd.DataFrame(data=c_X, columns=cd_sur_list)
-    df_X.to_csv('X,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d1=('+str(cd_rep_list[0])+','+str(cd_rep_list[-1])+','+str(2)+'),eta='+str(eta)+',round_rep=('+str(round_rep_list[0])+','+str(round_rep_list[-1])+'),trials='+str(trials*pro)+'.csv')
-    df_Z = pd.DataFrame(data=c_Z, columns=cd_sur_list)
-    df_Z.to_csv('Z,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d1=('+str(cd_rep_list[0])+','+str(cd_rep_list[-1])+','+str(2)+'),eta='+str(eta)+',round_rep=('+str(round_rep_list[0])+','+str(round_rep_list[-1])+'),trials='+str(trials*pro)+'.csv')
+    for i in range(len(cd_rep_list)):
+        if os.path.exists('d1='+str(cd_rep_list[i])+' ,p='+str(p)+' ,eta='+str(eta))==False:
+            os.mkdir('d1='+str(cd_rep_list[i])+' ,p='+str(p)+' ,eta='+str(eta))
+
+    for i in range(len(cd_rep_list)):
+        os.chdir('d1='+str(cd_rep_list[i])+' ,p='+str(p)+' ,eta='+str(eta))
+        df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list)
+        df_X.to_csv('X,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
+        df_Z = pd.DataFrame(data=c_Z[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list)
+        df_Z.to_csv('Z,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
+        os.chdir('../') # ディレクトリ戻る
