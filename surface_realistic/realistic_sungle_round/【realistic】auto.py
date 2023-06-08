@@ -945,8 +945,8 @@ if __name__ == "__main__":
     rep = 1
     ### パラメータ ###
     cd_rep_list = [3,5,7,9]
-    round_rep_list = [0,100,1000,1000]
-    trials = 20
+    round_rep_list = [10000,20000,30000,40000,50000,60000,70000,80000,90000,100000]
+    trials = 40
     pro = 500
     ################
     d_s = 3
@@ -992,8 +992,8 @@ if __name__ == "__main__":
 
     for i in range(len(cd_rep_list)):
         os.chdir('d1='+str(cd_rep_list[i])+' ,p='+str(p)+' ,eta='+str(eta))
-        df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list)
+        df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
         df_X.to_csv('X,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
-        df_Z = pd.DataFrame(data=c_Z[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list)
+        df_Z = pd.DataFrame(data=c_Z[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
         df_Z.to_csv('Z,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
         os.chdir('../') # ディレクトリ戻る
