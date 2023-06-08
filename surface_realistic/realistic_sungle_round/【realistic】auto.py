@@ -946,7 +946,7 @@ if __name__ == "__main__":
     ### パラメータ ###
     cd_rep_list = [3,5,7,9]
     round_rep_list = [0,100,1000,1000]
-    trials = 80
+    trials = 20
     pro = 500
     ################
     d_s = 3
