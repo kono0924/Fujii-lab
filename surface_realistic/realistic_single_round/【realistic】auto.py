@@ -420,7 +420,7 @@ def sampling(code_distance,p_list,rep):
     ### 外点
     gp_X.add_node('external_X')
     gp_Z.add_node('external_Z')
-    """
+    
     ############################# Zシンドローム #############################
 
     ### 重み付け
@@ -594,7 +594,7 @@ def sampling(code_distance,p_list,rep):
                 else:
                     result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
     ### Zシンドロームを繰り返すことによってエラーを左に集める
-    """
+    
     X_data = result_data_X.copy()
     for i in range(code_distance-1):
         for j in range(code_distance):
@@ -942,7 +942,7 @@ if __name__ == "__main__":
     rep = 1
     ### パラメータ ###
     cd_rep_list = [3,5,7]
-    round_rep_list = [0]
+    round_rep_list = [100,1000,5000,10000]
     trials = 20
     pro = 500
     ################
@@ -980,8 +980,8 @@ if __name__ == "__main__":
             c_X += result_list[i]
         elif i%2 == 1:
             c_Z += result_list[i]
-    c_X /= pro
-    c_Z /= pro
+    c_X /= pro # 論理Zエラー
+    c_Z /= pro # 論理Xエラー
 
     for i in range(len(cd_rep_list)):
         if os.path.exists('test, d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))==False:
