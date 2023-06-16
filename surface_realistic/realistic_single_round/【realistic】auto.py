@@ -984,11 +984,11 @@ if __name__ == "__main__":
     c_Z /= pro
 
     for i in range(len(cd_rep_list)):
-        if os.path.exists('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))==False:
+        if os.path.exists('test, d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))==False:
             os.mkdir('test, d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
 
     for i in range(len(cd_rep_list)):
-        os.chdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
+        os.chdir('test, d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
         df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
         df_X.to_csv('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
         df_Z = pd.DataFrame(data=c_Z[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
