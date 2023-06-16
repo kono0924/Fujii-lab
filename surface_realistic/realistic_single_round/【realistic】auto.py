@@ -420,7 +420,7 @@ def sampling(code_distance,p_list,rep):
     ### 外点
     gp_X.add_node('external_X')
     gp_Z.add_node('external_Z')
-
+    """
     ############################# Zシンドローム #############################
 
     ### 重み付け
@@ -594,6 +594,7 @@ def sampling(code_distance,p_list,rep):
                 else:
                     result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
     ### Zシンドロームを繰り返すことによってエラーを左に集める
+    """
     X_data = result_data_X.copy()
     for i in range(code_distance-1):
         for j in range(code_distance):
@@ -640,7 +641,7 @@ def sampling(code_distance,p_list,rep):
     if count == [1] * code_distance:
         judge_Z = 1
     ############################################# Zシンドローム終わり #####################################################################
-
+    
     ############################################# Xシンドローム始まり #####################################################################
     ### 縦
     for num in range(rep):
@@ -940,9 +941,9 @@ if __name__ == "__main__":
     eta = 1000
     rep = 1
     ### パラメータ ###
-    cd_rep_list = [3,5,7,9]
-    round_rep_list = [10000,20000,30000,40000,50000,60000,70000,80000,90000,100000]
-    trials = 40
+    cd_rep_list = [3,5,7]
+    round_rep_list = [0]
+    trials = 20
     pro = 500
     ################
     d_s = 3
@@ -984,7 +985,7 @@ if __name__ == "__main__":
 
     for i in range(len(cd_rep_list)):
         if os.path.exists('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))==False:
-            os.mkdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
+            os.mkdir('test, d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
 
     for i in range(len(cd_rep_list)):
         os.chdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
