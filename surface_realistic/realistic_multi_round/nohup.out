@@ -13577,3 +13577,71 @@ Traceback (most recent call last):
   File "/home/kono/yes/lib/python3.9/multiprocessing/managers.py", line 825, in _callmethod
     raise convert_to_error(kind, result)
 IndexError: list index out of range
+Process Process-129:
+Traceback (most recent call last):
+  File "/home/kono/yes/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/home/kono/yes/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 1050, in count
+    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,int(round_rep/div_list[k]),cd_rep_list[i]),rep=cd_sur_list[j],div=div_list[k])
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 489, in sampling
+    detection_event_in_X, detection_event_out_X, result_data_Z,  detection_event_in_Z, detection_event_out_Z, result_data_X, dif_qubits_d_Z, dif_qubits_d_X = rotated_surface_code(code_distance,p_list,rep,div)
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 213, in rotated_surface_code
+    p_x_error(qubits_m_out_X,i,1,p_list[6])
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 54, in p_x_error
+    x_error(qubit,i,j)
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 15, in x_error
+    qubit[0][i][j] = (qubit[0][i][j]+1)%2
+IndexError: index 1 is out of bounds for axis 0 with size 1
+Process Process-308:
+Traceback (most recent call last):
+  File "/home/kono/yes/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/home/kono/yes/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 1050, in count
+    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,int(round_rep/div_list[k]),cd_rep_list[i]),rep=cd_sur_list[j],div=div_list[k])
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 489, in sampling
+    detection_event_in_X, detection_event_out_X, result_data_Z,  detection_event_in_Z, detection_event_out_Z, result_data_X, dif_qubits_d_Z, dif_qubits_d_X = rotated_surface_code(code_distance,p_list,rep,div)
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 212, in rotated_surface_code
+    p_x_error(qubits_m_out_X,i,0,p_list[6])
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 54, in p_x_error
+    x_error(qubit,i,j)
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 15, in x_error
+    qubit[0][i][j] = (qubit[0][i][j]+1)%2
+IndexError: index 2 is out of bounds for axis 0 with size 2
+Process Process-338:
+Traceback (most recent call last):
+  File "/home/kono/yes/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/home/kono/yes/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 1050, in count
+    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,int(round_rep/div_list[k]),cd_rep_list[i]),rep=cd_sur_list[j],div=div_list[k])
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 489, in sampling
+    detection_event_in_X, detection_event_out_X, result_data_Z,  detection_event_in_Z, detection_event_out_Z, result_data_X, dif_qubits_d_Z, dif_qubits_d_X = rotated_surface_code(code_distance,p_list,rep,div)
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 109, in rotated_surface_code
+    p_x_error(qubits_m_out_X,i,0,p_list[6])
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 54, in p_x_error
+    x_error(qubit,i,j)
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 15, in x_error
+    qubit[0][i][j] = (qubit[0][i][j]+1)%2
+IndexError: index 2 is out of bounds for axis 0 with size 2
+Process Process-27:
+Traceback (most recent call last):
+  File "/home/kono/yes/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/home/kono/yes/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 1050, in count
+    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,int(round_rep/div_list[k]),cd_rep_list[i]),rep=cd_sur_list[j],div=div_list[k])
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 489, in sampling
+    detection_event_in_X, detection_event_out_X, result_data_Z,  detection_event_in_Z, detection_event_out_Z, result_data_X, dif_qubits_d_Z, dif_qubits_d_X = rotated_surface_code(code_distance,p_list,rep,div)
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 110, in rotated_surface_code
+    p_x_error(qubits_m_out_X,i,1,p_list[6])
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 54, in p_x_error
+    x_error(qubit,i,j)
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_multi_round/【realistic】Zauto.py", line 15, in x_error
+    qubit[0][i][j] = (qubit[0][i][j]+1)%2
+IndexError: index 2 is out of bounds for axis 0 with size 2

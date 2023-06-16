@@ -1041,8 +1041,8 @@ def p_matrix(p,eta,round_rep,cd_rep):
 
 # count(trials,cd_sur_list,p_list,eta,round_rep,cd_rep,rep,div)
 def count(trials,cd_sur_list,p,eta,round_rep,cd_rep_list,rep,div_list,result_list):
-    count_X = np.zeros((len(cd_rep_list)*len(div_list),len(cd_sur_list)))
-    count_Z = np.zeros((len(cd_rep_list)*len(div_list),len(cd_sur_list)))
+    count_X = np.zeros((len(cd_rep_list)*len(cd_sur_list),len(div_list)))
+    count_Z = np.zeros((len(cd_rep_list)*len(cd_sur_list),len(div_list)))
     for _ in range(trials):
         for i in range(len(cd_rep_list)):
             for j in range(len(cd_sur_list)):
@@ -1063,9 +1063,9 @@ if __name__ == "__main__":
     rep = 1
     ### パラメータ ###
     cd_rep_list = [3,5,7,9]
-    round_rep = 10000
+    round_rep = 100
     div_list =[1,4,9,19]
-    trials = 40
+    trials = 20
     pro = 500
     ################
     d_s = 3
@@ -1110,7 +1110,7 @@ if __name__ == "__main__":
             os.mkdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
 
     for i in range(len(cd_rep_list)):
-        os.chdir('d1='+str(cd_rep_list[i])+' ,p='+str(p)+' ,eta='+str(eta))
+        os.chdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
         df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=div_list ,index=cd_sur_list)
         df_X.to_csv('X,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
         df_Z = pd.DataFrame(data=c_Z[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=div_list ,index=cd_sur_list)
