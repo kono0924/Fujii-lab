@@ -95,6 +95,7 @@ def rotated_surface_code(code_distance,p_list,rep):
                 p_z_error(qubits_d,i,j,p_list[1])
         
         ### アンシラにエラー
+        #内側
         for i in range(code_distance-1):
             for j in range(code_distance-1):
                 # Xシンドローム
@@ -105,6 +106,7 @@ def rotated_surface_code(code_distance,p_list,rep):
                 # Zシンドローム
                 if (i+j) % 2 == 1:
                     p_x_error(qubits_m_in,i,j,p_list[6])
+        # 外側
         # Xシンドローム
         for j in range(int((code_distance-1)/2)):
             p_x_error(qubits_m_out_X,0,j,p_list[6])
@@ -115,8 +117,8 @@ def rotated_surface_code(code_distance,p_list,rep):
             p_z_error(qubits_m_out_X,1,j,p_list[7])
         # Zシンドローム
         for i in range(int((code_distance-1)/2)):
-            p_x_error(qubits_m_out_X,0,i,p_list[6])
-            p_x_error(qubits_m_out_X,0,i,p_list[6])
+            p_x_error(qubits_m_out_X,i,0,p_list[6])
+            p_x_error(qubits_m_out_X,i,1,p_list[6])
         ######################### 準備終わり ###########################
         
         ######################### シンドローム測定 ###########################  
@@ -139,7 +141,7 @@ def rotated_surface_code(code_distance,p_list,rep):
                         p_z_error(qubits_m_out_Z,0,int(i/2),p_list[5])
             # 内側
             for j in range(code_distance-1):    
-                if (i+j)%2 == 1: 
+                if (i+j) % 2 == 1: 
                     CNOT(qubits_d,i,j,qubits_m_in,i,j)
                     p_x_error(qubits_d,i,j,p_list[2])
                     p_z_error(qubits_d,i,j,p_list[3])
@@ -179,18 +181,17 @@ def rotated_surface_code(code_distance,p_list,rep):
             for i in range(code_distance-1):
                 for j in range(code_distance-1):
                     # 外側(左を最初に)
-                    if j == 0:
-                        if i % 2 == 1:
-                            CNOT(qubits_m_out_X,0,int((i-1)/2),qubits_d,i,j)
-                            p_x_error(qubits_d,i,j,p_list[6])
-                            #p_z_error(qubits_d,i,j,p_list[7])
-                            p_x_error(qubits_m_out_X,0,int((i-1)/2),p_list[6])
-                            p_z_error(qubits_m_out_X,0,int((i-1)/2),p_list[7])
-                            CNOT(qubits_m_out_X,0,int((i-1)/2),qubits_d,i+1,j)
-                            p_x_error(qubits_d,i+1,j,p_list[6])
-                            #p_z_error(qubits_d,i+1,j,p_list[7])
-                            p_x_error(qubits_m_out_X,0,int((i-1)/2),p_list[6])
-                            p_z_error(qubits_m_out_X,0,int((i-1)/2),p_list[7])
+                    if j == 0 and i % 2 == 1:
+                        CNOT(qubits_m_out_X,0,int((i-1)/2),qubits_d,i,j)
+                        p_x_error(qubits_d,i,j,p_list[6])
+                        #p_z_error(qubits_d,i,j,p_list[7])
+                        p_x_error(qubits_m_out_X,0,int((i-1)/2),p_list[6])
+                        p_z_error(qubits_m_out_X,0,int((i-1)/2),p_list[7])
+                        CNOT(qubits_m_out_X,0,int((i-1)/2),qubits_d,i+1,j)
+                        p_x_error(qubits_d,i+1,j,p_list[6])
+                        #p_z_error(qubits_d,i+1,j,p_list[7])
+                        p_x_error(qubits_m_out_X,0,int((i-1)/2),p_list[6])
+                        p_z_error(qubits_m_out_X,0,int((i-1)/2),p_list[7])
                     # 内側
                     if (i+j)%2 == 0: 
                         CNOT(qubits_m_in,i,j,qubits_d,i,j)
@@ -214,18 +215,17 @@ def rotated_surface_code(code_distance,p_list,rep):
                         p_x_error(qubits_m_in,i,j,p_list[6])
                         p_z_error(qubits_m_in,i,j,p_list[7])
                     # 外側(右を最後に)
-                    if j == code_distance-2:
-                        if i % 2 == 0:
-                            CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i,code_distance-1)
-                            p_x_error(qubits_d,i,code_distance-1,p_list[6])
-                            #p_z_error(qubits_d,i,code_distance-1,p_list[7])
-                            p_x_error(qubits_m_out_X,1,int(i/2),p_list[6])
-                            p_z_error(qubits_m_out_X,1,int(i/2),p_list[7])
-                            CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i+1,code_distance-1)
-                            p_x_error(qubits_d,i+1,code_distance-1,p_list[6])
-                            #p_z_error(qubits_d,i+1,code_distance-1,p_list[7])
-                            p_x_error(qubits_m_out_X,1,int(i/2),p_list[6])  
-                            p_z_error(qubits_m_out_X,1,int(i/2),p_list[7]) 
+                    if j == code_distance-2 and i % 2 == 0:
+                        CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i,code_distance-1)
+                        p_x_error(qubits_d,i,code_distance-1,p_list[6])
+                        #p_z_error(qubits_d,i,code_distance-1,p_list[7])
+                        p_x_error(qubits_m_out_X,1,int(i/2),p_list[6])
+                        p_z_error(qubits_m_out_X,1,int(i/2),p_list[7])
+                        CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i+1,code_distance-1)
+                        p_x_error(qubits_d,i+1,code_distance-1,p_list[6])
+                        #p_z_error(qubits_d,i+1,code_distance-1,p_list[7])
+                        p_x_error(qubits_m_out_X,1,int(i/2),p_list[6])  
+                        p_z_error(qubits_m_out_X,1,int(i/2),p_list[7]) 
     
         ######################### シンドローム測定終わり ###########################  
 
@@ -600,37 +600,37 @@ def sampling(code_distance,p_list,rep):
             if i % 2 == 0:
                 if j == code_distance-1:
                     if X_data[i,j] == 1:
-                        X_data[i,j] = (X_data[i,j] + 1) %2
-                        X_data[i+1,j] = (X_data[i+1,j] + 1) %2
+                        X_data[i,j] = (X_data[i,j] + 1) % 2
+                        X_data[i+1,j] = (X_data[i+1,j] + 1) % 2
                 elif j % 2 == 0:
                     if X_data[i,j] == 1:
-                        X_data[i,j] = (X_data[i,j] + 1) %2
-                        X_data[i,j+1] = (X_data[i,j+1] + 1) %2
-                        X_data[i+1,j] = (X_data[i+1,j] + 1) %2
-                        X_data[i+1,j+1] = (X_data[i+1,j+1] + 1) %2
+                        X_data[i,j] = (X_data[i,j]+1) % 2
+                        X_data[i,j+1] = (X_data[i,j+1]+1) % 2
+                        X_data[i+1,j] = (X_data[i+1,j]+1) % 2
+                        X_data[i+1,j+1] = (X_data[i+1,j+1]+1) % 2
                 elif j % 2 == 1:
                     if X_data[i,j] == 1:
-                        X_data[i,j] = (X_data[i,j] + 1) %2
-                        X_data[i,j-1] = (X_data[i,j-1] + 1) %2
-                        X_data[i+1,j] = (X_data[i+1,j] + 1) %2
-                        X_data[i+1,j-1] = (X_data[i+1,j-1] + 1) %2
+                        X_data[i,j] = (X_data[i,j]+ 1) %2
+                        X_data[i,j-1] = (X_data[i,j-1]+1) %2
+                        X_data[i+1,j] = (X_data[i+1,j]+1) %2
+                        X_data[i+1,j-1] = (X_data[i+1,j-1]+1) %2
             if i % 2 == 1:
                 if j == 0:
                     if X_data[i,j] == 1:
-                        X_data[i,j] = (X_data[i,j] + 1) %2
-                        X_data[i+1,j] = (X_data[i+1,j] + 1) %2
+                        X_data[i,j] = (X_data[i,j]+1) %2
+                        X_data[i+1,j] = (X_data[i+1,j]+1) %2
                 elif j % 2 == 1:
                     if X_data[i,j] == 1:
-                        X_data[i,j] = (X_data[i,j] + 1) %2
-                        X_data[i,j+1] = (X_data[i,j+1] + 1) %2
-                        X_data[i+1,j] = (X_data[i+1,j] + 1) %2
-                        X_data[i+1,j+1] = (X_data[i+1,j+1] + 1) %2
+                        X_data[i,j] = (X_data[i,j]+1) %2
+                        X_data[i,j+1] = (X_data[i,j+1]+1) %2
+                        X_data[i+1,j] = (X_data[i+1,j]+1) %2
+                        X_data[i+1,j+1] = (X_data[i+1,j+1]+1) %2
                 elif j % 2 == 0:
                     if X_data[i,j] == 1:
-                        X_data[i,j] = (X_data[i,j] + 1) %2
-                        X_data[i,j-1] = (X_data[i,j-1] + 1) %2
-                        X_data[i+1,j] = (X_data[i+1,j] + 1) %2
-                        X_data[i+1,j-1] = (X_data[i+1,j-1] + 1) %2
+                        X_data[i,j] = (X_data[i,j]+1) %2
+                        X_data[i,j-1] = (X_data[i,j-1]+1) %2
+                        X_data[i+1,j] = (X_data[i+1,j]+1) %2
+                        X_data[i+1,j-1] = (X_data[i+1,j-1]+1) %2
     ### 論理Xエラーがあるかの判定
     count = [0] * code_distance
     for i in range(code_distance): 
@@ -730,20 +730,18 @@ def sampling(code_distance,p_list,rep):
     for num in range(rep+1):
         for j in range(-1,code_distance):
             if num == 0:
-                if j % 2 == 0:
-                    if j == 0:
+                if j % 2 == 0 and j == 0:
                         gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+3*p_list[3]+2*p_list[5]))
-                    elif j == code_distance-1:
-                        gp_X.add_edge('external_X',(num,0,j),weight=-math.log(p_list[1]+p_list[3]+0*p_list[5]))
-                    else:
-                        gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+4*p_list[3]+2*p_list[5]))
-                if j % 2 == 1:
-                    if j == -1:
+                elif j % 2 == 0 and j == code_distance-1:
+                    gp_X.add_edge('external_X',(num,0,j),weight=-math.log(p_list[1]+p_list[3]+0*p_list[5]))
+                elif j % 2 == 0:
+                    gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+4*p_list[3]+2*p_list[5]))
+                elif j % 2 == 1 and j == -1:
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(p_list[1]+p_list[3]+1*p_list[5]))
-                    elif j == code_distance-2:
-                        gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+3*p_list[3]+4*p_list[5]))
-                    else:
-                        gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+4*p_list[3]+3*p_list[5]))
+                elif j % 2 == 1 and j == code_distance-2:
+                    gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+3*p_list[3]+4*p_list[5]))
+                elif j % 2 == 1:
+                    gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+4*p_list[3]+3*p_list[5]))
             elif num == rep:
                 continue
                 """
@@ -763,20 +761,18 @@ def sampling(code_distance,p_list,rep):
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log())
                 """
             else:
-                if j % 2 == 0:
-                    if j == 0:
-                        gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+3*p_list[3]+2*p_list[5]))
-                    elif j == code_distance-1:
-                        gp_X.add_edge('external_X',(num,0,j),weight=-math.log(p_list[1]+p_list[3]+0*p_list[5]))
-                    else:
-                        gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+4*p_list[3]+2*p_list[5]))
-                if j % 2 == 1:
-                    if j == -1:
-                        gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(p_list[1]+p_list[3]+2*p_list[5]))
-                    elif j == code_distance-2:
-                        gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+3*p_list[3]+0*p_list[5]))
-                    else:
-                        gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+4*p_list[3]+2*p_list[5]))
+                if j % 2 == 0 and j == 0:
+                    gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+3*p_list[3]+2*p_list[5]))
+                elif j % 2 == 0 and j == code_distance-1:
+                    gp_X.add_edge('external_X',(num,0,j),weight=-math.log(p_list[1]+p_list[3]+0*p_list[5]))
+                elif j % 2 == 0:
+                    gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+4*p_list[3]+2*p_list[5]))
+                elif j % 2 == 1 and j == -1:
+                    gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(p_list[1]+p_list[3]+2*p_list[5]))
+                elif j % 2 == 1 and j == code_distance-2:
+                    gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+3*p_list[3]+0*p_list[5]))
+                elif j % 2 == 1:
+                    gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+4*p_list[3]+2*p_list[5]))
 
     edge_of_decoder_graph_X = []
     ### 内側
@@ -843,38 +839,38 @@ def sampling(code_distance,p_list,rep):
             for i in range(code_distance):
                 if i == 0:
                     if Z_data[i,j] == 1:
-                        Z_data[i,j] = (Z_data[i,j] + 1) %2
-                        Z_data[i,j+1] = (Z_data[i,j+1] + 1) %2
+                        Z_data[i,j] = (Z_data[i,j]+1) % 2
+                        Z_data[i,j+1] = (Z_data[i,j+1]+1) % 2
                 if i % 2 == 1:
                     if Z_data[i,j] == 1:
-                        Z_data[i,j] = (Z_data[i,j] + 1) %2
-                        Z_data[i,j+1] = (Z_data[i,j+1] + 1) %2
-                        Z_data[i+1,j] = (Z_data[i+1,j] + 1) %2
-                        Z_data[i+1,j+1] = (Z_data[i+1,j+1] + 1) %2
+                        Z_data[i,j] = (Z_data[i,j]+1) % 2
+                        Z_data[i,j+1] = (Z_data[i,j+1]+1) % 2
+                        Z_data[i+1,j] = (Z_data[i+1,j]+1) % 2
+                        Z_data[i+1,j+1] = (Z_data[i+1,j+1]+1) % 2
                 if i % 2 == 0:
                     if Z_data[i,j] == 1:
-                        Z_data[i,j] = (Z_data[i,j] + 1) %2
-                        Z_data[i,j+1] = (Z_data[i,j+1] + 1) %2
-                        Z_data[i-1,j] = (Z_data[i-1,j] + 1) %2
-                        Z_data[i-1,j+1] = (Z_data[i-1,j+1] + 1) %2
+                        Z_data[i,j] = (Z_data[i,j]+1) % 2
+                        Z_data[i,j+1] = (Z_data[i,j+1]+1) % 2
+                        Z_data[i-1,j] = (Z_data[i-1,j]+1) % 2
+                        Z_data[i-1,j+1] = (Z_data[i-1,j+1]+1) % 2
         if j % 2 == 1:
             for i in range(code_distance):
                 if i == code_distance-1:
                     if Z_data[i,j] == 1:
-                        Z_data[i,j] = (Z_data[i,j] + 1) %2
-                        Z_data[i,j+1] = (Z_data[i,j+1] + 1) %2
+                        Z_data[i,j] = (Z_data[i,j]+1) % 2
+                        Z_data[i,j+1] = (Z_data[i,j+1]+1) % 2
                 if i % 2 == 0:
                     if Z_data[i,j] == 1:
-                        Z_data[i,j] = (Z_data[i,j] + 1) %2
-                        Z_data[i,j+1] = (Z_data[i,j+1] + 1) %2
-                        Z_data[i+1,j] = (Z_data[i+1,j] + 1) %2
-                        Z_data[i+1,j+1] = (Z_data[i+1,j+1] + 1) %2
+                        Z_data[i,j] = (Z_data[i,j]+1) % 2
+                        Z_data[i,j+1] = (Z_data[i,j+1]+1) % 2
+                        Z_data[i+1,j] = (Z_data[i+1,j]+1) % 2
+                        Z_data[i+1,j+1] = (Z_data[i+1,j+1]+1) % 2
                 if i % 2 == 1:
                     if Z_data[i,j] == 1:
-                        Z_data[i,j] = (Z_data[i,j] + 1) %2
-                        Z_data[i,j+1] = (Z_data[i,j+1] + 1) %2
-                        Z_data[i-1,j] = (Z_data[i-1,j] + 1) %2
-                        Z_data[i-1,j+1] = (Z_data[i-1,j+1] + 1) %2
+                        Z_data[i,j] = (Z_data[i,j]+1) % 2
+                        Z_data[i,j+1] = (Z_data[i,j+1]+1) % 2
+                        Z_data[i-1,j] = (Z_data[i-1,j]+1) % 2
+                        Z_data[i-1,j+1] = (Z_data[i-1,j+1]+1) % 2
 
     ### 論理Zエラーがあるかの判定
     count = [0] * code_distance
