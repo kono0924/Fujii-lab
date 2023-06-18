@@ -941,13 +941,13 @@ if __name__ == "__main__":
     eta = 1000
     rep = 1
     ### パラメータ ###
-    cd_rep_list = [3,5,7]
-    round_rep_list = [5000,10000,15000,20000,25000]
-    trials = 20
+    cd_rep_list = [7]
+    round_rep_list = [10000,30000,50000,70000]
+    trials = 200
     pro = 500
     ################
     d_s = 3
-    d_e = 7
+    d_e = 9
     d_d = 2
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
 
