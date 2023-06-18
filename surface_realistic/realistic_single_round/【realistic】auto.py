@@ -989,8 +989,13 @@ if __name__ == "__main__":
 
     for i in range(len(cd_rep_list)):
         os.chdir('test, d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
-        df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
-        df_X.to_csv('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
-        df_Z = pd.DataFrame(data=c_Z[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
-        df_Z.to_csv('X error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
+        for k in range(100):
+            if os.path.exists('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')==True:
+                continue
+            else:
+                df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
+                df_X.to_csv('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')
+                df_Z = pd.DataFrame(data=c_Z[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
+                df_Z.to_csv('X error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')
+                break
         os.chdir('../') # ディレクトリ戻る
