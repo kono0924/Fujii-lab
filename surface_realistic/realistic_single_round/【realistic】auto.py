@@ -941,10 +941,10 @@ if __name__ == "__main__":
     eta = 1000
     rep = 1
     ### パラメータ ###
-    cd_rep_list = [7]
-    round_rep_list = [5000,10000,15000,20000]
-    trials = 1
-    pro = 1
+    cd_rep_list = [3]
+    round_rep_list = [1000,2000,3000,4000,5000,6000]
+    trials = 20
+    pro = 500
     ################
     d_s = 3
     d_e = 9
@@ -984,11 +984,11 @@ if __name__ == "__main__":
     c_Z /= pro # 論理Xエラー
 
     for i in range(len(cd_rep_list)):
-        if os.path.exists('test, d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))==False:
-            os.mkdir('test, d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
+        if os.path.exists('test,d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))==False:
+            os.mkdir('test,d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
 
     for i in range(len(cd_rep_list)):
-        os.chdir('test, d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
+        os.chdir('test,d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
         for k in range(100):
             if os.path.exists('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')==True:
                 continue
