@@ -942,9 +942,9 @@ if __name__ == "__main__":
     rep = 1
     ### パラメータ ###
     cd_rep_list = [7]
-    round_rep_list = [10000,30000,50000,70000]
-    trials = 200
-    pro = 500
+    round_rep_list = [5000,10000,15000,20000]
+    trials = 1
+    pro = 1
     ################
     d_s = 3
     d_e = 9
