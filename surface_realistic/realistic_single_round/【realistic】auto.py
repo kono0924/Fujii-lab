@@ -941,9 +941,9 @@ if __name__ == "__main__":
     eta = 1000
     rep = 1
     ### パラメータ ###
-    cd_rep_list = [3]
-    round_rep_list = [500,1000,1500,2000,2500,3000]
-    trials = 80
+    cd_rep_list = [5]
+    round_rep_list = [4000,8000,12000,16000,20000]
+    trials = 200
     pro = 500
     ################
     d_s = 3
