@@ -117,8 +117,8 @@ def rotated_surface_code(code_distance,p_list,rep):
             p_z_error(qubits_m_out_X,1,j,p_list[7])
         # Zシンドローム
         for i in range(int((code_distance-1)/2)):
-            p_x_error(qubits_m_out_X,i,0,p_list[6])
-            p_x_error(qubits_m_out_X,i,1,p_list[6])
+            p_x_error(qubits_m_out_X,0,i,p_list[6])
+            p_x_error(qubits_m_out_X,1,i,p_list[6])
         ######################### 準備終わり ###########################
         
         ######################### シンドローム測定 ###########################  
