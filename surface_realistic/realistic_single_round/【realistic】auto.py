@@ -895,7 +895,7 @@ def pL_z(p,cd_rep,round_rep):
     C = 0.008201833430325448
     p_th = 0.011087089015353773
     e = C*(p/p_th)**((cd_rep+1)/2)
-    pL = 1/2 * (1-(1-2*e)**round_rep)
+    pL = 1/2 * (1-(1-2*e)**20000)
     return pL
 
 # 第一論理Xエラー
@@ -923,7 +923,7 @@ def count(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,rep,result_list):
         for i in range(len(cd_rep_list)):
             for j in range(len(cd_sur_list)):
                 for k in range(len(round_rep_list)):
-                    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,40000,cd_rep_list[i]),rep=cd_sur_list[j])
+                    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,round_rep_list[k],cd_rep_list[i]),rep=cd_sur_list[j])
                     if judge_X == 1: # 論理Zエラー
                         count_X[i*len(cd_sur_list)+j,k] += 1
                     if judge_Z == 1: # 論理Xエラー
@@ -940,7 +940,7 @@ if __name__ == "__main__":
     ### パラメータ ###
     cd_rep_list = [3,5,7]
     round_rep_list = [20000,40000,60000,80000]
-    trials = 200
+    trials = 20
     pro = 500
     ################
     d_s = 3
