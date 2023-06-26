@@ -417,7 +417,7 @@ def sampling(code_distance,p_list,rep):
     ### 外点
     gp_X.add_node('external_X')
     gp_Z.add_node('external_Z')
-    
+    """
     ############################# Zシンドローム #############################
 
     ### 重み付け
@@ -591,7 +591,7 @@ def sampling(code_distance,p_list,rep):
                 else:
                     result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
     ### Zシンドロームを繰り返すことによってエラーを左に集める
-    
+    """
     X_data = result_data_X.copy()
     for i in range(code_distance-1):
         for j in range(code_distance):
@@ -895,7 +895,7 @@ def pL_z(p,cd_rep,round_rep):
     C = 0.008201833430325448
     p_th = 0.011087089015353773
     e = C*(p/p_th)**((cd_rep+1)/2)
-    pL = 1/2 * (1-(1-2*e)**20000)
+    pL = 1/2 * (1-(1-2*e)**round_rep)
     return pL
 
 # 第一論理Xエラー
@@ -938,10 +938,10 @@ if __name__ == "__main__":
     eta = 1000
     rep = 1
     ### パラメータ ###
-    cd_rep_list = [9]
-    round_rep_list = [20000,40000,60000,80000]
-    trials = 20
-    pro = 500
+    cd_rep_list = [3,5,7]
+    round_rep_list = [0,2000,4000,6000,8000,10000,12000,14000,16000,18000,20000]
+    trials = 1
+    pro = 1
     ################
     d_s = 3
     d_e = 9
@@ -981,11 +981,11 @@ if __name__ == "__main__":
     c_Z /= pro # 論理Xエラー
 
     for i in range(len(cd_rep_list)):
-        if os.path.exists('test,d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))==False:
-            os.mkdir('test,d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
+        if os.path.exists('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))==False:
+            os.mkdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
 
     for i in range(len(cd_rep_list)):
-        os.chdir('test,d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
+        os.chdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
         for k in range(100):
             if os.path.exists('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')==True:
                 continue
