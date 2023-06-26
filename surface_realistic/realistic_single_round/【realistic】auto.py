@@ -985,6 +985,8 @@ if __name__ == "__main__":
             os.mkdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
 
     for i in range(len(cd_rep_list)):
+        if trials*pro == 1:
+            continue
         os.chdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
         for k in range(100):
             if os.path.exists('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')==True:
