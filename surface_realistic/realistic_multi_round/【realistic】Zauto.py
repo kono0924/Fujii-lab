@@ -1055,10 +1055,10 @@ if __name__ == "__main__":
     eta = 1000
     rep = 1
     ### パラメータ ###
-    cd_rep_list = [3,5,7,9]
-    round_rep = 100
+    cd_rep_list = [5]
+    round_rep = 1000
     div_list =[1,4,9,19]
-    trials = 20
+    trials = 200
     pro = 500
     ################
     d_s = 3
@@ -1099,13 +1099,13 @@ if __name__ == "__main__":
     c_Z /= pro
 
     for i in range(len(cd_rep_list)):
-        if os.path.exists('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))==False:
-            os.mkdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
+        if os.path.exists('multiZ,d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))==False:
+            os.mkdir('multiZ,d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
 
     for i in range(len(cd_rep_list)):
-        os.chdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
+        os.chdir('multiZ,d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
         df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=div_list ,index=cd_sur_list)
-        df_X.to_csv('X,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
+        df_X.to_csv('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
         df_Z = pd.DataFrame(data=c_Z[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=div_list ,index=cd_sur_list)
-        df_Z.to_csv('Z,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
+        df_Z.to_csv('X error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
         os.chdir('../') # ディレクトリ戻る
