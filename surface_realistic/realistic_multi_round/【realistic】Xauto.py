@@ -917,14 +917,15 @@ def p_matrix(p,eta,round_rep,cd_rep):
 
 ##################### ここから上をコピーする ######################
 
-def count(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,rep,result_list):
-    count_X = np.zeros((len(cd_rep_list)*len(round_rep_list),len(cd_sur_list)))
-    count_Z = np.zeros((len(cd_rep_list)*len(round_rep_list),len(cd_sur_list)))
+# count(trials,cd_sur_list,p_list,eta,round_rep,cd_rep,rep,div)
+def count(trials,cd_sur_list,p,eta,round_rep,cd_rep_list,rep,div_list,result_list):
+    count_X = np.zeros((len(cd_rep_list)*len(cd_sur_list),len(div_list)))
+    count_Z = np.zeros((len(cd_rep_list)*len(cd_sur_list),len(div_list)))
     for _ in range(trials):
         for i in range(len(cd_rep_list)):
             for j in range(len(cd_sur_list)):
-                for k in range(len(round_rep_list)):
-                    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,round_rep_list[k],cd_rep_list[i]),rep=cd_sur_list[j])
+                for k in range(len(div_list)):
+                    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,int(round_rep/div_list[k]),cd_rep_list[i]),rep=cd_sur_list[j],div=div_list[k])
                     if judge_X == 1:
                         count_X[i*len(cd_sur_list)+j,k] += 1
                     if judge_Z == 1:
