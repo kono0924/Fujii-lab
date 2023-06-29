@@ -417,7 +417,7 @@ def sampling(code_distance,p_list,rep):
     ### 外点
     gp_X.add_node('external_X')
     gp_Z.add_node('external_Z')
-    """
+    
     ############################# Zシンドローム #############################
 
     ### 重み付け
@@ -591,7 +591,7 @@ def sampling(code_distance,p_list,rep):
                 else:
                     result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
     ### Zシンドロームを繰り返すことによってエラーを左に集める
-    """
+    
     X_data = result_data_X.copy()
     for i in range(code_distance-1):
         for j in range(code_distance):
@@ -640,6 +640,7 @@ def sampling(code_distance,p_list,rep):
     ############################################# Zシンドローム終わり #####################################################################
     
     ############################################# Xシンドローム始まり #####################################################################
+    """
     ### 縦
     for num in range(rep):
         ### 内側
@@ -654,10 +655,9 @@ def sampling(code_distance,p_list,rep):
             if i % 2 == 1:
                 gp_X.add_edge((num,i,-1),(num+1,i,-1),weight=-math.log(3*p_list[6]+3*p_list[7]))
 
-    # 斜めのエラーを生じるZエラーは反復符号で吸収される
-    """
     ### 斜め
     for num in range(rep):
+        continue
         ### 内側
         for i in range(-1,code_distance-1):
             for j in range(code_distance-2):
@@ -675,7 +675,6 @@ def sampling(code_distance,p_list,rep):
                 if i % 2 == 1:
                     gp_X.add_edge((num,i,code_distance-2),(num+1,i+1,code_distance-1),weight=-math.log(p_list[3]))
                     gp_X.add_edge((num,i,-1),(num+1,i+1,0),weight=-math.log(p_list[3]))
-    """
 
     ### 横
     for num in range(rep+1):
@@ -696,7 +695,6 @@ def sampling(code_distance,p_list,rep):
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]+2*p_list[3]+3*p_list[5]))
                 elif num == rep:
                     continue
-                    """
                     if (i+j) % 2 == 0 and j==-1:
                         gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log())
                     elif (i+j) % 2 == 0 and j==code_distance-2:
@@ -709,7 +707,6 @@ def sampling(code_distance,p_list,rep):
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log())
                     elif (i+j) % 2 == 1:
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log())
-                    """
                 else:
                     if (i+j) % 2 == 0 and j==-1:
                         gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]+2*p_list[3]+1*p_list[5]))
@@ -742,7 +739,6 @@ def sampling(code_distance,p_list,rep):
                     gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+4*p_list[3]+3*p_list[5]))
             elif num == rep:
                 continue
-                """
                 if j % 2 == 0:
                     if j == 0:
                         gp_X.add_edge('external_X',(num,0,j),weight=-math.log())
@@ -757,7 +753,6 @@ def sampling(code_distance,p_list,rep):
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log())
                     else:
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log())
-                """
             else:
                 if j % 2 == 0 and j == 0:
                     gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+3*p_list[3]+2*p_list[5]))
@@ -829,7 +824,7 @@ def sampling(code_distance,p_list,rep):
                 #座標が違う場合
                 else:
                     result_data_Z[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data_Z[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
-
+    """
     ### Zシンドロームを繰り返すことによってエラーを左に集める
     Z_data = result_data_Z.copy()
     for j in range(code_distance-1):
@@ -939,9 +934,9 @@ if __name__ == "__main__":
     rep = 1
     ### パラメータ ###
     cd_rep_list = [5,7]
-    round_rep_list = [500,100,1500,2000,2500,3000]
-    trials = 2000
-    pro = 500
+    round_rep_list = [1000,2000,3000,4000,5000,6000,7000,8000,9000,10000]
+    trials = 1
+    pro = 1
     ################
     d_s = 3
     d_e = 9
