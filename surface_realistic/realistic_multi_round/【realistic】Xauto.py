@@ -175,57 +175,57 @@ def rotated_surface_code(code_distance,p_list,rep):
                         p_x_error(qubits_m_out_Z,1,int((i-1)/2),p_list[4])
                         p_z_error(qubits_m_out_Z,1,int((i-1)/2),p_list[5]) 
 
-            ### Xシンドローム測定(データ量子ビットに生じるZエラーは反復符号に取り込まれる)
-            for i in range(code_distance-1):
-                for j in range(code_distance-1):
-                    # 外側(左を最初に)
-                    if j == 0:
-                        if i % 2 == 1:
-                            CNOT(qubits_m_out_X,0,int((i-1)/2),qubits_d,i,j)
-                            p_x_error(qubits_d,i,j,p_list[6])
-                            #p_z_error(qubits_d,i,j,p_list[7])
-                            p_x_error(qubits_m_out_X,0,int((i-1)/2),p_list[6])
-                            p_z_error(qubits_m_out_X,0,int((i-1)/2),p_list[7])
-                            CNOT(qubits_m_out_X,0,int((i-1)/2),qubits_d,i+1,j)
-                            p_x_error(qubits_d,i+1,j,p_list[6])
-                            #p_z_error(qubits_d,i+1,j,p_list[7])
-                            p_x_error(qubits_m_out_X,0,int((i-1)/2),p_list[6])
-                            p_z_error(qubits_m_out_X,0,int((i-1)/2),p_list[7])
-                    # 内側
-                    if (i+j)%2 == 0: 
-                        CNOT(qubits_m_in,i,j,qubits_d,i,j)
+        ### Xシンドローム測定(データ量子ビットに生じるZエラーは反復符号に取り込まれる)
+        for i in range(code_distance-1):
+            for j in range(code_distance-1):
+                # 外側(左を最初に)
+                if j == 0:
+                    if i % 2 == 1:
+                        CNOT(qubits_m_out_X,0,int((i-1)/2),qubits_d,i,j)
                         p_x_error(qubits_d,i,j,p_list[6])
                         #p_z_error(qubits_d,i,j,p_list[7])
-                        p_x_error(qubits_m_in,i,j,p_list[6])
-                        p_z_error(qubits_m_in,i,j,p_list[7])
-                        CNOT(qubits_m_in,i,j,qubits_d,i,j+1)
-                        p_x_error(qubits_d,i,j+1,p_list[6])
-                        #p_z_error(qubits_d,i,j+1,p_list[7])
-                        p_x_error(qubits_m_in,i,j,p_list[6])
-                        p_z_error(qubits_m_in,i,j,p_list[7])
-                        CNOT(qubits_m_in,i,j,qubits_d,i+1,j)
+                        p_x_error(qubits_m_out_X,0,int((i-1)/2),p_list[6])
+                        p_z_error(qubits_m_out_X,0,int((i-1)/2),p_list[7])
+                        CNOT(qubits_m_out_X,0,int((i-1)/2),qubits_d,i+1,j)
                         p_x_error(qubits_d,i+1,j,p_list[6])
                         #p_z_error(qubits_d,i+1,j,p_list[7])
-                        p_x_error(qubits_m_in,i,j,p_list[6])
-                        p_z_error(qubits_m_in,i,j,p_list[7])
-                        CNOT(qubits_m_in,i,j,qubits_d,i+1,j+1)
-                        p_x_error(qubits_d,i+1,j+1,p_list[6])
-                        #p_z_error(qubits_d,i+1,j+1,p_list[7])
-                        p_x_error(qubits_m_in,i,j,p_list[6])
-                        p_z_error(qubits_m_in,i,j,p_list[7])
-                    # 外側(右を最後に)
-                    if j == code_distance-2:
-                        if i % 2 == 0:
-                            CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i,code_distance-1)
-                            p_x_error(qubits_d,i,code_distance-1,p_list[6])
-                            #p_z_error(qubits_d,i,code_distance-1,p_list[7])
-                            p_x_error(qubits_m_out_X,1,int(i/2),p_list[6])
-                            p_z_error(qubits_m_out_X,1,int(i/2),p_list[7])
-                            CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i+1,code_distance-1)
-                            p_x_error(qubits_d,i+1,code_distance-1,p_list[6])
-                            #p_z_error(qubits_d,i+1,code_distance-1,p_list[7])
-                            p_x_error(qubits_m_out_X,1,int(i/2),p_list[6])  
-                            p_z_error(qubits_m_out_X,1,int(i/2),p_list[7]) 
+                        p_x_error(qubits_m_out_X,0,int((i-1)/2),p_list[6])
+                        p_z_error(qubits_m_out_X,0,int((i-1)/2),p_list[7])
+                # 内側
+                if (i+j)%2 == 0: 
+                    CNOT(qubits_m_in,i,j,qubits_d,i,j)
+                    p_x_error(qubits_d,i,j,p_list[6])
+                    #p_z_error(qubits_d,i,j,p_list[7])
+                    p_x_error(qubits_m_in,i,j,p_list[6])
+                    p_z_error(qubits_m_in,i,j,p_list[7])
+                    CNOT(qubits_m_in,i,j,qubits_d,i,j+1)
+                    p_x_error(qubits_d,i,j+1,p_list[6])
+                    #p_z_error(qubits_d,i,j+1,p_list[7])
+                    p_x_error(qubits_m_in,i,j,p_list[6])
+                    p_z_error(qubits_m_in,i,j,p_list[7])
+                    CNOT(qubits_m_in,i,j,qubits_d,i+1,j)
+                    p_x_error(qubits_d,i+1,j,p_list[6])
+                    #p_z_error(qubits_d,i+1,j,p_list[7])
+                    p_x_error(qubits_m_in,i,j,p_list[6])
+                    p_z_error(qubits_m_in,i,j,p_list[7])
+                    CNOT(qubits_m_in,i,j,qubits_d,i+1,j+1)
+                    p_x_error(qubits_d,i+1,j+1,p_list[6])
+                    #p_z_error(qubits_d,i+1,j+1,p_list[7])
+                    p_x_error(qubits_m_in,i,j,p_list[6])
+                    p_z_error(qubits_m_in,i,j,p_list[7])
+                # 外側(右を最後に)
+                if j == code_distance-2:
+                    if i % 2 == 0:
+                        CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i,code_distance-1)
+                        p_x_error(qubits_d,i,code_distance-1,p_list[6])
+                        #p_z_error(qubits_d,i,code_distance-1,p_list[7])
+                        p_x_error(qubits_m_out_X,1,int(i/2),p_list[6])
+                        p_z_error(qubits_m_out_X,1,int(i/2),p_list[7])
+                        CNOT(qubits_m_out_X,1,int(i/2),qubits_d,i+1,code_distance-1)
+                        p_x_error(qubits_d,i+1,code_distance-1,p_list[6])
+                        #p_z_error(qubits_d,i+1,code_distance-1,p_list[7])
+                        p_x_error(qubits_m_out_X,1,int(i/2),p_list[6])  
+                        p_z_error(qubits_m_out_X,1,int(i/2),p_list[7]) 
     
         ######################### シンドローム測定終わり ###########################  
 
@@ -657,9 +657,9 @@ def sampling(code_distance,p_list,rep):
                 gp_X.add_edge((num,i,-1),(num+1,i,-1),weight=-math.log(3*p_list[6]+3*p_list[7]))
 
     # 斜めのエラーを生じるZエラーは反復符号で吸収される
-    """
     ### 斜め
     for num in range(rep):
+        continue
         ### 内側
         for i in range(-1,code_distance-1):
             for j in range(code_distance-2):
@@ -677,7 +677,6 @@ def sampling(code_distance,p_list,rep):
                 if i % 2 == 1:
                     gp_X.add_edge((num,i,code_distance-2),(num+1,i+1,code_distance-1),weight=-math.log(p_list[3]))
                     gp_X.add_edge((num,i,-1),(num+1,i+1,0),weight=-math.log(p_list[3]))
-    """
 
     ### 横
     for num in range(rep+1):
@@ -698,7 +697,6 @@ def sampling(code_distance,p_list,rep):
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]+2*p_list[3]+3*p_list[5]))
                 elif num == rep:
                     continue
-                    """
                     if (i+j) % 2 == 0 and j==-1:
                         gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log())
                     elif (i+j) % 2 == 0 and j==code_distance-2:
@@ -711,7 +709,6 @@ def sampling(code_distance,p_list,rep):
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log())
                     elif (i+j) % 2 == 1:
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log())
-                    """
                 else:
                     if (i+j) % 2 == 0 and j==-1:
                         gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]+2*p_list[3]+1*p_list[5]))
@@ -746,7 +743,6 @@ def sampling(code_distance,p_list,rep):
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+4*p_list[3]+3*p_list[5]))
             elif num == rep:
                 continue
-                """
                 if j % 2 == 0:
                     if j == 0:
                         gp_X.add_edge('external_X',(num,0,j),weight=-math.log())
@@ -761,7 +757,6 @@ def sampling(code_distance,p_list,rep):
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log())
                     else:
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log())
-                """
             else:
                 if j % 2 == 0:
                     if j == 0:
