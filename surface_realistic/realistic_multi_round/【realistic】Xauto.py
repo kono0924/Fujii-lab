@@ -942,8 +942,8 @@ if __name__ == "__main__":
     cd_rep_list = [5]
     round_rep = 1000
     div_list =[1,4,9,19]
-    trials = 200
-    pro = 500
+    trials = 1
+    pro = 1
     ################
     d_s = 3
     d_e = 9
