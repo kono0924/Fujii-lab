@@ -306,7 +306,7 @@ def rotated_surface_code(code_distance,p_list,rep,div):
                 elif (i+j) % 2 == 0: 
                     CNOT(qubits_m_in,i,j,qubits_d,i,j)
                     p_x_error(qubits_d,i,j,p_list[6])
-                    #p_z_error(qubits_d,i,j,p_list[7])
+                    #p_z_error(qubits_d,ivim ,j,p_list[7])
                     p_x_error(qubits_m_in,i,j,p_list[6])
                     p_z_error(qubits_m_in,i,j,p_list[7])
                     CNOT(qubits_m_in,i,j,qubits_d,i,j+1)
