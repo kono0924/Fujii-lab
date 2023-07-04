@@ -112,8 +112,8 @@ def rotated_surface_code(code_distance,p_list,rep,div):
             # 外側
             # Zシンドローム
             for i in range(int((code_distance-1)/2)):
-                p_x_error(qubits_m_out_X,i,0,p_list[6])
-                p_x_error(qubits_m_out_X,i,1,p_list[6])
+                p_x_error(qubits_m_out_X,0,i,p_list[6])
+                p_x_error(qubits_m_out_X,1,i,p_list[6])
             ### 準備終わり
 
             ### Zシンドローム
@@ -1095,7 +1095,7 @@ if __name__ == "__main__":
     cd_rep_list = [3]
     round_rep = 100
     div_list =[1,4,9,19]
-    trials = 2000
+    trials = 20
     pro = 500
     ################
     d_s = 3
