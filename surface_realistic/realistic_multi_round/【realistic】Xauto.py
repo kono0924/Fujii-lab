@@ -232,7 +232,7 @@ def rotated_surface_code(code_distance,p_list,rep,div):
         ### 反復符号でのエラー
             for i in range(code_distance):
                 for j in range(code_distance):
-                    p_x_error(qubits_d,i,j,p_list[0])
+                    p_x_error(qubits_d,i,j,p_list[8])
                     p_z_error(qubits_d,i,j,p_list[1])
 
         ### Zシンドローム
@@ -1122,7 +1122,7 @@ if __name__ == "__main__":
     ### パラメータ ###
     cd_rep_list = [5]
     round_rep = 1000
-    div_list =[1,4,9,19,50]
+    div_list =[1,4,9,19,49]
     trials = 400
     pro = 500
     ################
