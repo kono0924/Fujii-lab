@@ -1122,8 +1122,8 @@ if __name__ == "__main__":
     ### パラメータ ###
     cd_rep_list = [5]
     round_rep = 1000
-    div_list =[1,4,9,19]
-    trials = 20
+    div_list =[1,4,9,19,50]
+    trials = 400
     pro = 500
     ################
     d_s = 3
