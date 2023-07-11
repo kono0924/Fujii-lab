@@ -92,16 +92,10 @@ def rotated_surface_code(code_distance,p_list,rep,div):
         for num2 in range(div):
             ### 準備 
             # 反復符号でのエラー
-            if num == div-1 and num2 == div:
-                for i in range(code_distance):
-                    for j in range(code_distance):
-                        p_x_error(qubits_d,i,j,p_list[0])
-                        p_z_error(qubits_d,i,j,p_list[1])
-            else:
-                for i in range(code_distance):
-                    for j in range(code_distance):
-                        p_x_error(qubits_d,i,j,p_list[0])
-                        p_z_error(qubits_d,i,j,p_list[1])
+            for i in range(code_distance):
+                for j in range(code_distance):
+                    p_x_error(qubits_d,i,j,p_list[0])
+                    p_z_error(qubits_d,i,j,p_list[1])
             ### アンシラにエラー
             # 内側
             for i in range(code_distance-1):
@@ -113,7 +107,7 @@ def rotated_surface_code(code_distance,p_list,rep,div):
             # Zシンドローム
             for i in range(int((code_distance-1)/2)):
                 p_x_error(qubits_m_out_X,0,i,p_list[6])
-                p_x_error(qubits_m_out_X,1,i,p_list[6])
+                p_x_error(qubits_m_out_X,0,i,p_list[6])
             ### 準備終わり
 
             ### Zシンドローム
@@ -172,7 +166,7 @@ def rotated_surface_code(code_distance,p_list,rep,div):
             # 内側
             for i in range(code_distance-1):
                 for j in range(code_distance-1):
-                    if (i+j) % 2 == 1: 
+                    if (i+j) % 2 == 1:
                         p_x_error(qubits_m_in,i,j,p_list[6]) # 測定エラー
                         syndrome_in_Z[num*(div+1)+num2+1][i][j] =  qubits_m_in[0][i][j] # Xを格納
                         qubits_m_in[0][i][j] = 0
@@ -217,9 +211,15 @@ def rotated_surface_code(code_distance,p_list,rep,div):
             p_x_error(qubits_m_out_X,1,i,p_list[6])
 
         ### 反復符号でのエラー
+        if num == rep-1:
             for i in range(code_distance):
                 for j in range(code_distance):
                     p_x_error(qubits_d,i,j,p_list[8])
+                    p_z_error(qubits_d,i,j,p_list[1])
+        else:
+            for i in range(code_distance):
+                for j in range(code_distance):
+                    p_x_error(qubits_d,i,j,p_list[0])
                     p_z_error(qubits_d,i,j,p_list[1])
 
         ### Zシンドローム
@@ -836,13 +836,13 @@ def sampling(code_distance,p_list,rep,div):
         for i in range(code_distance-2):
             for j in range(-1,code_distance-1):
                 if num == 0:
-                    if (i+j) % 2 == 0 and j ==-1:
+                    if (i+j) % 2 == 0 and j == -1:
                         gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]))
                     elif (i+j) % 2 == 0 and j ==code_distance-2:
                         gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]))
                     elif (i+j) % 2 == 0:
                         gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]))
-                    elif (i+j) % 2 == 1 and j ==-1:
+                    elif (i+j) % 2 == 1 and j == -1:
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]))
                     elif (i+j) % 2 == 1 and j ==code_distance-2:
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]))

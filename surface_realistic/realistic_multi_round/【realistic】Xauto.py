@@ -92,16 +92,10 @@ def rotated_surface_code(code_distance,p_list,rep,div):
         for num2 in range(div):
             ### 準備 
             # 反復符号でのエラー
-            if num == div-1 and num2 == div:
-                for i in range(code_distance):
-                    for j in range(code_distance):
-                        p_x_error(qubits_d,i,j,p_list[0])
-                        p_z_error(qubits_d,i,j,p_list[1])
-            else:
-                for i in range(code_distance):
-                    for j in range(code_distance):
-                        p_x_error(qubits_d,i,j,p_list[0])
-                        p_z_error(qubits_d,i,j,p_list[1])
+            for i in range(code_distance):
+                for j in range(code_distance):
+                    p_x_error(qubits_d,i,j,p_list[0])
+                    p_z_error(qubits_d,i,j,p_list[1])
             # アンシラにエラー
             # 内側
             for i in range(code_distance-1):
@@ -230,9 +224,15 @@ def rotated_surface_code(code_distance,p_list,rep,div):
             p_x_error(qubits_m_out_X,1,i,p_list[6])
 
         ### 反復符号でのエラー
+        if num == rep-1:
             for i in range(code_distance):
                 for j in range(code_distance):
                     p_x_error(qubits_d,i,j,p_list[8])
+                    p_z_error(qubits_d,i,j,p_list[1])
+        else:
+            for i in range(code_distance):
+                for j in range(code_distance):
+                    p_x_error(qubits_d,i,j,p_list[0])
                     p_z_error(qubits_d,i,j,p_list[1])
 
         ### Zシンドローム
@@ -306,7 +306,7 @@ def rotated_surface_code(code_distance,p_list,rep,div):
                 elif (i+j) % 2 == 0: 
                     CNOT(qubits_m_in,i,j,qubits_d,i,j)
                     p_x_error(qubits_d,i,j,p_list[6])
-                    #p_z_error(qubits_d,ivim ,j,p_list[7])
+                    #p_z_error(qubits_d,i,j,p_list[7])
                     p_x_error(qubits_m_in,i,j,p_list[6])
                     p_z_error(qubits_m_in,i,j,p_list[7])
                     CNOT(qubits_m_in,i,j,qubits_d,i,j+1)
@@ -858,7 +858,7 @@ def sampling(code_distance,p_list,rep,div):
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log())
                     elif (i+j) % 2 == 1:
                         gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log())
-                elif (num-1) % div == 0:
+                elif (num+1) % (div+1) == 0:
                     if (i+j) % 2 == 0 and j ==-1:
                         gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]+p_list[3]+1*p_list[5]))
                     elif (i+j) % 2 == 0 and j ==code_distance-2:
@@ -919,7 +919,7 @@ def sampling(code_distance,p_list,rep,div):
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log())
                     else:
                         gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log())
-            elif (num-1) % div == 0:
+            elif (num+1) % (div+1) == 0:
                 if j % 2 == 0:
                     if j == 0:
                         gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+3*p_list[3]+2*p_list[5]))
@@ -1096,6 +1096,8 @@ def p_matrix(p,eta,round_rep,cd_rep):
     matrix.append(eta/(eta+1)*p + 1/(2*(eta+1))*p) #p_z
     matrix.append(pL_X_last(p,cd_rep,round_rep,eta)) #pL_x_last
     return matrix
+
+##################### ここから上をコピーする ######################
 
 # count(trials,cd_sur_list,p_list,eta,round_rep,cd_rep,rep,div)
 def count(trials,cd_sur_list,p,eta,round_rep,cd_rep_list,rep,div_list,result_list):
