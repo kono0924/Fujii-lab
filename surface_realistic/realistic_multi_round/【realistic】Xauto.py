@@ -1066,7 +1066,7 @@ def count(trials,cd_sur_list,p,eta,round_rep,cd_rep_list,rep,div_list,result_lis
         for i in range(len(cd_rep_list)):
             for j in range(len(cd_sur_list)):
                 for k in range(len(div_list)):
-                    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,int(round_rep/div_list[k]),cd_rep_list[i]),rep=cd_sur_list[j],div=div_list[k])
+                    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,int(round_rep/(div_list[k]+1)),cd_rep_list[i]),rep=cd_sur_list[j],div=div_list[k])
                     if judge_X == 1:
                         count_X[i*len(cd_sur_list)+j,k] += 1
                     if judge_Z == 1:
@@ -1084,8 +1084,8 @@ if __name__ == "__main__":
     cd_rep_list = [5]
     round_rep = 1200
     div_list =[0,1,2,3,4]
-    trials = 80
-    pro = 500
+    trials = 1
+    pro = 1
     ################
     d_s = 3
     d_e = 7
