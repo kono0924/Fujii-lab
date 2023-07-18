@@ -181,9 +181,15 @@ def rotated_surface_code(code_distance,p_list,rep,div):
                 syndrome_out_Z[num*(div+1)+num2+1][1][i] =  qubits_m_out_Z[0][1][i] # 下
                 qubits_m_out_Z[0][1][i] = 0
                 qubits_m_out_Z[1][1][i] = 0
+        ######################### Xシンドローム測定のスキーム終わり #########################
         
         ######################### 最後のシンドローム測定 ########################### 
-
+        ### 反復符号でのエラー
+        for i in range(code_distance):
+            for j in range(code_distance):
+                p_x_error(qubits_d,i,j,p_list[0])
+                p_z_error(qubits_d,i,j,p_list[1])
+                
         ### アンシラにエラー
         # 内側
         for i in range(code_distance-1):
@@ -209,18 +215,6 @@ def rotated_surface_code(code_distance,p_list,rep,div):
         for i in range(int((code_distance-1)/2)):
             p_x_error(qubits_m_out_X,0,i,p_list[6])
             p_x_error(qubits_m_out_X,1,i,p_list[6])
-
-        ### 反復符号でのエラー
-        if num == rep-1:
-            for i in range(code_distance):
-                for j in range(code_distance):
-                    p_x_error(qubits_d,i,j,p_list[8])
-                    p_z_error(qubits_d,i,j,p_list[1])
-        else:
-            for i in range(code_distance):
-                for j in range(code_distance):
-                    p_x_error(qubits_d,i,j,p_list[0])
-                    p_z_error(qubits_d,i,j,p_list[1])
 
         ### Zシンドローム
         for i in range(code_distance-1):
@@ -326,13 +320,6 @@ def rotated_surface_code(code_distance,p_list,rep,div):
     
         ######################### シンドローム測定終わり ###########################  
 
-        ######################### エラーの履歴　########################
-        for i in range(code_distance):
-            for j in range(code_distance):
-                qubits_d_X[num+1][i][j] =  qubits_d[0][i][j]
-                qubits_d_Z[num+1][i][j] =  qubits_d[1][i][j]
-        ######################### エラーの履歴終わり　########################
-
         ######################### 測定結果の格納 & 初期化　#########################
         ### Zシンドローム ###
         # 内側
@@ -340,17 +327,17 @@ def rotated_surface_code(code_distance,p_list,rep,div):
             for j in range(code_distance-1):
                 if (i+j) % 2 == 1: 
                     p_x_error(qubits_m_in,i,j,p_list[6]) # 測定エラー
-                    syndrome_in_Z[num*(div+1)+1][i][j] =  qubits_m_in[0][i][j] # Xを格納
+                    syndrome_in_Z[num*(div+1)+div+1][i][j] =  qubits_m_in[0][i][j] # Xを格納
                     qubits_m_in[0][i][j] = 0
                     qubits_m_in[1][i][j] = 0
         # 外側
         for i in range(int((code_distance-1)/2)):
             p_x_error(qubits_m_in,i,j,p_list[6]) # 測定エラー
-            syndrome_out_Z[num*(div+1)+1][0][i] =  qubits_m_out_Z[0][0][i] # 上
+            syndrome_out_Z[num*(div+1)+div+1][0][i] =  qubits_m_out_Z[0][0][i] # 上
             qubits_m_out_Z[0][0][i] = 0
             qubits_m_out_Z[1][0][i] = 0
             p_x_error(qubits_m_in,i,j,p_list[6]) # 測定エラー
-            syndrome_out_Z[num*(div+1)+1][1][i] =  qubits_m_out_Z[0][1][i] # 下
+            syndrome_out_Z[num*(div+1)+div+1][1][i] =  qubits_m_out_Z[0][1][i] # 下
             qubits_m_out_Z[0][1][i] = 0
             qubits_m_out_Z[1][1][i] = 0
         
@@ -389,6 +376,10 @@ def rotated_surface_code(code_distance,p_list,rep,div):
     ######################### 測定結果からシンドロームを計算する #########################
 
     ### Zシンドローム
+    ### X測定エラー
+    for i in range(code_distance):
+        for j in range(code_distance):
+            p_x_error(qubits_d,i,j,p_list[8])
     # 内側
     for i in range(code_distance-1):
         for j in range(code_distance-1):
@@ -461,16 +452,6 @@ def rotated_surface_code(code_distance,p_list,rep,div):
             detection_event_out_Z[num,0,i] = (syndrome_out_Z[num,0,i] + syndrome_out_Z[num+1,0,i]) % 2
             detection_event_out_Z[num,1,i] = (syndrome_out_Z[num,1,i] + syndrome_out_Z[num+1,1,i]) % 2
 
-    ############# data qubitでエラーが起こった場所の確認 ##
-
-    dif_qubits_d_X = np.zeros((rep+1,code_distance,code_distance))
-    dif_qubits_d_Z = np.zeros((rep+1,code_distance,code_distance))
-    for num in range(rep+1):
-        for i in range(code_distance):
-            for j in range(code_distance):
-                dif_qubits_d_X[num][i][j] = (qubits_d_X[num][i][j] + qubits_d_X[num+1][i][j]) % 2
-                dif_qubits_d_Z[num][i][j] = (qubits_d_Z[num][i][j] + qubits_d_Z[num+1][i][j]) % 2
-
     #print("detection event", detection_event_in_Z)
     count = 0
     for num in range(rep):
@@ -480,7 +461,7 @@ def rotated_surface_code(code_distance,p_list,rep,div):
                     count += 1
     #print("count=", count)
 
-    return detection_event_in_X, detection_event_out_X, result_data_Z, detection_event_in_Z, detection_event_out_Z, result_data_X, dif_qubits_d_Z, dif_qubits_d_X
+    return detection_event_in_X, detection_event_out_X, result_data_Z, detection_event_in_Z, detection_event_out_Z, result_data_X
         
 def sampling(code_distance,p_list,rep,div):
 
@@ -566,19 +547,6 @@ def sampling(code_distance,p_list,rep,div):
                         gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log((p_list[0])))
                 elif num == (div+1)*rep:
                     if (i+j) % 2 == 1 and i == -1:
-                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[2]+p_list[6]+0*p_list[6]))
-                    elif (i+j) % 2 == 1 and i == code_distance-2:
-                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[2]+p_list[6]+1*p_list[6]))
-                    elif (i+j) % 2 == 1:
-                        gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[2]+2*p_list[6]+1*p_list[6]))
-                    elif (i+j) % 2 == 0 and i == -1:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[2]+p_list[6]+1*p_list[6]))
-                    elif (i+j) % 2 == 0 and i == code_distance-2:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[2]+p_list[6]+2*p_list[6]))
-                    elif (i+j) % 2 == 0:
-                        gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[2]+2*p_list[6]+3*p_list[6]))
-                elif num == rep * (div+1)-1:
-                    if (i+j) % 2 == 1 and i == -1:
                         gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[8]+p_list[2]+p_list[6]+0*p_list[6]))
                     elif (i+j) % 2 == 1 and i == code_distance-2:
                         gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[8]+p_list[2]+p_list[6]+1*p_list[6]))
@@ -590,7 +558,7 @@ def sampling(code_distance,p_list,rep,div):
                         gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[8]+p_list[2]+p_list[6]+2*p_list[6]))
                     elif (i+j) % 2 == 0:
                         gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[8]+p_list[2]+2*p_list[6]+3*p_list[6]))
-                elif (num+1) % (div+1) == 0:
+                elif num % (div+1) == 0:
                     if (i+j) % 2 == 1 and i == -1:
                         gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[0]+p_list[2]+p_list[6]+0*p_list[6]))
                     elif (i+j) % 2 == 1 and i == code_distance-2:
@@ -636,19 +604,6 @@ def sampling(code_distance,p_list,rep,div):
                 elif i % 2 == 1 :
                     gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log((2*p_list[0])))
             elif num == (div+1)*rep:
-                if i % 2 == 0 and i == code_distance-1: # 半円 ()外は伝播によるもの
-                    gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log((p_list[2]+p_list[6])+2*p_list[6]))
-                elif i % 2 == 0 and i == 0: # 下四角
-                    gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log((2*p_list[2]+3*p_list[6])+1*p_list[6]))
-                elif i % 2 == 0: # 中四角
-                    gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log((2*p_list[2]+4*p_list[6])+2*p_list[6]))
-                elif i % 2 == 1 and i == -1: # 半円
-                    gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log((p_list[2]+p_list[6])+1*p_list[6]))
-                elif i % 2 == 1 and i == code_distance-2: # 下四角
-                    gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log((2*p_list[2]+3*p_list[6])+2*p_list[6]))
-                elif i % 2 == 1: # 中四角
-                    gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log((2*p_list[2]+4*p_list[6])+3*p_list[6]))
-            elif num == (div+1)*rep-1:
                 if i % 2 == 0 and i == code_distance-1: # 半円 ()外は伝播によるもの
                     gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log((p_list[8]+p_list[2]+p_list[6])+2*p_list[6]))
                 elif i % 2 == 0 and i == 0: # 下四角
