@@ -467,7 +467,7 @@ def sampling(code_distance,p_list,rep,div):
 
     ############# 読み込み ################
 
-    detection_event_in_X, detection_event_out_X, result_data_Z,  detection_event_in_Z, detection_event_out_Z, result_data_X, dif_qubits_d_Z, dif_qubits_d_X = rotated_surface_code(code_distance,p_list,rep,div)
+    detection_event_in_X, detection_event_out_X, result_data_Z,  detection_event_in_Z, detection_event_out_Z, result_data_X = rotated_surface_code(code_distance,p_list,rep,div)
 
     ############# MWPM ################
 
@@ -1048,8 +1048,8 @@ if __name__ == "__main__":
     rep = 1
     ### パラメータ ###
     cd_rep_list = [3]
-    round_rep = 10000
-    div_list =[0,1,4,9,19]
+    round_rep = 12000
+    div_list =[0,1,2,3,4]
     trials = 20
     pro = 500
     ################
