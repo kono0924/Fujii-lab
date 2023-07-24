@@ -943,7 +943,7 @@ if __name__ == "__main__":
     pro = 500
     ################
     d_s = 3
-    d_e = 9
+    d_e = 7
     d_d = 2
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
 
@@ -991,9 +991,9 @@ if __name__ == "__main__":
             if os.path.exists('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')==True:
                 continue
             else:
-                df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
-                df_X.to_csv('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')
-                #df_Z = pd.DataFrame(data=c_Z[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
-                #df_Z.to_csv('X error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')
+                #df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
+                #df_X.to_csv('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')
+                df_Z = pd.DataFrame(data=c_Z[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
+                df_Z.to_csv('X error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')
                 break
         os.chdir('../') # ディレクトリ戻る
