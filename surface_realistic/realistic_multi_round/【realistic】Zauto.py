@@ -1007,7 +1007,7 @@ def pL_X(p,cd_rep,round_rep,eta):
 
 # 第一論理Xエラー(最後)
 def pL_X_last(p,cd_rep,round_rep,eta):
-    return 1/2 * (1- (1 - 2 * (4*cd_rep-3)*p/(eta+1))**round_rep) + cd_rep*p*(2*eta+1)/(2*eta+2)
+    return cd_rep*p*(2*eta+1)/(2*eta+2)
 
 def p_matrix(p,eta,round_rep,cd_rep):
     matrix = []
