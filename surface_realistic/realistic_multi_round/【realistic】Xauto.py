@@ -790,7 +790,7 @@ def sampling(code_distance,p_list,rep,div):
     for num in range(rep*(div+1)+1):
         for i in range(code_distance-2):
             for j in range(-1,code_distance-1):
-                if num == 0:
+                if num == 0 and div != 0:
                     if (i+j) % 2 == 0 and j ==-1:
                         gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]))
                     elif (i+j) % 2 == 0 and j ==code_distance-2:
@@ -847,7 +847,7 @@ def sampling(code_distance,p_list,rep,div):
     ### 外点
     for num in range(rep*(div+1)+1):
         for j in range(-1,code_distance):
-            if num == 0:
+            if num == 0 and div != 0:
                 if j % 2 == 0:
                     if j == 0:
                         gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]))
