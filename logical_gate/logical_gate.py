@@ -284,7 +284,7 @@ def aaa(code_distance,p,eta,trials,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 2000
+    trials = 20000
     code_distance = 11
     p_ = 0.006
     eta = 1000
