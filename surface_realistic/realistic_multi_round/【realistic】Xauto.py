@@ -1081,10 +1081,10 @@ if __name__ == "__main__":
     eta = 1000
     rep = 1
     ### パラメータ ###
-    cd_rep_list = [5]
-    round_rep = 1200
+    cd_rep_list = [3]
+    round_rep = 2000
     div_list =[0,1,2,3,4]
-    trials = 20000
+    trials = 2000
     pro = 500
     ################
     d_s = 3
