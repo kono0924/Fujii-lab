@@ -904,7 +904,7 @@ def p_matrix(p,eta,round_rep,cd_rep):
     matrix = []
     matrix.append(pL_X(p,cd_rep,round_rep,eta)) #pL_x
     matrix.append(pL_z(p,cd_rep,round_rep)) #pL_z
-    matrix.append((5*cd_rep-1)*p/(eta+1)) # pg_c_x
+    matrix.append((5*cd_rep-4)*p/(eta+1)) # pg_c_x
     matrix.append(pg_z(p,eta,cd_rep)) # pg_c_z
     matrix.append((3*cd_rep-2)*p/(eta+1)) # pg_t_x
     matrix.append(eta/(eta+1)*p + 1/(2*(eta+1))*p) #pg_t_z
@@ -988,7 +988,7 @@ if __name__ == "__main__":
             continue
         os.chdir('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))
         for k in range(100):
-            if os.path.exists('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')==True:
+            if os.path.exists('X error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')==True:
                 continue
             else:
                 #df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)

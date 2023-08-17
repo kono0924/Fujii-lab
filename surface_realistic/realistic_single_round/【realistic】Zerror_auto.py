@@ -903,7 +903,7 @@ def p_matrix(p,eta,round_rep,cd_rep):
     matrix = []
     matrix.append(pL_X(p,cd_rep,round_rep,eta)) #pL_x
     matrix.append(pL_z(p,cd_rep,round_rep)) #pL_z
-    matrix.append((5*cd_rep-1)*p/(eta+1)) # pg_c_x
+    matrix.append((5*cd_rep-4)*p/(eta+1)) # pg_c_x
     matrix.append(pg_z(p,eta,cd_rep)) # pg_c_z
     matrix.append((3*cd_rep-2)*p/(eta+1)) # pg_t_x
     matrix.append(eta/(eta+1)*p + 1/(2*(eta+1))*p) #pg_t_z
