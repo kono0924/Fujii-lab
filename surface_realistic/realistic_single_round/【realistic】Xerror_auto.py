@@ -886,7 +886,7 @@ if __name__ == "__main__":
     ### パラメータ ###
     cd_rep_list = [5,7]
     round_rep_list = [1,10,50,100,150,200,400,600,800,1000,1200,1400,1600]
-    trials = 2
+    trials = 2000
     pro = 500
     ################
     d_s = 3
@@ -939,3 +939,4 @@ if __name__ == "__main__":
                 df_Z.to_csv('X error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')
                 break
         os.chdir('../') # ディレクトリ戻る
+
