@@ -269,13 +269,13 @@ if __name__ == "__main__":
     rep_fin = 50
     rep_div = 1
     rep_list= list(range(rep_sta,rep_fin+1,rep_div))
-    code_distance_list=[3,5,7,9]
+    code_distance_list=[3,5,7]
     p_sta = 0.0005
     p_fin = 0.001
     p_div = 0.0001
     p_list= np.array([0.0005, 0.0006, 0.0007, 0.0008, 0.0009, 0.001])
     eta=1000
-    trials= 400
+    trials= 4000
     pro = 500
 
     # プロセスを管理する人。デラックスな共有メモリ
