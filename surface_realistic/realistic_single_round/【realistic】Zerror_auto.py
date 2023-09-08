@@ -565,7 +565,7 @@ def sampling(code_distance,p_list,rep):
         for i in range(len(path)): 
             if i !=0: #i=0は飛ばす
                 ### 外点がある場合
-                if path[i-1] == 'external_Z': # pathの左='external'
+                if path[i-1] == 'external_Z': # pathの左='external'blob:vscode-webview://00go5eiif7m5h4vhbvoelpm9c54b0m4qbsro8k2cdtn6if9t74e1/f8cbb708-7371-4b52-851f-eec80f56c300
                     if path[i][2] == 0: # 2番目の要素はx座標=0でここが外点とつながっているとき
                         result_data_X[path[i][1]+1,0] = (result_data_X[path[i][1]+1,0] + 1) % 2
                     else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
@@ -936,9 +936,9 @@ if __name__ == "__main__":
     eta = 1000
     rep = 1
     ### パラメータ ###
-    cd_rep_list = [5,7]
-    round_rep_list = [1,200,400,600,800,1000,1200,1400,1600]
-    trials = 20000
+    cd_rep_list = [3]
+    round_rep_list = [200,400,600,800,1000,1200,1400,1600,1800]
+    trials = 80000
     pro = 500
     ################
     d_s = 3
