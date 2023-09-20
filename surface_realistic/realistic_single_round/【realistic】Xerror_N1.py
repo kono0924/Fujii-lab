@@ -887,7 +887,7 @@ if __name__ == "__main__":
     round = 1
     ### パラメータ ###
     cd_rep_list = [3,5,7]
-    p_list = [0.0001,0.0002,0.0003,0.0004,0.0005,0.0006,0.0007,0.0008,0.0009,0.001]
+    p_list = [0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1]
     trials = 20
     pro = 500
     ################
@@ -927,7 +927,10 @@ if __name__ == "__main__":
             c_Z += result_list[i]
     c_X /= pro # 論理Zエラー
     c_Z /= pro # 論理Xエラー
+<<<<<<< HEAD
     print(result_list)
+=======
+>>>>>>> 24fc438efdeae4661ca1608477e0d6f8ba3a0a91
 
     for i in range(len(cd_rep_list)):
         if os.path.exists('d1='+str(cd_rep_list[i])+',N='+str(round)+',eta='+str(eta))==False:
