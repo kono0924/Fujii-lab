@@ -598,191 +598,7 @@ def sampling(code_distance,p_list,rep):
     ############################################# Zシンドローム終わり #####################################################################
     
     ############################################# Xシンドローム始まり #####################################################################
-    ### 縦
-    for num in range(rep):
-        ### 内側
-        for i in range(code_distance-1):
-            for j in range(-1,code_distance):
-                if (i+j) % 2 == 0:
-                    gp_X.add_edge((num,i,j),(num+1,i,j),weight=-math.log(3*p_list[6]+5*p_list[7]))
-        ### 外側
-        for i in range(code_distance-1):
-            if i % 2 == 0:
-                gp_X.add_edge((num,i,code_distance-1),(num+1,i,code_distance-1),weight=-math.log(3*p_list[6]+3*p_list[7]))
-            if i % 2 == 1:
-                gp_X.add_edge((num,i,-1),(num+1,i,-1),weight=-math.log(3*p_list[6]+3*p_list[7]))
-    # 斜めのエラーを生じるZエラーは反復符号で吸収される
-    """
-    ### 斜め
-    for num in range(rep):
-        ### 内側
-        for i in range(-1,code_distance-1):
-            for j in range(code_distance-2):
-                if num != 0:
-                    if (i+j) % 2 == 0:
-                        gp_X.add_edge((num+1,i,j),(num,i+1,j+1),weight=-math.log(p_list[3]))
-                    if (i+j) % 2 == 1:
-                        gp_X.add_edge((num,i+1,j),(num+1,i,j+1),weight=-math.log(p_list[3]))
-        ### 外側
-        for i in range(code_distance-2):
-            if num != 0:
-                if i % 2 == 0:
-                    gp_X.add_edge((num+1,i+1,code_distance-2),(num,i,code_distance-1),weight=-math.log(p_list[3]))
-                    gp_X.add_edge((num,i,),(num+1,i+1,-1),weight=-math.log(p_list[3]))
-                if i % 2 == 1:
-                    gp_X.add_edge((num,i,code_distance-2),(num+1,i+1,code_distance-1),weight=-math.log(p_list[3]))
-                    gp_X.add_edge((num,i,-1),(num+1,i+1,0),weight=-math.log(p_list[3]))
-    """
-    ### 横
-    for num in range(rep+1):
-        for i in range(code_distance-2):
-            for j in range(-1,code_distance-1):
-                if num == 0:
-                    if (i+j) % 2 == 0 and j ==-1:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]+p_list[3]+1*p_list[5]))
-                    elif (i+j) % 2 == 0 and j ==code_distance-2:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]+p_list[3]+0*p_list[5]))
-                    elif (i+j) % 2 == 0:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]+2*p_list[3]+1*p_list[5]))
-                    elif (i+j) % 2 == 1 and j ==-1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]+p_list[3]+1*p_list[5]))
-                    elif (i+j) % 2 == 1 and j ==code_distance-2:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]+p_list[3]+2*p_list[5]))
-                    elif (i+j) % 2 == 1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]+2*p_list[3]+3*p_list[5]))
-                elif num == rep:
-                    continue
-                    if (i+j) % 2 == 0 and j==-1:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[3]+1*p_list[5]))
-                    elif (i+j) % 2 == 0 and j==code_distance-2:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[3]+0*p_list[5]))
-                    elif (i+j) % 2 == 0:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(2*p_list[3]+1*p_list[5]))
-                    elif (i+j) % 2 == 1 and j==-1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[3]+1*p_list[5]))
-                    elif (i+j) % 2 == 1 and j==code_distance-2:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[3]+2*p_list[5]))
-                    elif (i+j) % 2 == 1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(2*p_list[3]+3*p_list[5]))
-                else:
-                    if (i+j) % 2 == 0 and j==-1:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]+2*p_list[3]+1*p_list[5]))
-                    elif (i+j) % 2 == 0 and j==code_distance-2:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]+2*p_list[3]+0*p_list[5]))
-                    elif (i+j) % 2 == 0:
-                        gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]+2*p_list[3]+1*p_list[5]))
-                    elif (i+j) % 2 == 1 and j==-1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]+2*p_list[3]+1*p_list[5]))
-                    elif (i+j) % 2 == 1 and j==code_distance-2:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]+2*p_list[3]+2*p_list[5]))
-                    elif (i+j) % 2 == 1:
-                        gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]+2*p_list[3]+3*p_list[5]))
-    ### 外点
-    for num in range(rep+1):
-        for j in range(-1,code_distance):
-            if num == 0:
-                if j % 2 == 0 and j == 0:
-                        gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+3*p_list[3]+2*p_list[5]))
-                elif j % 2 == 0 and j == code_distance-1:
-                    gp_X.add_edge('external_X',(num,0,j),weight=-math.log(p_list[1]+p_list[3]+0*p_list[5]))
-                elif j % 2 == 0:
-                    gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+4*p_list[3]+2*p_list[5]))
-                elif j % 2 == 1 and j == -1:
-                        gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(p_list[1]+p_list[3]+1*p_list[5]))
-                elif j % 2 == 1 and j == code_distance-2:
-                    gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+3*p_list[3]+4*p_list[5]))
-                elif j % 2 == 1:
-                    gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+4*p_list[3]+3*p_list[5]))
-            elif num == rep:
-                continue
-                """
-                if j % 2 == 0:
-                    if j == 0:
-                        gp_X.add_edge('external_X',(num,0,j),weight=-math.log())
-                    elif j == code_distance-1:
-                        gp_X.add_edge('external_X',(num,0,j),weight=-math.log())
-                    else:
-                        gp_X.add_edge('external_X',(num,0,j),weight=-math.log())
-                if j % 2 == 1:
-                    if j == -1:
-                        gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log())
-                    elif j == code_distance-2:
-                        gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log())
-                    else:
-                        gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log())
-                """
-            else:
-                if j % 2 == 0 and j == 0:
-                    gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+3*p_list[3]+2*p_list[5]))
-                elif j % 2 == 0 and j == code_distance-1:
-                    gp_X.add_edge('external_X',(num,0,j),weight=-math.log(p_list[1]+p_list[3]+0*p_list[5]))
-                elif j % 2 == 0:
-                    gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]+4*p_list[3]+2*p_list[5]))
-                elif j % 2 == 1 and j == -1:
-                    gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(p_list[1]+p_list[3]+2*p_list[5]))
-                elif j % 2 == 1 and j == code_distance-2:
-                    gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+3*p_list[3]+0*p_list[5]))
-                elif j % 2 == 1:
-                    gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]+4*p_list[3]+2*p_list[5]))
-    """
-    edge_of_decoder_graph_X = []
-    ### 内側
-    for num in range(rep+1):
-        for i in range(code_distance-1):
-            for j in range(code_distance-1):
-                if detection_event_in_X[num,i,j] == 1 and (i+j)%2==0 :
-                    edge_of_decoder_graph_X.append((num,i,j)) 
-    ### 外側
-    for num in range(rep+1):
-        for i in range(int((code_distance-1)/2)):
-            if detection_event_out_X[num,1,i] == 1:
-                edge_of_decoder_graph_X.append((num,2*i,code_distance-1))
-            if detection_event_out_X[num,0,i] == 1:
-                edge_of_decoder_graph_X.append((num,2*i+1,-1))
-    ### 外点
-    if len(edge_of_decoder_graph_X)%2==1:
-            edge_of_decoder_graph_X.append('external_X')
-    ########## 最短距離の追加 ############
-    mwpm_gp = nx.Graph() 
-    ### 頂点の追加
-    for v in range(len(edge_of_decoder_graph_X)):
-        mwpm_gp.add_node(v)
-    ### 辺の追加
-    for i in range(len(edge_of_decoder_graph_X)):
-        for j in range(i):
-            shortest_path_weight = nx.dijkstra_path_length(gp_X, edge_of_decoder_graph_X[i],edge_of_decoder_graph_X[j])
-            mwpm_gp.add_edge(i,j,weight = 100000000 - shortest_path_weight)
-    ########## マッチング実行 ############
-    mwpm_res = nx.max_weight_matching(mwpm_gp)
-    match_path = []
-    for match_pair in mwpm_res:
-        match_path.append(nx.dijkstra_path(gp_X,edge_of_decoder_graph_X[match_pair[0]],edge_of_decoder_graph_X[match_pair[1]]))
-    for path in match_path:
-        #print(path)
-        for i in range(len(path)): 
-            if i !=0: #i=0は飛ばす
-                ### 外点がある場合
-                if path[i-1] == 'external_X': # pathの左='external'
-                    if path[i][1] == 0: # 2番目の要素はy座標=0でここが外点とつながっているとき
-                        result_data_Z[0,path[i][2]] = (result_data_Z[0,path[i][2]] + 1) % 2
-                    else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
-                        result_data_Z[code_distance-1,path[i][2]+1] = (result_data_Z[code_distance-1,path[i][2]+1] + 1) % 2
-                elif path[i] == 'external_X': # pathの右='external'
-                    if path[i-1][1] == 0: # 2番目の要素はy座標でここが外点とつながっているとき
-                        result_data_Z[0,path[i-1][2]] = (result_data_Z[0,path[i-1][2]] + 1) % 2
-                    else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
-                        result_data_Z[code_distance-1,path[i-1][2]+1] = (result_data_Z[code_distance-1,path[i-1][2]+1] + 1) % 2
-                ### numが同じ場合
-                elif path[i-1][0] == path[i][0]: 
-                    result_data_Z[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data_Z[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
-                ### numが違う場合
-                #座標が同じ場合
-                elif path[i-1][1] == path[i][1] and path[i-1][2] == path[i][2]: 
-                    continue
-                #座標が違う場合
-                else:
-                    result_data_Z[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data_Z[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
-    """
+    
     ### Zシンドロームを繰り返すことによってエラーを左に集める
     Z_data = result_data_Z.copy()
     for j in range(code_distance-1):
@@ -876,7 +692,7 @@ def count(trials,cd_sur_list,p_list,eta,round,cd_rep_list,rep,result_list):
                         count_X[i*len(cd_sur_list)+j,k] += 1
                     if judge_Z == 1: # 論理Xエラー
                         count_Z[i*len(cd_sur_list)+j,k] += 1
-    result_list.append(count_X/trials)
+    #result_list.append(count_X/trials)
     result_list.append(count_Z/trials)
 
 if __name__ == "__main__":
@@ -888,8 +704,8 @@ if __name__ == "__main__":
     ### パラメータ ###
     cd_rep_list = [3,5,7]
     p_list = [0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1]
-    trials = 20
-    pro = 500
+    trials = 1
+    pro = 1
     ################
     d_s = 3
     d_e = 7
@@ -916,16 +732,11 @@ if __name__ == "__main__":
         # プロセスの終了待ち
         process.join()
 
-    for i in range(2*pro):
+    for i in range(pro):
         if i == 0:
-            c_X = result_list[0]
-        elif i == 1:
-            c_Z = result_list[1]
-        elif i%2 == 0:
-            c_X += result_list[i]
-        elif i%2 == 1:
-            c_Z += result_list[i]
-    c_X /= pro # 論理Zエラー
+            c_Z = result_list[0]
+        else:
+            c_Z = result_list[i]
     c_Z /= pro # 論理Xエラー
 
     for i in range(len(cd_rep_list)):
