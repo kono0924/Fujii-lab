@@ -927,7 +927,7 @@ def count(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,rep,result_list):
                     if judge_Z == 1: # 論理Xエラー
                         count_Z[i*len(cd_sur_list)+j,k] += 1
     result_list.append(count_X/trials)
-    result_list.append(count_Z/trials)
+    #result_list.append(count_Z/trials)
 
 if __name__ == "__main__":
 
@@ -966,17 +966,12 @@ if __name__ == "__main__":
         # プロセスの終了待ち
         process.join()
 
-    for i in range(2*pro):
+    for i in range(pro):
         if i == 0:
             c_X = result_list[0]
-        elif i == 1:
-            c_Z = result_list[1]
-        elif i%2 == 0:
+        else:
             c_X += result_list[i]
-        elif i%2 == 1:
-            c_Z += result_list[i]
     c_X /= pro # 論理Zエラー
-    c_Z /= pro # 論理Xエラー
 
     for i in range(len(cd_rep_list)):
         if os.path.exists('d1='+str(cd_rep_list[i])+',p='+str(p)+',eta='+str(eta))==False:
