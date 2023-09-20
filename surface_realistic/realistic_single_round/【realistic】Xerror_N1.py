@@ -927,10 +927,6 @@ if __name__ == "__main__":
             c_Z += result_list[i]
     c_X /= pro # 論理Zエラー
     c_Z /= pro # 論理Xエラー
-<<<<<<< HEAD
-    print(result_list)
-=======
->>>>>>> 24fc438efdeae4661ca1608477e0d6f8ba3a0a91
 
     for i in range(len(cd_rep_list)):
         if os.path.exists('d1='+str(cd_rep_list[i])+',N='+str(round)+',eta='+str(eta))==False:
