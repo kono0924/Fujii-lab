@@ -832,7 +832,7 @@ def sampling(code_distance,p_list,rep):
     judge_X = 0
     if count == [1] * code_distance:
         judge_X = 1
-    ########################### Xシンドローム終わり　###########################
+    ########################### Xシンドローム終わり ###########################
     return result_data_Z, Z_data, judge_X, result_data_X, X_data, judge_Z
 # 論理CNOTゲート
 def pg_z(p,eta,cd_rep):
@@ -927,6 +927,8 @@ if __name__ == "__main__":
             c_Z += result_list[i]
     c_X /= pro # 論理Zエラー
     c_Z /= pro # 論理Xエラー
+    print(c_X)
+    print(c_Z)
 
     for i in range(len(cd_rep_list)):
         if os.path.exists('d1='+str(cd_rep_list[i])+',N='+str(round)+',eta='+str(eta))==False:
