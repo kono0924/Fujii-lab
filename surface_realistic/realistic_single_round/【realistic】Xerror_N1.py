@@ -7,7 +7,7 @@ import networkx as nx
 import math
 import os
 import multiprocessing
-############## Zシンドロームの測定が先、Xシンドロームの測定が後(反復符号の論理エラーの関係を調整)
+############### Zシンドロームの測定が先、Xシンドロームの測定が後(反復符号の論理エラーの関係を調整)
 #エラーの定義 qubitは三次元配列で1つ目のインデックスでXかZか、2,3個目のインデックスで位置を指定
 def x_error(qubit,i,j):
     qubit[0][i][j] = (qubit[0][i][j]+1)%2
