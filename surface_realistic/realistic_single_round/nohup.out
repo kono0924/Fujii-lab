@@ -45930,3 +45930,7 @@ Traceback (most recent call last):
   File "/home/kono/yes/lib/python3.9/multiprocessing/managers.py", line 825, in _callmethod
     raise convert_to_error(kind, result)
 IndexError: list index out of range
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_single_round/【realistic】Xerror_N1.py", line 930
+    <<<<<<< HEAD
+    ^
+SyntaxError: invalid syntax
