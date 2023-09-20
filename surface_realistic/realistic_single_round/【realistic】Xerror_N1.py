@@ -736,7 +736,7 @@ if __name__ == "__main__":
         if i == 0:
             c_Z = result_list[0]
         else:
-            c_Z = result_list[i]
+            c_Z += result_list[i]
     c_Z /= pro # 論理Xエラー
 
     for i in range(len(cd_rep_list)):
