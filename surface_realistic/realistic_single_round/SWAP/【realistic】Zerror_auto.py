@@ -412,6 +412,7 @@ def sampling(code_distance,p_list,rep):
     gp_X.add_node('external_X')
     gp_Z.add_node('external_Z')
     
+    """
     ############################# Zシンドローム #############################
 
     ### 重み付け
@@ -525,6 +526,8 @@ def sampling(code_distance,p_list,rep):
                         gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log((2*p_list[0]+2*p_list[2]+3*p_list[10])+2*p_list[6]))
                     else:
                         gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log((2*p_list[0]+2*p_list[2]+4*p_list[10])+3*p_list[6]))
+    """
+
     """
     ### シンドローム1の点の追加
     edge_of_decoder_graph_Z = []
@@ -871,9 +874,9 @@ def sampling(code_distance,p_list,rep):
 
 # 論理CNOTゲート
 def pg_Z(p,eta,cd_rep):
-    return 1/2 * (1-(1-2*p/(eta+1))**(3*cd_rep-2))
-def pg_X(p,eta,cd_rep):
     return 1/2 * (1-(1-2*p*(2*eta+1)/(2*(eta+1)))**(3*cd_rep-2))
+def pg_X(p,eta,cd_rep):
+    return 1/2 * (1-(1-2*p/(eta+1))**(3*cd_rep-2))
 def p_matrix(p,eta,round_rep,cd_rep):
     matrix = []
     ### 反復符号(なし)
@@ -920,7 +923,7 @@ if __name__ == "__main__":
     ### パラメータ ###
     cd_rep_list = [3,5,7]
     p_list = [0.0001,0.0002,0.0003,0.0004,0.0005,0.0006,0.0007,0.0008,0.0009,0.001]
-    trials = 200
+    trials = 20
     pro = 500
     ################
     d_s = 3

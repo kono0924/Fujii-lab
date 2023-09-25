@@ -672,9 +672,9 @@ def sampling(code_distance,p_list,rep):
 
 # 論理CNOTゲート
 def pg_Z(p,eta,cd_rep):
-    return 1/2 * (1-(1-2*p/(eta+1))**(3*cd_rep-2))
-def pg_X(p,eta,cd_rep):
     return 1/2 * (1-(1-2*p*(2*eta+1)/(2*(eta+1)))**(3*cd_rep-2))
+def pg_X(p,eta,cd_rep):
+    return 1/2 * (1-(1-2*p/(eta+1))**(3*cd_rep-2))
 def p_matrix(p,eta,round_rep,cd_rep):
     matrix = []
     ### 反復符号(なし)
@@ -719,7 +719,7 @@ if __name__ == "__main__":
     round = 1
     ### パラメータ ###
     cd_rep_list = [3,5,7]
-    p_list = [0.0001,0.001,0.01]
+    p_list = [0.0001,0.001,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1]
     trials = 20
     pro = 500
     ################
