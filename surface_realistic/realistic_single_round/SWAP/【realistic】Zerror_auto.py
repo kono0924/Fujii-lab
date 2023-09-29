@@ -926,8 +926,8 @@ if __name__ == "__main__":
     trials = 800
     pro = 500
     ################
-    d_s = 3
-    d_e = 7
+    d_s = 9
+    d_e = 9
     d_d = 2
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
 
