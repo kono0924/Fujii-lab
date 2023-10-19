@@ -675,35 +675,35 @@ def pg_Z(p,eta,cd_rep):
     return 1/2 * (1-(1-2*p*(2*eta+1)/(2*(eta+1)))**(3*cd_rep-2))
 def pg_X(p,eta,cd_rep):
     return 1/2 * (1-(1-2*p/(eta+1))**(3*cd_rep-2))
-def p_matrix(p,eta,round_rep,cd_rep):
+def p_matrix(p,eta,cd_rep):
     matrix = []
     ### 反復符号(なし)
     matrix.append(10e-20) #pL_x(反復符号はゼロ)
     matrix.append(10e-20) #pL_z(反復符号はゼロ)
     ### Zシンドローム測定
-    matrix.append(2 * 1/(eta+1)*p) # pg_c_x
+    matrix.append(2 * p / (eta+1)) # pg_c_x
     matrix.append(pg_Z(p,eta,cd_rep)) # pg_c_z
     matrix.append(cd_rep*p/(eta+1)) # pg_t_x
-    matrix.append((2*eta+1)/(2*(eta+1))*p) #pg_t_z
+    matrix.append((2*eta+1)*p/(2*(eta+1))) #pg_t_z
     ### Xシンドローム測定
     matrix.append(pg_X(p,eta,cd_rep)) # pg_c_x
-    matrix.append(2*(2*eta+1)/(2*(eta+1))*p) # pg_c_z
-    matrix.append(1/(eta+1)*p) # pg_t_x
-    matrix.append(cd_rep*(2*eta+1)/(2*(eta+1))*p) #pg_t_z
+    matrix.append(2*(2*eta+1)*p/(2*(eta+1))) # pg_c_z
+    matrix.append(p/(eta+1)) # pg_t_x
+    matrix.append(cd_rep*(2*eta+1)*p/(2*(eta+1))) #pg_t_z
     ### ただのエラー
     matrix.append(1/(eta+1)*p) # p_x
     matrix.append((2*eta+1)/(2*(eta+1))*p) # p_z
     return matrix
 
 ##################### ここから上をコピーする ######################
-def count(trials,cd_sur_list,p_list,eta,round,cd_rep_list,rep,result_list):
+def count(trials,cd_sur_list,p_list,eta,cd_rep_list,result_list):
     count_X = np.zeros((len(cd_rep_list)*len(cd_sur_list),len(p_list)))
     count_Z = np.zeros((len(cd_rep_list)*len(cd_sur_list),len(p_list)))
     for _ in range(trials):
         for i in range(len(cd_rep_list)):
             for j in range(len(cd_sur_list)):
                 for k in range(len(p_list)):
-                    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p_list[k],eta,round,cd_rep_list[i]),rep=cd_sur_list[j])
+                    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p_list[k],eta,cd_rep_list[i]),cd_sur_list[j])
                     if judge_X == 1: # 論理Zエラー
                         count_X[i*len(cd_sur_list)+j,k] += 1
                     if judge_Z == 1: # 論理Xエラー
@@ -715,16 +715,15 @@ if __name__ == "__main__":
 
     ### パラメータ
     eta = 1000
-    rep = 1
-    round = 1
     ### パラメータ ###
     cd_rep_list = [3,5,7]
-    p_list = [0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1]
-    trials = 2000
+    #p_list = [0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1]
+    p_list = [0.1]
+    trials = 20
     pro = 500
     ################
     d_s = 3
-    d_e = 7
+    d_e = 3
     d_d = 2
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
 
@@ -737,7 +736,7 @@ if __name__ == "__main__":
     # プロセスを生成
     for _ in range(pro):
         # マネージャーから取得したオブジェクトを引数に渡す
-        process = multiprocessing.Process(target=count, args=(trials,cd_sur_list,p_list,eta,round,cd_rep_list,rep,result_list,))
+        process = multiprocessing.Process(target=count, args=(trials,cd_sur_list,p_list,eta,cd_rep_list,result_list,))
         # プロセス開始
         process.start()
         # プロセスのリストに追加
@@ -756,13 +755,13 @@ if __name__ == "__main__":
     c_Z /= pro # 論理Xエラー
 
     for i in range(len(cd_rep_list)):
-        if os.path.exists('d1='+str(cd_rep_list[i])+',N='+str(round)+',eta='+str(eta))==False:
-            os.mkdir('d1='+str(cd_rep_list[i])+',N='+str(round)+',eta='+str(eta))
+        if os.path.exists('d1='+str(cd_rep_list[i])+',eta='+str(eta))==False:
+            os.mkdir('d1='+str(cd_rep_list[i])+',eta='+str(eta))
 
     for i in range(len(cd_rep_list)):
         if trials*pro == 1:
             continue
-        os.chdir('d1='+str(cd_rep_list[i])+',N='+str(round)+',eta='+str(eta))
+        os.chdir('d1='+str(cd_rep_list[i])+',eta='+str(eta))
         for k in range(100):
             if os.path.exists('X error,N='+str(1)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')==True:
                 continue
@@ -770,7 +769,7 @@ if __name__ == "__main__":
                 #df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
                 #df_X.to_csv('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')
                 df_Z = pd.DataFrame(data=c_Z[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=p_list ,index=cd_sur_list)
-                df_Z.to_csv('X error,N='+str(round)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')
+                df_Z.to_csv('X error,d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')
                 break
         os.chdir('../') # ディレクトリ戻る
 
