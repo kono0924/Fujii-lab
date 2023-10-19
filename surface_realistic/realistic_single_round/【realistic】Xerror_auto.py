@@ -696,13 +696,13 @@ def count(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,rep,result_list):
     result_list.append(count_Z/trials)
 if __name__ == "__main__":
     ### パラメータ
-    p = 0.0001
+    p = 0.001
     eta = 1000
     rep = 1
     ### パラメータ ###
     cd_rep_list = [3]
     round_rep_list = [1,10,100,200,400,600,800,1200,1400,1600]
-    trials = 200
+    trials = 2000
     pro = 500
     ################
     d_s = 3
