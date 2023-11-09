@@ -517,7 +517,7 @@ def sampling(code_distance,p_list,rep):
     for i in range(len(edge_of_decoder_graph_Z)):
         for j in range(i):
             shortest_path_weight = nx.dijkstra_path_length(gp_Z, edge_of_decoder_graph_Z[i],edge_of_decoder_graph_Z[j])
-            mwpm_gp.add_edge(i,j,weight = 100000000 - shortest_path_weight)
+            mwpm_gp.add_edge(i,j,weight = 10000000000000000000000 - shortest_path_weight)
     ########## マッチング実行 ############
     mwpm_res = nx.max_weight_matching(mwpm_gp)
     match_path = []
