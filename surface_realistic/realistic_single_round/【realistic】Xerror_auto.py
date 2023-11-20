@@ -688,12 +688,11 @@ def count(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,rep,result_list):
             for j in range(len(cd_sur_list)):
                 for k in range(len(round_rep_list)):
                     result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,round_rep_list[k],cd_rep_list[i]),rep=cd_sur_list[j])
-                    if judge_X == 1: # 論理Zエラー
-                        count_X[i*len(cd_sur_list)+j,k] += 1
                     if judge_Z == 1: # 論理Xエラー
                         count_Z[i*len(cd_sur_list)+j,k] += 1
-    #result_list.append(count_X/trials)
     result_list.append(count_Z/trials)
+    print(count_Z)
+
 if __name__ == "__main__":
     ### パラメータ
     p = 0.0005
@@ -701,9 +700,10 @@ if __name__ == "__main__":
     rep = 1
     ### パラメータ ###
     cd_rep_list = [3]
-    round_rep_list = [1,10,100,200,400,600,800,1000,1200,1400,1600,1800,2000,8000,12000]
-    trials = 20
-    pro = 500
+    round_rep_list = [1200,12000]
+    #round_rep_list = [1,10,100,200,400,600,800,1000,1200,1400,1600,1800,2000]
+    trials = 1
+    pro = 10
     ################
     d_s = 3
     d_e = 7
@@ -744,8 +744,6 @@ if __name__ == "__main__":
             if os.path.exists('X error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')==True:
                 continue
             else:
-                #df_X = pd.DataFrame(data=c_X[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
-                #df_X.to_csv('Z error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')
                 df_Z = pd.DataFrame(data=c_Z[i*len(cd_sur_list):(i+1)*len(cd_sur_list)], columns=round_rep_list ,index=cd_sur_list)
                 df_Z.to_csv('X error,p='+str(p)+',d2=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+',ver'+str(k)+'.csv')
                 break
