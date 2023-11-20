@@ -648,7 +648,7 @@ def sampling(code_distance,p_list,rep):
     judge_X = 0
     if count == [1] * code_distance:
         judge_X = 1
-    ########################### Xシンドローム終わり　###########################
+    ########################### Xシンドローム終わり ###########################
     return result_data_Z, Z_data, judge_X, result_data_X, X_data, judge_Z
 # 論理CNOTゲート
 def pg_z(p,eta,cd_rep):
@@ -680,18 +680,20 @@ def p_matrix(p,eta,round_rep,cd_rep):
     matrix.append(pL_X_last(p,cd_rep,round_rep,eta)) #pL_x_last
     return matrix
 ##################### ここから上をコピーする ######################
-def count(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,rep,result_list):
+def count(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,result_list):
     count_X = np.zeros((len(cd_rep_list)*len(cd_sur_list),len(round_rep_list)))
     count_Z = np.zeros((len(cd_rep_list)*len(cd_sur_list),len(round_rep_list)))
     for _ in range(trials):
         for i in range(len(cd_rep_list)):
             for j in range(len(cd_sur_list)):
                 for k in range(len(round_rep_list)):
-                    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,round_rep_list[k],cd_rep_list[i]),rep=cd_sur_list[j])
+                    result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[j],p_matrix(p,eta,round_rep_list[k],cd_rep_list[i]),cd_sur_list[j])
                     if judge_Z == 1: # 論理Xエラー
                         count_Z[i*len(cd_sur_list)+j,k] += 1
-    result_list.append(count_Z/trials)
     print(count_Z)
+    result_list.append(count_Z/trials)
+
+# sampling(code_distance,p_list,rep)
 
 if __name__ == "__main__":
     ### パラメータ
@@ -718,7 +720,7 @@ if __name__ == "__main__":
     # プロセスを生成
     for _ in range(pro):
         # マネージャーから取得したオブジェクトを引数に渡す
-        process = multiprocessing.Process(target=count, args=(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,rep,result_list,))
+        process = multiprocessing.Process(target=count, args=(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,result_list,))
         # プロセス開始
         process.start()
         # プロセスのリストに追加
