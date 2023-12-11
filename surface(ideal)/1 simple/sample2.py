@@ -546,7 +546,7 @@ def sampling(code_distance,p_list,round_sur):
 
     return result_data_Z, Z_data, judge_X, result_data_X, X_data, judge_Z
 
-def p_matrix(p,eta,round_rep,cd_rep):
+def p_matrix(p,eta,round_rep):
     C = 0.02086
     p_th = 0.0146
     matrix = []
@@ -567,7 +567,7 @@ def count(trials,cd_sur_list,p_list,eta,result_list):
     for _ in range(trials):
         for i in range(len(cd_sur_list)):
             for j in range(len(p_list)):
-                result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[j],eta,100//cd_sur_list[i]),cd_sur_list[i])
+                result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[j],eta,1),cd_sur_list[i])
                 if judge_X == 1:
                     count_X[i,j] += 1
                 #print("result_Z\n", result_data_Z)
@@ -579,17 +579,17 @@ def count(trials,cd_sur_list,p_list,eta,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 200
+    trials = 1
     d_s = 3
     d_e = 9
     d_d = 2
     p_s = 0.01
     p_e = 0.15
-    p_d = 0.005
+    p_d = 0.01
     eta = 1000
     p_list = np.arange(p_s,p_e+p_d,p_d)
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
-    pro = 500
+    pro = 1
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
