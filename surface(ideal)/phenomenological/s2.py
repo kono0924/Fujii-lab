@@ -425,28 +425,18 @@ def sampling(code_distance,p_list,round_sur):
                     gp_X.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[1]))
                 if (i+j) % 2 == 1:
                     gp_X.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[1]))
-        ### Zシンドローム
-        
-        for i in range(-1,code_distance-1):
-            for j in range(code_distance-2):
-                if (i+j) % 2 == 1:
-                    gp_Z.add_edge((num,i,j),(num,i+1,j+1),weight=-math.log(p_list[0]))
-                if (i+j) % 2 == 0:
-                    gp_Z.add_edge((num,i+1,j),(num,i,j+1),weight=-math.log(p_list[0]))
         
     ### 外点
     for num in range(round_sur+1):
         for j in range(-1,code_distance):
-            if j % 2 == 0:
+            if j % 2 == 0 and j != code_distance-1:
+                gp_X.add_edge('external_X',(num,0,j),weight=-math.log(2*p_list[1]))
+            if j % 2 == 0 and j == code_distance-1:
                 gp_X.add_edge('external_X',(num,0,j),weight=-math.log(p_list[1]))
-            if j % 2 == 1:
+            if j % 2 == 1 and j != -1:
+                gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(2*p_list[1]))
+            if j % 2 == 1 and j == -1:
                 gp_X.add_edge('external_X',(num,code_distance-2,j),weight=-math.log(p_list[1]))
-        
-        for i in range(-1,code_distance):
-            if i % 2 == 0:
-                gp_Z.add_edge('external_Z',(num,i,code_distance-2),weight=-math.log(p_list[0]))
-            if i % 2 == 1:
-                gp_Z.add_edge('external_Z',(num,i,0),weight=-math.log(p_list[0]))
         
 
     ########## シンドローム1の点の追加 ############
@@ -568,111 +558,9 @@ def sampling(code_distance,p_list,round_sur):
         judge_X = 1
 
     #################################################################################################################################################################################################################################
-    # ここからはZシンドローム
-    ########## シンドローム1の点の追加 ############
-
-    edge_of_decoder_graph_Z = []
-
-    ### 内側
-    for num in range(round_sur+1):
-        for i in range(code_distance-1):
-            for j in range(code_distance-1):
-                if detection_event_in[num,i,j] == 1 and (i+j)%2 ==1 :
-                    edge_of_decoder_graph_Z.append((num,i,j))
-
-    ### 外側
-    for num in range(round_sur+1):
-        for i in range(int((code_distance-1)/2)):
-            if detection_event_out_Z[num,1,i] == 1:
-                edge_of_decoder_graph_Z.append((num,code_distance-1,2*i+1))
-            if detection_event_out_Z[num,0,i] == 1:
-                edge_of_decoder_graph_Z.append((num,-1,2*i))
-
-    ### 外点
-    if len(edge_of_decoder_graph_Z)%2==1:
-            edge_of_decoder_graph_Z.append('external_Z')
-    ########## 最短距離の追加 ############
-
-    mwpm_gp = nx.Graph() 
-
-    ### 頂点の追加
-    for v in range(len(edge_of_decoder_graph_Z)):
-        mwpm_gp.add_node(v)
-    ### 辺の追加
-    for i in range(len(edge_of_decoder_graph_Z)):
-        for j in range(i):
-            shortest_path_weight = nx.dijkstra_path_length(gp_Z, edge_of_decoder_graph_Z[i],edge_of_decoder_graph_Z[j])
-            mwpm_gp.add_edge(i,j,weight = 100000000 - shortest_path_weight)
-
-    ########## マッチング実行 ############
-    mwpm_res = nx.max_weight_matching(mwpm_gp)
-    match_path = []
-    for match_pair in mwpm_res:
-        match_path.append(nx.dijkstra_path(gp_Z,edge_of_decoder_graph_Z[match_pair[0]],edge_of_decoder_graph_Z[match_pair[1]]))
-    #print(match_path)
-    for path in match_path:
-        #print(path)
-        for i in range(len(path)): 
-            if i !=0: #i=0は飛ばす
-                ### 外点がある場合
-                if path[i-1] == 'external_Z': # pathの左='external'
-                    if path[i][2] == 0: # 2番目の要素はx座標=0でここが外点とつながっているとき
-                        result_data_X[path[i][1]+1,0] = (result_data_X[path[i][1]+1,0] + 1) % 2
-                    else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
-                        result_data_X[path[i][1],code_distance-1] = (result_data_X[path[i][1],code_distance-1] + 1) % 2
-                elif path[i] == 'external_Z': # pathの右='external'
-                    if path[i-1][2] == 0: # 2番目の要素はx座標でここが外点とつながっているとき
-                        result_data_X[path[i-1][1]+1,0] = (result_data_X[path[i-1][1]+1,0] + 1) % 2
-                    else: # 2番目の要素はy座標=code_distance-1でここが外点とつながっているとき
-                        result_data_X[path[i-1][1],code_distance-1] = (result_data_X[path[i-1][1],code_distance-1] + 1) % 2
-                ### numが同じ場合
-                elif path[i-1][0] == path[i][0]: 
-                    result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
-                ### numが違う場合
-                #座標が同じ場合
-                elif path[i-1][1] == path[i][1] and path[i-1][2] == path[i][2]: 
-                    continue
-                else:
-                    result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] = (result_data_X[min(path[i-1][1],path[i][1])+1,min(path[i-1][2],path[i][2])+1] + 1) % 2
 
     ### Zシンドロームを繰り返すことによってエラーを左に集める
     X_data = result_data_X.copy()
-    for i in range(code_distance-1):
-        for j in range(code_distance):
-            if i % 2 == 0:
-                if j == code_distance-1:
-                    if X_data[i,j] == 1:
-                        X_data[i,j] = (X_data[i,j] + 1) %2
-                        X_data[i+1,j] = (X_data[i+1,j] + 1) %2
-                elif j % 2 == 0:
-                    if X_data[i,j] == 1:
-                        X_data[i,j] = (X_data[i,j] + 1) %2
-                        X_data[i,j+1] = (X_data[i,j+1] + 1) %2
-                        X_data[i+1,j] = (X_data[i+1,j] + 1) %2
-                        X_data[i+1,j+1] = (X_data[i+1,j+1] + 1) %2
-                elif j % 2 == 1:
-                    if X_data[i,j] == 1:
-                        X_data[i,j] = (X_data[i,j] + 1) %2
-                        X_data[i,j-1] = (X_data[i,j-1] + 1) %2
-                        X_data[i+1,j] = (X_data[i+1,j] + 1) %2
-                        X_data[i+1,j-1] = (X_data[i+1,j-1] + 1) %2
-            if i % 2 == 1:
-                if j == 0:
-                    if X_data[i,j] == 1:
-                        X_data[i,j] = (X_data[i,j] + 1) %2
-                        X_data[i+1,j] = (X_data[i+1,j] + 1) %2
-                elif j % 2 == 1:
-                    if X_data[i,j] == 1:
-                        X_data[i,j] = (X_data[i,j] + 1) %2
-                        X_data[i,j+1] = (X_data[i,j+1] + 1) %2
-                        X_data[i+1,j] = (X_data[i+1,j] + 1) %2
-                        X_data[i+1,j+1] = (X_data[i+1,j+1] + 1) %2
-                elif j % 2 == 0:
-                    if X_data[i,j] == 1:
-                        X_data[i,j] = (X_data[i,j] + 1) %2
-                        X_data[i,j-1] = (X_data[i,j-1] + 1) %2
-                        X_data[i+1,j] = (X_data[i+1,j] + 1) %2
-                        X_data[i+1,j-1] = (X_data[i+1,j-1] + 1) %2
 
     ### 論理Xエラーがあるかの判定
     count = [0] * code_distance
@@ -686,11 +574,9 @@ def sampling(code_distance,p_list,round_sur):
 
     return result_data_Z, Z_data, judge_X, result_data_X, X_data, judge_Z
 
-def p_matrix(p,eta,round_rep,cd_rep):
-    C = 0.02086
-    p_th = 0.0146
+def p_matrix(p,eta,round_rep):
     matrix = []
-    matrix.append(p) #pL_x
+    matrix.append(0) #pL_x
     matrix.append(p) #pL_z
     matrix.append(0) # pg_x
     matrix.append(0) # pg_z
@@ -701,13 +587,13 @@ def p_matrix(p,eta,round_rep,cd_rep):
 
 ##################### ここから上をコピーする ######################
 
-def count(trials,cd_sur_list,p_list,eta,cd_rep,result_list):
+def count(trials,cd_sur_list,p_list,eta,result_list):
     count_X = np.zeros((len(cd_sur_list),len(p_list)))
     count_Z = np.zeros((len(cd_sur_list),len(p_list)))
     for _ in range(trials):
         for i in range(len(cd_sur_list)):
             for j in range(len(p_list)):
-                result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[j],eta,100//cd_sur_list[i],cd_rep),cd_sur_list[i])
+                result_data_Z, modefied_result_Z, judge_X, result_data_X, modefied_result_X, judge_Z  = sampling(cd_sur_list[i],p_matrix(p_list[j],eta,100//cd_sur_list[i]),cd_sur_list[i])
                 if judge_X == 1:
                     count_X[i,j] += 1
                 if judge_Z == 1:
@@ -717,12 +603,11 @@ def count(trials,cd_sur_list,p_list,eta,cd_rep,result_list):
                 #print("result_X\n", result_data_X)
                 #print("modefied_result_X\n", modefied_result_X)
     result_list.append(count_X/trials)
-    result_list.append(count_Z/trials)
 
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 2
+    trials = 1
     d_s = 3
     d_e = 9
     d_d = 2
@@ -730,10 +615,9 @@ if __name__ == "__main__":
     p_e = 0.045
     p_d = 0.005
     eta = 1000
-    cd_rep = 11
     p_list = np.arange(p_s,p_e+p_d,p_d)
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
-    pro = 500
+    pro = 1
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
@@ -744,7 +628,7 @@ if __name__ == "__main__":
     # プロセスを生成
     for _ in range(pro):
         # マネージャーから取得したオブジェクトを引数に渡す
-        process = multiprocessing.Process(target=count, args=(trials,cd_sur_list,p_list,eta,cd_rep,result_list,))
+        process = multiprocessing.Process(target=count, args=(trials,cd_sur_list,p_list,eta,result_list,))
         # プロセス開始
         process.start()
         # プロセスのリストに追加
@@ -755,19 +639,12 @@ if __name__ == "__main__":
         # プロセスの終了待ち
         process.join()
 
-    for i in range(2*pro):
+    for i in range(pro):
         if i == 0:
             c_X = result_list[0]
-        elif i == 1:
-            c_Z = result_list[1]
-        elif i%2 == 0:
+        else:
             c_X += result_list[i]
-        elif i%2 == 1:
-            c_Z += result_list[i]
-    c_X /= pro
-    c_Z /= pro
 
     df_X = pd.DataFrame(data=c_X, columns=p_list,index=cd_sur_list)
-    df_Z = pd.DataFrame(data=c_Z, columns=p_list,index=cd_sur_list)
-    df_X.to_csv('X(sample2),p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
-    df_Z.to_csv('Z(sample2),p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
+    df_X.to_csv('X(sample2),p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
+   
