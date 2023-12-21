@@ -636,7 +636,7 @@ def count(trials,cd_sur_list,p_list,eta,cd_rep,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 1
+    trials = 400
     d_s = 3
     d_e = 7
     d_d = 2
@@ -647,7 +647,7 @@ if __name__ == "__main__":
     cd_rep = 11
     p_list = np.arange(p_s,p_e+p_d,p_d)
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
-    pro = 1
+    pro = 500
 
     # プロセスを管理する人。デラックスな共有メモリ
     manager = multiprocessing.Manager()
@@ -677,4 +677,4 @@ if __name__ == "__main__":
     c_X /= pro
 
     df_X = pd.DataFrame(data=c_X, columns=p_list,index=cd_sur_list)
-    df_X.to_csv('X(sample3),p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
+    df_X.to_csv('Xerror,p=('+str(p_s)+','+str(p_e)+','+str(p_d)+'),d=('+str(d_s)+','+str(d_e)+','+str(d_d)+'),d(rep)='+str(cd_rep)+',eta='+str(eta)+',trials='+str(trials*pro)+'.csv')
