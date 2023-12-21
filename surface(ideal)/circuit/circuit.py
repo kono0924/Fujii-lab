@@ -176,7 +176,7 @@ def rotated_surface_code(code_distance,p_list,round_sur):
                         p_z_error(qubits_d,i+1,code_distance-1,p_list[1])
                         p_z_error(qubits_m_out_X,1,int(i/2),p_list[1])    
     
-        ########################################
+        ######################################## #
         # エラーの履歴
         for i in range(code_distance):
             for j in range(code_distance):
