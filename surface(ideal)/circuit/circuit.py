@@ -636,12 +636,12 @@ def count(trials,cd_sur_list,p_list,eta,cd_rep,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    trials = 400
+    trials = 4000
     d_s = 3
     d_e = 9
     d_d = 2
     p_s = 0.001
-    p_e = 0.012
+    p_e = 0.01
     p_d = 0.001
     eta = 1000
     cd_rep = 11
