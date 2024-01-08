@@ -85,7 +85,7 @@ def repetition(code_distance,rep,p,eta):
         # シンドローム測定のための初期化
         for i in range(code_distance-1):
             ### 初期化
-            bitflip_error(qubit,2*i+1,p,eta)
+            #bitflip_error(qubit,2*i+1,p,eta) # ほとんど影響なし
             H(qubit,2*i+1)
             single_biased(qubit,2*i+1,p,eta)
 
