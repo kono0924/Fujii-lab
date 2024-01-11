@@ -216,14 +216,14 @@ def rotated_surface_code(code_distance,p_list,rep):
     
         ######################### シンドローム測定終わり ###########################  
 
-        ######################### エラーの履歴　########################
+        ######################### エラーの履歴 ########################
         for i in range(code_distance):
             for j in range(code_distance):
                 qubits_d_X[num+1][i][j] =  qubits_d[0][i][j]
                 qubits_d_Z[num+1][i][j] =  qubits_d[1][i][j]
-        ######################### エラーの履歴終わり　########################
+        ######################### エラーの履歴終わり ########################
 
-        ######################### 測定結果の格納 & 初期化　#########################
+        ######################### 測定結果の格納 & 初期化 #########################
         ### Zシンドローム ###
         # 内側
         for i in range(code_distance-1):
@@ -667,7 +667,7 @@ def sampling(code_distance,p_list,rep):
     judge_X = 0
     if count == [1] * code_distance:
         judge_X = 1
-    ########################### Xシンドローム終わり　###########################
+    ########################### Xシンドローム終わり ###########################
     return result_data_Z, Z_data, judge_X, result_data_X, X_data, judge_Z
 
 # 論理CNOTゲート
@@ -686,10 +686,10 @@ def p_matrix(p,eta,cd_rep):
     matrix.append(cd_rep*p/(eta+1)) # pg_t_x
     matrix.append((2*eta+1)*p/(2*(eta+1))) #pg_t_z
     ### Xシンドローム測定
-    matrix.append(pg_X(p,eta,cd_rep)) # pg_c_x
-    matrix.append(2*(2*eta+1)*p/(2*(eta+1))) # pg_c_z
-    matrix.append(p/(eta+1)) # pg_t_x
-    matrix.append(cd_rep*(2*eta+1)*p/(2*(eta+1))) #pg_t_z
+    matrix.append(pg_X(p,eta,cd_rep)) # pg_t_x
+    matrix.append(2*(2*eta+1)*p/(2*(eta+1))) # pg_t_z
+    matrix.append(p/(eta+1)) # pg_c_x
+    matrix.append(cd_rep*(2*eta+1)*p/(2*(eta+1))) #pg_c_z
     ### ただのエラー
     matrix.append(1/(eta+1)*p) # p_x
     matrix.append((2*eta+1)/(2*(eta+1))*p) # p_z
