@@ -932,13 +932,13 @@ def count(trials,cd_sur_list,p,eta,round_rep_list,cd_rep_list,result_list):
 if __name__ == "__main__":
 
     ### パラメータ
-    p = 0.0005
+    p = 0.0001
     eta = 1000
     rep = 1
     ### パラメータ ###
     cd_rep_list = [3]
     round_rep_list = [20000,24000,28000,32000,36000,40000]
-    trials = 200
+    trials = 100
     pro = 500
     ################
     d_s = 3
