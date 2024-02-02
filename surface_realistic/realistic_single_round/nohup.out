@@ -50935,3 +50935,7 @@ python: can't open file '/home/kono/Documents/Fujii-lab/surface_realistic/realis
  [0.005 0.01  0.015 0.005 0.02  0.02 ]
  [0.005 0.02  0.005 0.005 0.03  0.01 ]
  [0.015 0.01  0.01  0.01  0.02  0.02 ]]
+Traceback (most recent call last):
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_single_round/【realistic】Zerror_auto_231109.py", line 947, in <module>
+    cd_sur_list = np.arange(d_s,d_e+1,d_d)
+NameError: name 'd_e' is not defined
