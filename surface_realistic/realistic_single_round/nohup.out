@@ -50939,3 +50939,7 @@ Traceback (most recent call last):
   File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_single_round/【realistic】Zerror_auto_231109.py", line 947, in <module>
     cd_sur_list = np.arange(d_s,d_e+1,d_d)
 NameError: name 'd_e' is not defined
+Traceback (most recent call last):
+  File "/home/kono/Documents/Fujii-lab/surface_realistic/realistic_single_round/【realistic】Zerror_auto_231109.py", line 947, in <module>
+    cd_sur_list = np.arange(d_s,d_e+1,d_d)
+NameError: name 'd_e' is not defined
